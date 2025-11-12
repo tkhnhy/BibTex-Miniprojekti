@@ -7,7 +7,7 @@ from util import validate_todo
 @app.route("/")
 def index():
     todos = get_todos()
-    unfinished = len([todo for todo in todos if not todo.done])
+    unfinished = len([todo for todo in todos])
     return render_template("index.html", todos=todos, unfinished=unfinished) 
 
 @app.route("/new_todo")
@@ -16,11 +16,12 @@ def new():
 
 @app.route("/create_todo", methods=["POST"])
 def todo_creation():
-    content = request.form.get("content")
-
+    citation_type = request.form.get("citation_type")
+    citation_key = request.form.get("citation_key")
+    data = request.form.get("data")
     try:
-        validate_todo(content)
-        create_todo(content)
+        #validate_todo(content)
+        create_todo(citation_type, citation_key, data)
         return redirect("/")
     except Exception as error:
         flash(str(error))

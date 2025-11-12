@@ -14,15 +14,18 @@ Todo app
 
 <ul>
   {% for todo in todos %}
-    <li style="display: flex">
+    <li style="display: flex; flex-direction: column; margin-bottom: 1em;">
       <div>
-        {{ todo }} 
+        <strong>Type:</strong> {{ todo.citation_type }}<br>
+        <strong>Key:</strong> {{ todo.citation_key }}<br>
+
+        <strong>Data:</strong>
+        <ul>
+          {% for datapoint, value in todo.citation_content.items() %}
+            <li><b>{{ datapoint }}</b>: {{ value }}</li>
+          {% endfor %}
+        </ul>
       </div>
-      {% if not todo.done %}
-        <form action="/toggle_todo/{{ todo.id }}" method="post" style="margin-left: 10px;">
-          <button type="submit">mark as done</button>
-        </form>
-      {% endif %}
     </li>
   {% endfor %}
 </ul>

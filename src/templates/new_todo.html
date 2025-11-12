@@ -18,8 +18,21 @@ Create a new todo
       </ul>
     {% endif %}
   {% endwith %}
-  <label for="content">Todo:</label>
-  <input type="text" name="content">
+  <label for="citation_type">Entry Type:</label>
+    <select name="citation_type" id="citation_type" required>
+      <option value="" disabled selected>Select a type...</option>
+      <option value="article">Article</option>
+      <option value="book">Book</option>
+      <option value="inproceedings">Inproceedings</option>
+    </select>
+  <br>
+  <label>Citation Key:</label><br>
+  <input type="text" name="citation_key" required><br><br>
+
+  <label>Data (as JSON):</label><br>
+  <textarea name="data" rows="8" cols="60" required>
+  {"author": "John Doe", "title": "Example Book", "year": 2020}
+  </textarea><br>
   <br>
   <button type="submit">
     Create

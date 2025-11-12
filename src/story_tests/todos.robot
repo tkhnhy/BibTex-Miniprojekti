@@ -10,10 +10,10 @@ At start there are no todos
     Title Should Be  Todo app
     Page Should Contain  things still unfinished: 0
 
-After adding a todo, there is one
+After adding a citation, there is one
     Go To  ${HOME_URL}
     Click Link  Create new todo
-    Input Text  content  Buy milk
+    Select From List By Label  citation_type  Book
+    Input Text  citation_key  BA441
     Click Button  Create
-    Page Should Contain  things still unfinished: 1
-    Page Should Contain  Buy milk
+    Page Should Contain  BA441

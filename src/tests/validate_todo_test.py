@@ -11,7 +11,7 @@ class TestTodoValidation(unittest.TestCase):
 
     def test_too_short_or_long_raises_error(self):
         with self.assertRaises(UserInputError):
-            validate_todo("ole")
+            validate_reference("ole")
 
         with self.assertRaises(UserInputError):
             validate_reference("koodaa" * 20)

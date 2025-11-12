@@ -1,27 +1,27 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Todo app
+reference app
 {% endblock %}
 
 {% block body %}
 
-<h2>Todo app</h2>
+<h2>reference app</h2>
 
 <div>
   things still unfinished: {{ unfinished }}
 </div>
 
 <ul>
-  {% for todo in todos %}
+  {% for reference in references %}
     <li style="display: flex; flex-direction: column; margin-bottom: 1em;">
       <div>
-        <strong>Type:</strong> {{ todo.citation_type }}<br>
-        <strong>Key:</strong> {{ todo.citation_key }}<br>
+        <strong>Type:</strong> {{ reference.reference_type }}<br>
+        <strong>Key:</strong> {{ reference.reference_key }}<br>
 
         <strong>Data:</strong>
         <ul>
-          {% for datapoint, value in todo.citation_content.items() %}
+          {% for datapoint, value in reference.reference_content.items() %}
             <li><b>{{ datapoint }}</b>: {{ value }}</li>
           {% endfor %}
         </ul>
@@ -31,7 +31,7 @@ Todo app
 </ul>
 
 <div>
-  <a href="/new_todo">Create new todo</a>
+  <a href="/new_reference">Create new reference</a>
 </div>
 
 {% endblock %}

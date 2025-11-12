@@ -1,14 +1,14 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Create a new todo
+Create a new reference
 {% endblock %}
 
 {% block body %}
 
-<h2>Create a new todo</h2>
+<h2>Create a new reference</h2>
 
-<form action="/create_todo" method="post">
+<form action="/create_reference" method="post">
   {% with messages = get_flashed_messages() %}
     {% if messages %}
       <ul>
@@ -18,19 +18,19 @@ Create a new todo
       </ul>
     {% endif %}
   {% endwith %}
-  <label for="citation_type">Entry Type:</label>
-    <select name="citation_type" id="citation_type" required>
+  <label for="reference_type">Entry Type:</label>
+    <select name="reference_type" id="reference_type" required>
       <option value="" disabled selected>Select a type...</option>
       <option value="article">Article</option>
       <option value="book">Book</option>
       <option value="inproceedings">Inproceedings</option>
     </select>
   <br>
-  <label>Citation Key:</label><br>
-  <input type="text" name="citation_key" required><br><br>
+  <label>Reference Key:</label><br>
+  <input type="text" name="reference_key" required><br><br>
 
   <label>Data (as JSON):</label><br>
-  <textarea name="data" rows="8" cols="60" required>
+  <textarea name="reference_data" rows="8" cols="60" required>
   {"author": "John Doe", "title": "Example Book", "year": 2020}
   </textarea><br>
   <br>

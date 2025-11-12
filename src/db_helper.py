@@ -3,8 +3,8 @@ from sqlalchemy import text
 import os
 
 def reset_db():
-  print(f"Clearing contents from table citations")
-  sql = text(f"DELETE FROM citations")
+  print(f"Clearing contents from table references")
+  sql = text(f"DELETE FROM references")
   db.session.execute(sql)
   db.session.commit()
 

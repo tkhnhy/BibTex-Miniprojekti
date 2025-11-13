@@ -4,6 +4,9 @@ output.xml
 report.html
 *.png
 
+# Pyenv
+.python-version
+
 # Gedit backups
 *~
 

@@ -1,6 +1,6 @@
 from flask import redirect, render_template, request, jsonify, flash
 from db_helper import reset_db
-from repositories.reference_repository import get_references, create_reference, set_done
+from repositories.reference_repository import get_references, create_reference, set_done, db_delete_reference
 from config import app, test_env
 from util import validate_reference
 
@@ -30,6 +30,20 @@ def reference_creation():
 @app.route("/toggle_reference/<reference_id>", methods=["POST"])
 def toggle_todo(reference_id):
     set_done(reference_id)
+    return redirect("/")
+
+@app.route("/confirm_delete/<reference_key>")
+def confirm_delete(reference_key):
+    references = get_references()
+    reference = next((ref for ref in references if ref.reference_key == reference_key), None)
+    if reference is None:
+        flash("Reference not found.")
+        return redirect("/")
+    return render_template("delete_reference.html", reference=reference)
+
+@app.route("/delete_reference/<reference_key>", methods=["POST"])
+def delete_reference(reference_key):
+    db_delete_reference(reference_key)
     return redirect("/")
 
 # testausta varten oleva reitti

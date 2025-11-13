@@ -18,3 +18,8 @@ def create_reference(reference_type, reference_key, reference_data):
     sql = text("INSERT INTO reference_table (reference_type, reference_key, reference_data) VALUES (:reference_type, :reference_key, :reference_data )")
     db.session.execute(sql, { "reference_type": reference_type, "reference_key": reference_key, "reference_data": reference_data})
     db.session.commit()
+
+def db_delete_reference(reference_key):
+    sql = text("DELETE FROM reference_table WHERE reference_key = :reference_key")
+    db.session.execute(sql, { "reference_key": reference_key })
+    db.session.commit()

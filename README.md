@@ -29,3 +29,25 @@ $ python src/db_helper.py
 $ poetry run python src/index.py
 ```
 The application should now be running at ```http://localhost:5001/```.
+
+
+# Definition of Done
+
+A user story, task, or feature is considered done when all of the following criteria are met:
+
+Code Quality
+- Code is properly formatted and passes Pylint checks.
+- Naming is clear, meaningful, and consistent.
+- Code is maintainable, and adheres to the project's architectural design.
+- Inline comments added where necessary to clarify non-obvious logic.
+
+Functionality
+- Feature works as expected and fulfills all related acceptance criteria.
+- Feature does not break existing functionality.
+- No critical bugs or errors remain.
+
+Testing
+- Robot Framework tests are written according to the documented acceptance criteria.
+- Automated unit tests are written where applicable, and test coverage is reasonable.
+- All tests pass successfully.
+- Test results and coverage are visible to the customer from the CI service.

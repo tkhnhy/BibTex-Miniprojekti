@@ -27,13 +27,17 @@ Create a new reference
     </select>
   <br>
   <label>Reference Key:</label><br>
-  <input type="text" name="reference_key" required><br><br>
+  <input type="text" name="reference_key" required><br><br><br>
 
-  <label>Data (as JSON):</label><br>
-  <textarea name="reference_data" rows="8" cols="60" required>
-  {"author": "John Doe", "title": "Example Book", "year": 2020}
-  </textarea><br>
-  <br>
+  <label>Author</label><br>
+  <input type="text" name="author" required><br><br>
+  <label>Book title</label><br>
+  <input type="text" name="book_title" required><br><br>
+  <label>Publisher</label><br>
+  <input type="text" name="publisher" required><br><br>
+  <label>Year</label><br>
+  <input type="text" name="year" required><br><br>
+
   <button type="submit">
     Create
   </button>

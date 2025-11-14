@@ -16,7 +16,7 @@ def set_done(reference_id):
 
 def create_reference(reference_type, reference_key, reference_data):
     sql = text("INSERT INTO reference_table (reference_type, reference_key, reference_data) VALUES (:reference_type, :reference_key, :reference_data )")
-    db.session.execute(sql, { "reference_type": reference_type, "reference_key": reference_key, "reference_data": reference_data})
+    db.session.execute(sql, { "reference_type": reference_type, "reference_key": reference_key, "reference_data": json.dumps(reference_data)})
     db.session.commit()
 
 def db_delete_reference(reference_key):

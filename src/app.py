@@ -18,7 +18,12 @@ def new():
 def reference_creation():
     reference_type = request.form.get("reference_type")
     reference_key = request.form.get("reference_key")
-    reference_data = request.form.get("reference_data")
+    
+    reference_data = { 
+        key: value for key, value in request.form.items()
+        if key not in ("reference_type", "reference_key") and value.strip() != ""
+    }
+    
     try:
         #validate_reference(content)
         create_reference(reference_type, reference_key, reference_data)

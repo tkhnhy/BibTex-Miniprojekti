@@ -4,7 +4,7 @@ import os
 
 def reset_db():
   print(f"Clearing contents from table references")
-  sql = text(f"DELETE FROM references")
+  sql = text(f"DELETE FROM reference_table")
   db.session.execute(sql)
   db.session.commit()
 

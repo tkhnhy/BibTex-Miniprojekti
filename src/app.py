@@ -7,8 +7,8 @@ from util import validate_reference
 @app.route("/")
 def index():
     references = get_references()
-    unfinished = len([reference for reference in references])
-    return render_template("index.html", references=references, unfinished=unfinished) 
+    amount = len([reference for reference in references])
+    return render_template("index.html", references=references, amount=amount) 
 
 @app.route("/new_reference")
 def new():

@@ -25,18 +25,20 @@ Create a new reference
       <option value="book">Book</option>
       <option value="inproceedings">Inproceedings</option>
     </select>
-  <br>
-  <label>Reference Key:</label><br>
+  <br><br>
+  <label>Reference Key:*</label><br>
   <input type="text" name="reference_key" required><br><br><br>
 
-  <label>Author</label><br>
+  <label>Author:*</label><br>
   <input type="text" name="author" required><br><br>
-  <label>Book title</label><br>
+  <label>Book title:*</label><br>
   <input type="text" name="book_title" required><br><br>
-  <label>Publisher</label><br>
+  <label>Publisher:*</label><br>
   <input type="text" name="publisher" required><br><br>
-  <label>Year</label><br>
+  <label>Year:*</label><br>
   <input type="text" name="year" required><br><br>
+  <label>Optional, if empty should be ignored</label><br>
+  <input type="text" name="optional"><br><br>
 
   <button type="submit">
     Create

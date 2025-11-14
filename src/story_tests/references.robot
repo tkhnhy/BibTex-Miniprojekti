@@ -15,6 +15,10 @@ After adding a reference, there is one
     Click Link  Create new reference
     Select From List By Label  reference_type  Book
     Input Text  reference_key  ROB01
+    Input Text  author  Rob Bot
+    Input Text  book_title  Robot Book
+    Input Text  publisher  RobotPublishing
+    Input Text  year  2150
     Click Button  Create
     Page Should Contain  ROB01
     Page Should Contain  Number of references: 1
@@ -24,6 +28,10 @@ After adding a reference, then removing it, there are no references
     Click Link  Create new reference
     Select From List By Label  reference_type  Book
     Input Text  reference_key  ROB02
+    Input Text  author  Rob Bot
+    Input Text  book_title  Robot Book
+    Input Text  publisher  RobotPublishing
+    Input Text  year  2150
     Click Button  Create
     Page Should Contain  ROB02
     Page Should Contain  Number of references: 1
@@ -36,6 +44,10 @@ After adding a reference, pressing delete, but canceling, the reference stays
     Click Link  Create new reference
     Select From List By Label  reference_type  Book
     Input Text  reference_key  ROB03
+    Input Text  author  Rob Bot
+    Input Text  book_title  Robot Book
+    Input Text  publisher  RobotPublishing
+    Input Text  year  2150
     Click Button  Create
     Page Should Contain  ROB03
     Page Should Contain  Number of references: 1

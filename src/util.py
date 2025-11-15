@@ -6,4 +6,4 @@ def validate_reference(content):
         raise UserInputError("Todo content length must be greater than 4")
 
     if len(content) > 100:
-          raise UserInputError("Todo content length must be smaller than 100")
+        raise UserInputError("Todo content length must be smaller than 100")

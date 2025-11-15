@@ -1,14 +1,14 @@
 from flask import redirect, render_template, request, jsonify, flash
 from db_helper import reset_db
-from repositories.reference_repository import get_references, create_reference, set_done, db_delete_reference
+from repositories.reference_repository import get_references, create_reference, db_delete_reference
 from config import app, test_env
-from util import validate_reference
+#from util import validate_reference
 
 @app.route("/")
 def index():
     references = get_references()
-    amount = len([reference for reference in references])
-    return render_template("index.html", references=references, amount=amount) 
+    amount = len(references)
+    return render_template("index.html", references=references, amount=amount)
 
 @app.route("/new_reference")
 def new():
@@ -18,12 +18,12 @@ def new():
 def reference_creation():
     reference_type = request.form.get("reference_type")
     reference_key = request.form.get("reference_key")
-    
-    reference_data = { 
+
+    reference_data = {
         key: value for key, value in request.form.items()
         if key not in ("reference_type", "reference_key") and value.strip() != ""
     }
-    
+
     try:
         #validate_reference(content)
         create_reference(reference_type, reference_key, reference_data)
@@ -31,11 +31,6 @@ def reference_creation():
     except Exception as error:
         flash(str(error))
         return  redirect("/new_reference")
-
-@app.route("/toggle_reference/<reference_id>", methods=["POST"])
-def toggle_todo(reference_id):
-    set_done(reference_id)
-    return redirect("/")
 
 @app.route("/confirm_delete/<reference_key>")
 def confirm_delete(reference_key):

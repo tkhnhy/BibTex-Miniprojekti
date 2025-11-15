@@ -52,4 +52,4 @@ Testing
 - Robot Framework tests are written according to the documented acceptance criteria.
 - Automated unit tests are written where applicable, and test coverage is reasonable.
 - All tests pass successfully.
-- Test results and coverage are visible to the customer from the CI service.
+- CI status is visible to the customer.

@@ -1,4 +1,4 @@
-[**Product backlog + sprint backlogs**](https://docs.google.com/spreadsheets/d/19QThnVXlWBjx3oyx5Rj04DEQLzPrbDfF0EEGH8a7vgo/edit?usp=sharing)
+[**Product backlog + sprint backlogs**](https://helsinkifi-my.sharepoint.com/:x:/g/personal/hjhellen_ad_helsinki_fi/IQAgyDoSu0-kT60WAa520XtHAUcCyeXZoMsxVnmFQv8ADAw)
 
 # Installation
 

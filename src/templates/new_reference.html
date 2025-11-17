@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Create a new reference
+{% endblock %}
+
+{% block body %}
+
+<h2>Create a new reference</h2>
+
+<form action="/create_reference" method="post">
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  <label for="reference_type">Entry Type:</label>
+    <select name="reference_type" id="reference_type" required>
+      <option value="" disabled selected>Select a type...</option>
+      <option value="article">Article</option>
+      <option value="book">Book</option>
+      <option value="inproceedings">Inproceedings</option>
+    </select>
+  <br><br>
+  <label>Reference Key:*</label><br>
+  <input type="text" name="reference_key" required><br><br><br>
+
+  <label>Author:*</label><br>
+  <input type="text" name="author" required><br><br>
+  <label>Book title:*</label><br>
+  <input type="text" name="book_title" required><br><br>
+  <label>Publisher:*</label><br>
+  <input type="text" name="publisher" required><br><br>
+  <label>Year:*</label><br>
+  <input type="text" name="year" required><br><br>
+  <br>
+  <label>Volume:</label><br>
+  <input type="text" name="volume"><br><br>
+  <label>Number:</label><br>
+  <input type="text" name="number"><br><br>
+  <label>Pages:</label><br>
+  <input type="text" name="pages"><br><br>
+  <label>Month:</label><br>
+  <input type="text" name="month"><br><br>
+  <label>Editor:</label><br>
+  <input type="text" name="editor"><br><br>
+  <label>Note:</label><br>
+  <input type="text" name="note"><br><br>
+  <button type="submit">
+    Create
+  </button>
+</form>
+
+{% endblock %}

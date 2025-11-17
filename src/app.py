@@ -1,34 +1,49 @@
 from flask import redirect, render_template, request, jsonify, flash
 from db_helper import reset_db
-from repositories.todo_repository import get_todos, create_todo, set_done
+from repositories.reference_repository import get_references, create_reference, db_delete_reference
 from config import app, test_env
-from util import validate_todo
+#from util import validate_reference
 
 @app.route("/")
 def index():
-    todos = get_todos()
-    unfinished = len([todo for todo in todos if not todo.done])
-    return render_template("index.html", todos=todos, unfinished=unfinished) 
+    references = get_references()
+    amount = len(references)
+    return render_template("index.html", references=references, amount=amount)
 
-@app.route("/new_todo")
+@app.route("/new_reference")
 def new():
-    return render_template("new_todo.html")
+    return render_template("new_reference.html")
 
-@app.route("/create_todo", methods=["POST"])
-def todo_creation():
-    content = request.form.get("content")
+@app.route("/create_reference", methods=["POST"])
+def reference_creation():
+    reference_type = request.form.get("reference_type")
+    reference_key = request.form.get("reference_key")
+
+    reference_data = {
+        key: value for key, value in request.form.items()
+        if key not in ("reference_type", "reference_key") and value.strip() != ""
+    }
 
     try:
-        validate_todo(content)
-        create_todo(content)
+        #validate_reference(content)
+        create_reference(reference_type, reference_key, reference_data)
         return redirect("/")
     except Exception as error:
         flash(str(error))
-        return  redirect("/new_todo")
+        return  redirect("/new_reference")
 
-@app.route("/toggle_todo/<todo_id>", methods=["POST"])
-def toggle_todo(todo_id):
-    set_done(todo_id)
+@app.route("/confirm_delete/<reference_key>")
+def confirm_delete(reference_key):
+    references = get_references()
+    reference = next((ref for ref in references if ref.reference_key == reference_key), None)
+    if reference is None:
+        flash("Reference not found.")
+        return redirect("/")
+    return render_template("delete_reference.html", reference=reference)
+
+@app.route("/delete_reference/<reference_key>", methods=["POST"])
+def delete_reference(reference_key):
+    db_delete_reference(reference_key)
     return redirect("/")
 
 # testausta varten oleva reitti

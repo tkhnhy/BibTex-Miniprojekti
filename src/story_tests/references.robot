@@ -16,7 +16,7 @@ After adding a reference, there is one
     Select From List By Label  reference_type  Book
     Input Text  reference_key  ROB01
     Input Text  author  Rob Bot
-    Input Text  book_title  Robot Book
+    Input Text  title  Robot Book
     Input Text  publisher  RobotPublishing
     Input Text  year  2150
     Click Button  Create
@@ -29,7 +29,7 @@ After adding a reference, then removing it, there are no references
     Select From List By Label  reference_type  Book
     Input Text  reference_key  ROB02
     Input Text  author  Rob Bot
-    Input Text  book_title  Robot Book
+    Input Text  title  Robot Book
     Input Text  publisher  RobotPublishing
     Input Text  year  2150
     Click Button  Create
@@ -45,7 +45,7 @@ After adding a reference, pressing delete, but canceling, the reference stays
     Select From List By Label  reference_type  Book
     Input Text  reference_key  ROB03
     Input Text  author  Rob Bot
-    Input Text  book_title  Robot Book
+    Input Text  title  Robot Book
     Input Text  publisher  RobotPublishing
     Input Text  year  2150
     Click Button  Create

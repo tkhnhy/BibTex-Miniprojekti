@@ -4,6 +4,35 @@
 
 # Installation
 
+## install PostgreSQL locally
+
+Assuming your username is "user". 
+```bash
+user$ sudo apt-get install postgresql
+user$ sudo -u postgres bash
+postgres$ createuser user
+postgres$ createdb -O user my_db_name
+postgres$ exit
+```
+
+Test:
+```bash
+user$ psql my_db_name
+my_db_name=> \l+
+q
+my_db_name=> \q
+```
+
+Create a strong password using openssl command `openssl rand -base64 24` and use it to change/create user’s db-password: 
+```bash
+user$ sudo -u postgres psql
+postgres$ ALTER USER user WITH PASSWORD 'new_password_from_openssl';
+postgres$ exit
+```
+Test the db connection by command `psql -U user -d my_db_name -h localhost` or in short just by `sql my_db_name`.
+
+## The app installation
+
 1. Clone the repository and navigate to the root folder.
 
 2. Install dependencies using Poetry.

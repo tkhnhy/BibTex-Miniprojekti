@@ -6,9 +6,13 @@ from util import validate_reference
 
 @app.route("/")
 def index():
-    references = get_references()
-    amount = len(references)
-    return render_template("index.html", references=references, amount=amount)
+    try:
+        references = get_references()
+        amount = len(references)
+        return render_template("index.html", references=references, amount=amount)
+    except Exception as error:
+        flash(str(error))
+        return render_template("index.html", references=[], amount=0)
 
 @app.route("/new_reference")
 def new():
@@ -30,21 +34,29 @@ def reference_creation():
         return redirect("/")
     except Exception as error:
         flash(str(error))
-        return  redirect("/new_reference")
+        return redirect("/new_reference")
 
 @app.route("/confirm_delete/<reference_key>")
 def confirm_delete(reference_key):
-    references = get_references()
-    reference = next((ref for ref in references if ref.reference_key == reference_key), None)
-    if reference is None:
-        flash("Reference not found.")
+    try:
+        references = get_references()
+        reference = next((ref for ref in references if ref.reference_key == reference_key), None)
+        if reference is None:
+            flash("Reference to be deleted not found.")
+            return redirect("/")
+        return render_template("delete_reference.html", reference=reference)
+    except Exception as error:
+        flash("confirm_delete: " + str(error))
         return redirect("/")
-    return render_template("delete_reference.html", reference=reference)
 
 @app.route("/delete_reference/<reference_key>", methods=["POST"])
 def delete_reference(reference_key):
-    db_delete_reference(reference_key)
-    return redirect("/")
+    try:
+        db_delete_reference(reference_key)
+        return redirect("/")
+    except Exception as error:
+        flash("delete_reference: " + str(error))
+        return redirect("/confirm_delete/" + reference_key)
 
 # testausta varten oleva reitti
 if test_env:

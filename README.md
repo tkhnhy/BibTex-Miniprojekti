@@ -2,9 +2,38 @@
 
 [**Product backlog + sprint backlogs**](https://helsinkifi-my.sharepoint.com/:x:/g/personal/hjhellen_ad_helsinki_fi/IQAvnQeKqT0uQYKpWgiyLJbaASYjHlJnmxERma5JgKgGz00)
 
-# Installation
+# Installation on Linux
 
-## install PostgreSQL locally
+1. Clone the repository and navigate to the root folder.
+
+2. Install dependencies using Poetry.
+Check your [Poetry installation](https://python-poetry.org/docs/#installing-with-the-official-installer)
+    with ```$ poetry --version```. 
+    ```bash
+    $ poetry install
+    ```
+    **Note:** This project requires python 3.12.
+
+3. Create a ```.env``` file in the project root and configure the following environment variables.
+    ```env
+    SECRET_KEY=your_secret_key
+    DATABASE_URL=postgresql://user:password@localhost:5432/my_db_name
+    TEST_ENV=false
+    ```
+    Look [below](#creating-a-local-postgresql-database) for instructions on how create a local PostgreSQL database.
+
+4. Initialize the database tables.
+    ```bash
+    $ python src/db_helper.py
+    ```
+
+5. Run the Flask app.
+    ```bash
+    $ poetry run python src/index.py
+    ```
+    The application should now be running at ```http://localhost:5001/```.
+
+## Creating a local PostgreSQL database
 
 Assuming your username is "user". 
 ```bash
@@ -29,37 +58,7 @@ user$ sudo -u postgres psql
 postgres$ ALTER USER user WITH PASSWORD 'new_password_from_openssl';
 postgres$ exit
 ```
-Test the db connection by command `psql -U user -d my_db_name -h localhost` or in short just by `sql my_db_name`.
-
-## The app installation
-
-1. Clone the repository and navigate to the root folder.
-
-2. Install dependencies using Poetry.
-Check your [Poetry installation](https://python-poetry.org/docs/#installing-with-the-official-installer)
-with ```$ poetry --version```. 
-```bash
-$ poetry install
-```
-**Note:** This project requires python 3.12.
-
-3. Create a ```.env``` file in the project root and configure the following environment variables.
-```env
-SECRET_KEY=your_secret_key
-DATABASE_URL=postgresql://user:password@localhost:5432/my_db_name
-TEST_ENV=false
-```
-
-4. Initialize the database tables.
-```bash
-$ python src/db_helper.py
-```
-
-5. Run the Flask app.
-```bash
-$ poetry run python src/index.py
-```
-The application should now be running at ```http://localhost:5001/```.
+Test the database connection with the command `psql -U user -d my_db_name -h localhost` or in short `psql my_db_name`.
 
 
 # Definition of Done

@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
@@ -9,6 +10,9 @@
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
-    {% block body %}{% endblock %}
+    <div class="page-content">
+        {% block body %}{% endblock %}
+    </div>
   </body>
+  {% block scripts %}{% endblock %}
 </html>

@@ -1,9 +1,14 @@
 import unittest
 from util import validate_reference, UserInputError
+from app import app
 
 class TestTodoValidation(unittest.TestCase):
     def setUp(self):
-        pass
+        self.app_context = app.app_context()
+        self.app_context.push()
+
+    def tearDown(self):
+        self.app_context.pop()
 
     def test_valid_length_does_not_raise_error(self):
         validate_reference("book", "juokse", {"author": "aa", "title": "aa", "publisher": "aa", "year": "2025"})

@@ -25,7 +25,7 @@ def reference_creation():
     }
     
     try:
-        #validate_reference(content)
+        validate_reference(reference_type, reference_key, reference_data)
         create_reference(reference_type, reference_key, reference_data)
         return redirect("/")
     except Exception as error:

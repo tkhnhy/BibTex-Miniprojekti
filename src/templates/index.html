@@ -8,6 +8,16 @@ My references
 
 <h2 class="page-title">My references</h2>
 
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
 <div class="reference-count">
   Number of references: {{ amount }}
 </div>

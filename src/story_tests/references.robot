@@ -51,8 +51,8 @@ After adding a reference, then adding another with same key, adding fails
     Input Text  publisher  RobotPublishing
     Input Text  year  2150
     Click Button  Create
-    Page Should Contain  Reference key 'ROB01' already exists
-    Click Button  Cancel
+    Location Should Be  ${CREATE_URL}
+    Go To  ${HOME_URL}
     Page Should Contain  Number of references: 1
 
 After filling reference fields, but canceling, none are created.

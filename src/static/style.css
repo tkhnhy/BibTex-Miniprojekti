@@ -1,0 +1,92 @@
+/* Content block */
+.page-content {
+    max-width: 80em;
+    margin: 0 auto
+}
+
+/* Page heading */
+.page-title {
+  margin-bottom: 1rem;
+}
+
+/* Summary text */
+.reference-count {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+/* Table layouts */
+.table-container {
+    margin: 0.5em;
+}
+
+.table-title{
+    font-weight: bold;
+}
+
+.reference-item{
+    display: grid;         /* Type | Key | Author | Title | Year | Action */
+    grid-template-columns: minmax(2em, 3fr) minmax(2em, 3fr) minmax(4em, 5fr) minmax(6em, 7fr) minmax(2em, 3fr) minmax(2em, 3fr);
+    align-items: center;
+    gap: 0.5em 1em;
+    line-height: 1.8;
+    padding: 0.5em;
+    border-bottom: 2px solid grey;
+}
+
+.reference-item-details {
+    display: none;
+    grid-column-start: 1;
+    grid-column-end: 6;
+    line-height: 1.5;
+}
+
+.reference-item-details span {
+    margin-right: 1.5em;
+}
+
+/* Colored buttons */
+.button-red {
+  background-color: #d9534f;
+  border: none;
+  padding: 0.3rem 0.7rem;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-right: 0.3rem;
+}
+
+.button-red:hover {
+  background-color: #c9302c;
+}
+
+.button-green {
+  background-color: #5cb85c;
+  border: none;
+  padding: 0.5rem 1rem;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1rem;
+}
+
+.button-green:hover {
+  background-color: #449d44;
+}
+
+.toggle-details {
+  background-color: #0275d8;
+  border: none;
+  padding: 0.3rem 0.7rem;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.toggle-details:hover {
+  background-color: #025aa5;
+}

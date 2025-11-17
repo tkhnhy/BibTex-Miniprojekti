@@ -12,7 +12,7 @@ At start there are no references
 
 After adding a reference, there is one
     Go To  ${HOME_URL}
-    Click Link  New reference
+    Click Button  New reference
     Select From List By Label  reference_type  Book
     Input Text  reference_key  ROB01
     Input Text  author  Rob Bot
@@ -25,7 +25,7 @@ After adding a reference, there is one
     
 After adding a reference, then removing it, there are no references
     Go To  ${HOME_URL}
-    Click Link  New reference
+    Click Button  New reference
     Select From List By Label  reference_type  Book
     Input Text  reference_key  ROB02
     Input Text  author  Rob Bot
@@ -41,7 +41,7 @@ After adding a reference, then removing it, there are no references
     
 After adding a reference, pressing delete, but canceling, the reference stays
     Go To  ${HOME_URL}
-    Click Link  New reference
+    Click Button  New reference
     Select From List By Label  reference_type  Book
     Input Text  reference_key  ROB03
     Input Text  author  Rob Bot

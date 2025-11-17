@@ -9,7 +9,7 @@ def validate_reference(reference_type, reference_key, reference_data):
         raise UserInputError("Reference key can not be empty")
 
     required_fields = {
-        "book": ["author", "book_title", "publisher", "year"],
+        "book": ["author", "title", "publisher", "year"],
     }
 
     if reference_type not in required_fields:

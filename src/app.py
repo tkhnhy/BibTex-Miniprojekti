@@ -2,7 +2,7 @@ from flask import redirect, render_template, request, jsonify, flash
 from db_helper import reset_db
 from repositories.reference_repository import get_references, create_reference, db_delete_reference
 from config import app, test_env
-#from util import validate_reference
+from util import validate_reference
 
 @app.route("/")
 def index():

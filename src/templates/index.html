@@ -1,38 +1,77 @@
 {% extends "layout.html" %}
 
 {% block title %}
-reference app
+My references
 {% endblock %}
 
 {% block body %}
 
-<h2>reference app</h2>
+<h2 class="page-title">My references</h2>
 
-<div>
+<div class="reference-count">
   Number of references: {{ amount }}
 </div>
 
-<ul>
-  {% for reference in references %}
-    <li style="display: flex; flex-direction: column; margin-bottom: 1em;">
-      <div>
-        <strong>Type:</strong> {{ reference.reference_type }}<br>
-        <strong>Key:</strong> {{ reference.reference_key }}<br>
+<div class="table-container">
+    <!-- Table header -->
+    <div class="reference-item table-title">
+        <div>Type</div>
+        <div>Key</div>
+        <div>Author</div>
+        <div>Title</div>
+        <div>Year</div>
+        <div>Action</div>
+    </div>
 
-        <strong>Data:</strong>
-        <ul>
-          {% for datapoint, value in reference.reference_content.items() %}
-            <li><b>{{ datapoint }}</b>: {{ value }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-    </li>
-    <button onclick="location.href='/confirm_delete/{{reference.reference_key}}'">Delete</button>
-  {% endfor %}
-</ul>
+    <!-- Table rows -->
+    {% for reference in references %}
+    <div class="reference-item">
+        <!-- Main details -->
+        <div>{{ reference.reference_type }}</div>
+        <div>{{ reference.reference_key }}</div>
+        <div>{{ reference.reference_content.get('author', '') }}</div>
+        <div>{{ reference.reference_content.get('title', '') }}</div>
+        <div>{{ reference.reference_content.get('year', '') }}</div>
+        <div>
+            <button class="toggle-details">Details</button>
+            <button onclick="location.href='/confirm_delete/{{ reference.reference_key }}'" class="button-red">
+                Delete
+            </button>
+        </div>
 
-<div>
-  <a href="/new_reference">Create new reference</a>
+        <!-- Extra details -->
+        <div class="reference-item-details">
+            {% for datapoint, value in reference.reference_content.items() %}
+                {% if datapoint not in ['author', 'title', 'year'] %}
+                <span><b>{{ datapoint }}:</b> {{ value }}</span>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    <div>
+        <button onclick="location.href='/new_reference'" class="button-green" style="margin-top: 15px;">
+            New reference
+        </button>
+    </div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.toggle-details').forEach(button => {
+    button.addEventListener('click', () => {
+        // Toggle details
+        const parentItem = button.closest('.reference-item');
+        const details = parentItem.querySelector('.reference-item-details');
+        if (details.style.display === 'block') {
+            details.style.display = 'none';
+        } else {
+            details.style.display = 'block';
+        }
+    });
+});
+</script>
 {% endblock %}

@@ -22,3 +22,4 @@ def validate_reference(reference_type, reference_key, reference_data):
     reference_keys = [ref.reference_key for ref in get_references()]
     if reference_key in reference_keys:
         raise UserInputError(f"Reference key '{reference_key}' already exists")
+

@@ -8,6 +8,7 @@ ${HOME_URL}   http://${SERVER}
 ${RESET_URL}  http://${SERVER}/reset_db
 ${BROWSER}    chrome
 ${HEADLESS}   false
+${CREATE_URL}  http://${SERVER}/new_reference
 
 *** Keywords ***
 Open And Configure Browser

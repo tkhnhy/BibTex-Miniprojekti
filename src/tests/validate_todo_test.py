@@ -2,7 +2,7 @@ import unittest
 from util import validate_reference, UserInputError
 from app import app
 
-class TestTodoValidation(unittest.TestCase):
+class TestReferenceValidation(unittest.TestCase):
     def setUp(self):
         self.app_context = app.app_context()
         self.app_context.push()
@@ -10,12 +10,29 @@ class TestTodoValidation(unittest.TestCase):
     def tearDown(self):
         self.app_context.pop()
 
-    def test_valid_length_does_not_raise_error(self):
+    def test_valid_book(self):
         validate_reference("book", "juokse", {"author": "aa", "title": "aa", "publisher": "aa", "year": "2025"})
 
-    #def test_too_short_or_long_raises_error(self):
-        #with self.assertRaises(UserInputError):
-            #validate_reference("ole")
+    def test_invalid_type(self):
+        with self.assertRaises(UserInputError):
+            validate_reference(
+                "books", # invalid
+                "juokse",
+                {"author": "aa", "title": "aa", "publisher": "aa", "year": "2025"}
+            )
 
-        #with self.assertRaises(UserInputError):
-            #validate_reference("koodaa" * 20)
+    def test_empty_key(self):
+        with self.assertRaises(UserInputError):
+            validate_reference(
+                "book",
+                "", # empty
+                {"author": "aa", "title": "aa", "publisher": "aa", "year": "2025"}
+            )
+
+    def test_reference_missing_required_field(self):
+        with self.assertRaises(UserInputError):
+            validate_reference(
+                "book",
+                "juokse",
+                {"author": "aa", "title": "aa", "publisher": "aa"}  # missing year
+            )

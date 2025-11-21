@@ -16,6 +16,29 @@ class ReferenceType(Enum):
     TECHREPORT = "techreport"
     UNPUBLISHED = "unpublished"
 
+    def display_str(self) -> str:
+        """
+        Return a human-readable display string for a ReferenceType.
+        """
+        display_strings = {
+            ReferenceType.ARTICLE: "Article",
+            ReferenceType.BOOK: "Book",
+            ReferenceType.BOOKLET: "Booklet",
+            ReferenceType.CONFERENCE: "Conference",
+            ReferenceType.INBOOK: "In Book",
+            ReferenceType.INCOLLECTION: "In Collection",
+            ReferenceType.INPROCEEDINGS: "In Proceedings",
+            ReferenceType.MANUAL: "Manual",
+            ReferenceType.MASTERSTHESIS: "Master's Thesis",
+            ReferenceType.MISC: "Misc",
+            ReferenceType.PHDTHESIS: "PhD Thesis",
+            ReferenceType.PROCEEDINGS: "Proceedings",
+            ReferenceType.TECHREPORT: "Tech Report",
+            ReferenceType.UNPUBLISHED: "Unpublished",
+        }
+        return display_strings.get(self, self.value.capitalize())
+
+
 class Reference:
     def __init__(self, id_: int, key: str, type_: ReferenceType, content: dict):
         """

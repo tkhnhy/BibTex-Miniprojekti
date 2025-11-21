@@ -37,7 +37,7 @@ My references
     {% for reference in references %}
     <div class="reference-item">
         <!-- Main details -->
-        <div>{{ reference.type.value }}</div>
+        <div>{{ reference.type.display_str() }}</div>
         <div>{{ reference.key }}</div>
         <div>{{ reference.content.get('author', '') }}</div>
         <div>{{ reference.content.get('title', '') }}</div>

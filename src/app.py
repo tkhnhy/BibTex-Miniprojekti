@@ -1,5 +1,6 @@
 from flask import redirect, render_template, request, jsonify, flash
 from db_helper import reset_db
+from entities.reference import ReferenceType
 from repositories.reference_repository import get_references, create_reference, get_reference_by_key, delete_reference
 from config import app, test_env
 from util import validate_reference, UserInputError
@@ -12,7 +13,7 @@ def route_index():
 
 @app.route("/new_reference")
 def route_new_reference():
-    return render_template("new_reference.html")
+    return render_template("new_reference.html", reference_types=list(ReferenceType))
 
 @app.route("/create_reference", methods=["POST"])
 def route_reference_creation():

@@ -1,25 +1,22 @@
-import os
-from repositories.reference_repository import get_references
+from repositories.reference_repository import get_reference_by_key
 
 class UserInputError(Exception):
     pass
 
-def validate_reference(reference_type, reference_key, reference_data):
-    if not reference_key.strip():
-        raise UserInputError("Reference key can not be empty")
+def validate_reference(type_: str, key: str, content: str):
+    if not key.strip():
+        raise UserInputError("Reference citation key can not be empty")
 
     required_fields = {
         "book": ["author", "title", "publisher", "year"],
     }
 
-    if reference_type not in required_fields:
+    if type_ not in required_fields:
         raise UserInputError("Unknown reference type")
 
-    for field in required_fields[reference_type]:
-        if field not in reference_data or not reference_data[field].strip():
+    for field in required_fields[type_]:
+        if field not in content or not content[field].strip():
             raise UserInputError("All required fields must be filled")
 
-    if os.environ.get("CI") != "true":
-        reference_keys = [ref.reference_key for ref in get_references()]
-        if reference_key in reference_keys:
-            raise UserInputError(f"Reference key '{reference_key}' already exists")
+    if get_reference_by_key(key):
+        raise UserInputError(f"Reference citation key '{key}' already exists")

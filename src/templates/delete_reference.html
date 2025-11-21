@@ -8,7 +8,7 @@ Delete reference
 
 <h2>Are you sure you want to delete the reference?</h2>
 
-<form action="/delete_reference/{{reference.reference_key}}" method="post">
+<form action="/delete_reference/{{reference.key}}" method="post">
   {% with messages = get_flashed_messages() %}
     {% if messages %}
       <ul>
@@ -18,11 +18,11 @@ Delete reference
       </ul>
     {% endif %}
   {% endwith %}
-  <strong>Key:</strong> {{ reference.reference_key }}<br>
-  <strong>Type:</strong> {{ reference.reference_type }}<br>
+  <strong>Key:</strong> {{ reference.key }}<br>
+  <strong>Type:</strong> {{ reference.type }}<br>
   <strong>Data:</strong>
   <ul>
-    {% for datapoint, value in reference.reference_content.items() %}
+    {% for datapoint, value in reference.content.items() %}
       <li><b>{{ datapoint }}</b>: {{ value }}</li>
     {% endfor %}
   </ul>

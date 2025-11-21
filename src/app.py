@@ -2,17 +2,13 @@ from flask import redirect, render_template, request, jsonify, flash
 from db_helper import reset_db
 from repositories.reference_repository import get_references, create_reference, db_delete_reference
 from config import app, test_env
-from util import validate_reference
+from util import validate_reference, UserInputError
 
 @app.route("/")
 def index():
-    try:
-        references = get_references()
-        amount = len(references)
-        return render_template("index.html", references=references, amount=amount)
-    except Exception as error:
-        flash(str(error))
-        return render_template("index.html", references=[], amount=0)
+    references = get_references()
+    amount = len(references)
+    return render_template("index.html", references=references, amount=amount)
 
 @app.route("/new_reference")
 def new():
@@ -32,31 +28,23 @@ def reference_creation():
         validate_reference(reference_type, reference_key, reference_data)
         create_reference(reference_type, reference_key, reference_data)
         return redirect("/")
-    except Exception as error:
+    except UserInputError as error:
         flash(str(error))
         return redirect("/new_reference")
 
 @app.route("/confirm_delete/<reference_key>")
 def confirm_delete(reference_key):
-    try:
-        references = get_references()
-        reference = next((ref for ref in references if ref.reference_key == reference_key), None)
-        if reference is None:
-            flash("Reference to be deleted not found.")
-            return redirect("/")
-        return render_template("delete_reference.html", reference=reference)
-    except Exception as error:
-        flash("confirm_delete: " + str(error))
+    references = get_references()
+    reference = next((ref for ref in references if ref.reference_key == reference_key), None)
+    if reference is None:
+        flash("Reference to be deleted not found.")
         return redirect("/")
+    return render_template("delete_reference.html", reference=reference)
 
 @app.route("/delete_reference/<reference_key>", methods=["POST"])
 def delete_reference(reference_key):
-    try:
-        db_delete_reference(reference_key)
-        return redirect("/")
-    except Exception as error:
-        flash("delete_reference: " + str(error))
-        return redirect("/confirm_delete/" + reference_key)
+    db_delete_reference(reference_key)
+    return redirect("/")
 
 # testausta varten oleva reitti
 if test_env:

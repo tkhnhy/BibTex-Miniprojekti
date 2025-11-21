@@ -18,47 +18,162 @@ Create a new reference
         </ul>
         {% endif %}
     {% endwith %}
-    <label for="reference_type">Entry Type:</label>
-        <select name="reference_type" id="reference_type" required>
-        <option value="" disabled selected>Select a type...</option>
-        <option value="book">Book</option>
-        <!-- 
-        <option value="article">Article</option>
-        <option value="inproceedings">Inproceedings</option>
-        -->
-        </select>
-    <br><br>
-    <label>Reference Key:*</label><br>
-    <input type="text" name="reference_key" required><br><br><br>
 
-    <label>Author:*</label><br>
-    <input type="text" name="author" required><br><br>
-    <label>Title:*</label><br>
-    <input type="text" name="title" required><br><br>
-    <label>Publisher:*</label><br>
-    <input type="text" name="publisher" required><br><br>
-    <label>Year:*</label><br>
-    <input type="text" name="year" required><br><br>
-    <br>
-    <label>Volume:</label><br>
-    <input type="text" name="volume"><br><br>
-    <label>Number:</label><br>
-    <input type="text" name="number"><br><br>
-    <label>Pages:</label><br>
-    <input type="text" name="pages"><br><br>
-    <label>Month:</label><br>
-    <input type="text" name="month"><br><br>
-    <label>Editor:</label><br>
-    <input type="text" name="editor"><br><br>
-    <label>Note:</label><br>
-    <input type="text" name="note"><br><br>
+    <label for="reference_type">Entry Type:</label>
+    <select name="reference_type" id="reference_type" required>
+        <option value="" disabled selected>Select a type...</option>
+        {% for ref_type in reference_types %}
+            <option value="{{ ref_type.value }}">{{ ref_type.display_str() }}</option>
+        {% endfor %}
+    </select>
+    <br><br>
+    <div class="field-row">
+        <label for="reference_key">Reference Key:</label>
+        <input id="reference_key" type="text" name="reference_key" required>
+    </div>
+
+    <div id="fields-container">
+        <div id="required-group">
+            <h3>Required fields:</h3>
+            <div id="required-fields"></div>
+        </div>
+        <div id="optional-group">
+            <h3>Optional fields:</h3>
+            <div id="optional-fields"></div>
+        </div>
+
+        {% for field in reference_fields %}
+        <div class="field-row" data-name="{{ field }}">
+            <label for="{{ field }}">{{ field | replace('_', ' ') | title }}:</label><br>
+            <input id="{{ field }}" type="text" name="{{ field }}"><br><br>
+        </div>
+        {% endfor %}
+    </div>
+
     <button type="submit" class="button-green">
         Create
     </button>
+    <button type="button" onclick="location.href='/'" class="button-red" style="margin-top: 15px;">
+        Cancel
+    </button>
 </form>
-<button onclick="location.href='/'" class="button-red" style="margin-top: 15px;">
-    Cancel
-</button>
 
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+const fieldRequirementsMap = {{ field_requirements_map | tojson }};
+const allFields = {{ reference_fields | tojson }};
+
+const referenceTypeSelect = document.getElementById("reference_type");
+const fieldsContainer = document.getElementById("fields-container");
+const requiredGroup = document.getElementById("required-group");
+const optionalGroup = document.getElementById("optional-group");
+const requiredContainer = document.getElementById("required-fields");
+const optionalContainer = document.getElementById("optional-fields");
+
+function setRequiredAttributes(requiredFields) {
+    // set HTML required for single-field requirements
+    allFields.forEach(name => {
+        const input = document.querySelector(`[name="${name}"]`);
+        if (!input) return;
+        const directlyRequired = requiredFields.some(r => !Array.isArray(r) && r === name);
+        input.required = !!directlyRequired;
+    });
+}
+
+function moveAllFieldRowsBack(container) {
+    // move all fields back to fieldsContainer from the given container
+    while (container.firstChild) {
+        const child = container.firstChild;
+        if (child.nodeType !== Node.ELEMENT_NODE) {
+            container.removeChild(child);
+        } else if (child.classList && child.classList.contains('alt-group')) {
+            const toMove = Array.from(child.querySelectorAll('.field-row'));
+            toMove.forEach(el => fieldsContainer.appendChild(el));
+            container.removeChild(child);
+        } else if (child.classList && child.classList.contains('field-row')) {
+            fieldsContainer.appendChild(child);
+        } else {
+            // unknown element, just remove?
+            container.removeChild(child);
+        }
+    }
+}
+
+function reorderFields(requiredFields) {
+    // Reorder fields into required and optional containers based on requiredFields
+    moveAllFieldRowsBack(requiredContainer);
+    moveAllFieldRowsBack(optionalContainer);
+    const seen = new Set();
+
+    // Put required fields into required container
+    requiredFields.forEach(req => {
+        if (Array.isArray(req)) { // alternative group
+            // create a group for alternative required fields
+            const group = document.createElement('div');
+            group.className = 'alt-group';
+            req.forEach(name => {
+                const row = fieldsContainer.querySelector(`.field-row[data-name="${name}"]`);
+                if(!row) return;
+                if (group.childElementCount > 0) {
+                    const sep = document.createElement('span');
+                    sep.className = 'alt-sep';
+                    sep.textContent = 'or';
+                    group.appendChild(sep);
+                }
+                group.appendChild(row);
+                seen.add(name);
+            });
+            if (group.childElementCount > 0) {
+                requiredContainer.appendChild(group);
+            }
+        } else {
+            const row = fieldsContainer.querySelector(`.field-row[data-name="${req}"]`);
+            if (row) {
+                requiredContainer.appendChild(row);
+                seen.add(req);
+            }
+        }
+    });
+
+    // Put remaining fields into optional container in allFields order
+    allFields.forEach(name => {
+        if (seen.has(name)) return;
+        const row = fieldsContainer.querySelector(`.field-row[data-name="${name}"]`);
+        if (row) optionalContainer.appendChild(row);
+    });
+
+    // Hide the required group when there are no required fields
+    if (!requiredFields || requiredFields.length === 0) {
+        requiredGroup.style.display = "none";
+    } else {
+        requiredGroup.style.display = "";
+    }
+}
+
+// Dynamic update to form based on selected reference type
+function applyReferenceType(typeValue) {
+    if (!typeValue || !(typeValue in fieldRequirementsMap)) {
+        fieldsContainer.style.display = "none";
+        return;
+    } else {
+        const requiredFields = fieldRequirementsMap[typeValue] || [];
+        setRequiredAttributes(requiredFields);
+        reorderFields(requiredFields);
+        fieldsContainer.style.display = "";
+    }
+}
+
+// Update form when reference type changes
+referenceTypeSelect.addEventListener("change", function() {
+    applyReferenceType(this.value);
+});
+
+// Initialize form on page load
+document.addEventListener("DOMContentLoaded", function() {
+    applyReferenceType(referenceTypeSelect.value);
+});
+</script>
 {% endblock %}

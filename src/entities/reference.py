@@ -1,11 +1,98 @@
+from enum import Enum
+
+COMMON_BIBTEX_FIELDS: list[str] = [
+    "author", "editor", "title", "journal", "booktitle", "publisher",
+    "year", "month", "volume", "number", "pages", "chapter", "school",
+    "institution", "note", "series", "address", "edition", "howpublished",
+    "organization", "url",
+]
+
+class ReferenceType(Enum):
+    ARTICLE = "article"
+    BOOK = "book"
+    BOOKLET = "booklet"
+    CONFERENCE = "conference"
+    INBOOK = "inbook"
+    INCOLLECTION = "incollection"
+    INPROCEEDINGS = "inproceedings"
+    MANUAL = "manual"
+    MASTERSTHESIS = "mastersthesis"
+    MISC = "misc"
+    PHDTHESIS = "phdthesis"
+    PROCEEDINGS = "proceedings"
+    TECHREPORT = "techreport"
+    UNPUBLISHED = "unpublished"
+
+    def field_requirements(self) -> list[str | list[str]]:
+        """
+        Return field requirements for this ReferenceType. Each requirement is either a single field
+        (string) or a list of alternative field names (at least one of which is required).
+        """
+        required_fields_map = {
+            ReferenceType.ARTICLE: ["author", "title", "journal", "year"],
+            ReferenceType.BOOK: [["author", "editor"], "title", "publisher", "year"],
+            ReferenceType.BOOKLET: ["title"],
+            ReferenceType.CONFERENCE: ["author", "title", "booktitle", "year"],
+            ReferenceType.INBOOK: [["author", "editor"], "title", ["chapter", "pages"], "publisher", "year"],
+            ReferenceType.INCOLLECTION: ["author", "title", "booktitle", "publisher", "year"],
+            ReferenceType.INPROCEEDINGS: ["author", "title", "booktitle", "year"],
+            ReferenceType.MANUAL: ["title"],
+            ReferenceType.MASTERSTHESIS: ["author", "title", "school", "year"],
+            ReferenceType.MISC: [],
+            ReferenceType.PHDTHESIS: ["author", "title", "school", "year"],
+            ReferenceType.PROCEEDINGS: ["title", "year"],
+            ReferenceType.TECHREPORT: ["author", "title", "institution", "year"],
+            ReferenceType.UNPUBLISHED: ["author", "title", "note"],
+        }
+        return required_fields_map.get(self, [])
+
+    def display_str(self) -> str:
+        """
+        Return a human-readable display string for a ReferenceType.
+        """
+        display_strings = {
+            ReferenceType.ARTICLE: "Article",
+            ReferenceType.BOOK: "Book",
+            ReferenceType.BOOKLET: "Booklet",
+            ReferenceType.CONFERENCE: "Conference",
+            ReferenceType.INBOOK: "In Book",
+            ReferenceType.INCOLLECTION: "In Collection",
+            ReferenceType.INPROCEEDINGS: "In Proceedings",
+            ReferenceType.MANUAL: "Manual",
+            ReferenceType.MASTERSTHESIS: "Master's Thesis",
+            ReferenceType.MISC: "Misc",
+            ReferenceType.PHDTHESIS: "PhD Thesis",
+            ReferenceType.PROCEEDINGS: "Proceedings",
+            ReferenceType.TECHREPORT: "Tech Report",
+            ReferenceType.UNPUBLISHED: "Unpublished",
+        }
+        return display_strings.get(self, self.value.capitalize())
+
 class Reference:
-    def __init__(self, id_, key_, type_, content_):
-        self.id = id_
-        self.reference_key = key_
-        self.reference_type = type_
-        #citation_content holds all relevant info in JSON format, later can make-
-        #a function that checks based on reference_type required entry is included.
-        self.reference_content = content_
+    """
+    Represents a bibliographic reference.
+
+    Attributes
+    ----------
+    id : int
+        Database primary key.
+    key : str
+        Unique BibTeX-style citation key.
+    type : ReferenceType
+        Reference type as a ReferenceType enum member (e.g. ARTICLE, BOOK).
+    content : dict[str, str]
+        Mapping from field name to content.
+    """
+
+    def __init__(self, id_: int, key: str, type_: ReferenceType | str, content: dict[str, str]):
+        self.id = int(id_)
+        self.key = str(key)
+        self.content = content
+
+        if isinstance(type_, ReferenceType):
+            self.type = type_
+        else:
+            self.type = ReferenceType(type_)
 
     def __str__(self):
-        return f"{self.reference_key}"
+        return f"{self.key}"

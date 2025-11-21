@@ -89,3 +89,21 @@
 .toggle-details:hover {
   background-color: #025aa5;
 }
+
+/** Create new reference page **/
+.fields-container {
+    display: none;
+}
+
+.alt-group {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.alt-sep {
+    align-self: center;
+    color: #161616;
+    font-style: italic;
+    white-space: nowrap;
+}

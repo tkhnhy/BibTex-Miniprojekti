@@ -1,28 +1,37 @@
 from flask import redirect, render_template, request, jsonify, flash
 from db_helper import reset_db
-from repositories.reference_repository import get_references, create_reference, db_delete_reference
+from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType
+from repositories.reference_repository import get_references, create_reference, get_reference_by_key, delete_reference
 from config import app, test_env
-from util import validate_reference
+from util import validate_reference, UserInputError
 
 @app.route("/")
-def index():
+def route_index():
     try:
         references = get_references()
         amount = len(references)
-        return render_template("index.html", references=references, amount=amount)
     except Exception as error:
-        flash(str(error))
-        return render_template("index.html", references=[], amount=0)
+        flash("Could not fetch references: " + str(error))
+        references = []
+        amount = 0
+
+    return render_template("index.html", references=references, amount=amount)
 
 @app.route("/new_reference")
-def new():
-    return render_template("new_reference.html")
+def route_new_reference():
+    field_requirements_map = {ref_type.value: ref_type.field_requirements() for ref_type in list(ReferenceType)}
+
+    return render_template(
+        "new_reference.html",
+        reference_types=list(ReferenceType),
+        reference_fields=COMMON_BIBTEX_FIELDS,
+        field_requirements_map=field_requirements_map
+    )
 
 @app.route("/create_reference", methods=["POST"])
-def reference_creation():
+def route_reference_creation():
     reference_type = request.form.get("reference_type")
     reference_key = request.form.get("reference_key")
-
     reference_data = {
         key: value for key, value in request.form.items()
         if key not in ("reference_type", "reference_key") and value.strip() != ""
@@ -32,35 +41,29 @@ def reference_creation():
         validate_reference(reference_type, reference_key, reference_data)
         create_reference(reference_type, reference_key, reference_data)
         return redirect("/")
-    except Exception as error:
+    except UserInputError as error:
         flash(str(error))
         return redirect("/new_reference")
 
-@app.route("/confirm_delete/<reference_key>")
-def confirm_delete(reference_key):
-    try:
-        references = get_references()
-        reference = next((ref for ref in references if ref.reference_key == reference_key), None)
-        if reference is None:
-            flash("Reference to be deleted not found.")
-            return redirect("/")
-        return render_template("delete_reference.html", reference=reference)
-    except Exception as error:
-        flash("confirm_delete: " + str(error))
+@app.route("/confirm_delete/<string:reference_key>")
+def route_confirm_delete(reference_key: str):
+    reference = get_reference_by_key(reference_key)
+    if reference is None:
+        flash("Reference to be deleted not found.")
         return redirect("/")
+    return render_template("delete_reference.html", reference=reference)
 
-@app.route("/delete_reference/<reference_key>", methods=["POST"])
-def delete_reference(reference_key):
+@app.route("/delete_reference/<string:reference_key>", methods=["POST"])
+def route_delete_reference(reference_key):
     try:
-        db_delete_reference(reference_key)
-        return redirect("/")
+        delete_reference(reference_key)
     except Exception as error:
-        flash("delete_reference: " + str(error))
-        return redirect("/confirm_delete/" + reference_key)
+        flash(f"Error deleting reference: {error}")
+    return redirect("/")
 
 # testausta varten oleva reitti
 if test_env:
     @app.route("/reset_db")
-    def reset_database():
+    def route_reset_db():
         reset_db()
         return jsonify({ 'message': "db reset" })

@@ -1,14 +1,21 @@
 import unittest
-from util import validate_reference, UserInputError
 from app import app
+from db_helper import setup_db, reset_db
+from util import validate_reference, UserInputError
 
 class TestReferenceValidation(unittest.TestCase):
-    def setUp(self):
-        self.app_context = app.app_context()
-        self.app_context.push()
+    @classmethod
+    def setUpClass(cls):
+        cls.app_context = app.app_context()
+        cls.app_context.push()
+        setup_db()
 
-    def tearDown(self):
-        self.app_context.pop()
+    @classmethod
+    def tearDownClass(cls):
+        cls.app_context.pop()
+
+    def setUp(self):
+        reset_db()
 
     def test_valid_book(self):
         validate_reference("book", "juokse", {"author": "aa", "title": "aa", "publisher": "aa", "year": "2025"})

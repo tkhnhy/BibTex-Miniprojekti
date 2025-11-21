@@ -19,11 +19,11 @@ Delete reference
     {% endif %}
   {% endwith %}
   <strong>Key:</strong> {{ reference.key }}<br>
-  <strong>Type:</strong> {{ reference.type }}<br>
+  <strong>Type:</strong> {{ reference.type.display_str() }}<br>
   <strong>Data:</strong>
   <ul>
     {% for datapoint, value in reference.content.items() %}
-      <li><b>{{ datapoint }}</b>: {{ value }}</li>
+      <li><b>{{ datapoint | replace('_', ' ') | title }}:</b> {{ value }}</li>
     {% endfor %}
   </ul>
   <button type="submit">

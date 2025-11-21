@@ -9,7 +9,7 @@ def validate_reference(type_: str, key: str, content):
     """
     Parameters
     ----------
-    type : str
+    type_ : str
         The reference type name (e.g. "book", "article").
     key : str
         The citation key for the reference.
@@ -32,21 +32,28 @@ def validate_reference(type_: str, key: str, content):
     if isinstance(content, str):
         try:
             content = json.loads(content) if content.strip() else {}
-        except Exception as ex:
+        except (json.JSONDecodeError, ValueError) as ex:
             raise UserInputError("Invalid content format - expected JSON or dict") from ex
     if not isinstance(content, dict):
         raise UserInputError("Invalid content format - expected JSON or dict")
 
     # validate reference type
+    if not type_:
+        raise UserInputError("Missing reference type")
     try:
         ref_type = ReferenceType(type_)
     except ValueError as ex:
         raise UserInputError("Unknown reference type") from ex
 
-    # check required fields (if any)
-    for field in ref_type.required_fields():
-        if field not in content or not str(content[field]).strip():
-            raise UserInputError(f"Required field '{field}' must be filled")
+    # check required fields
+    for req in ref_type.field_requirements():
+        if isinstance(req, (list, tuple)):
+            # at least one of the alternatives must be present and non-empty
+            if not any(alt in content and str(content[alt]).strip() for alt in req):
+                raise UserInputError(f"One of the required fields '{', '.join(req)}' must be filled")
+        else:
+            if req not in content or not str(content[req]).strip():
+                raise UserInputError(f"Required field '{req}' must be filled")
 
     # check unique key
     if get_reference_by_key(key):

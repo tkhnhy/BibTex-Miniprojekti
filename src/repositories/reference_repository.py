@@ -11,11 +11,11 @@ def get_references():
         for row in rows
     ]
 
-def create_reference(reference_type, reference_key: str, reference_data: str):
+def create_reference(reference_type: str, reference_key: str, reference_content: dict):
     sql = text("INSERT INTO reference_table (reference_type, reference_key, reference_data)" \
                 "VALUES (:reference_type, :reference_key, :reference_data )")
     db.session.execute(sql, { "reference_type": reference_type, "reference_key": reference_key,
-                             "reference_data": json.dumps(reference_data)})
+                             "reference_data": json.dumps(reference_content)})
     db.session.commit()
 
 def get_reference_by_key(key: str):

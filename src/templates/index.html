@@ -53,7 +53,7 @@ My references
         <div class="reference-item-details">
             {% for datapoint, value in reference.content.items() %}
                 {% if datapoint not in ['author', 'title', 'year'] %}
-                <span><b>{{ datapoint }}:</b> {{ value }}</span>
+                <span><b>{{ datapoint | replace('_', ' ') | title }}:</b> {{ value }}</span>
                 {% endif %}
             {% endfor %}
         </div>

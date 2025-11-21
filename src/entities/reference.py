@@ -1,5 +1,12 @@
 from enum import Enum
 
+COMMON_BIBTEX_FIELDS: list[str] = [
+    "author", "editor", "title", "journal", "booktitle", "publisher",
+    "year", "month", "volume", "number", "pages", "chapter", "school",
+    "institution", "note", "series", "address", "edition", "howpublished",
+    "organization", "url",
+]
+
 class ReferenceType(Enum):
     ARTICLE = "article"
     BOOK = "book"
@@ -16,16 +23,17 @@ class ReferenceType(Enum):
     TECHREPORT = "techreport"
     UNPUBLISHED = "unpublished"
 
-    def required_fields(self) -> list[str]:
+    def field_requirements(self) -> list[str | list[str]]:
         """
-        Return a list of required fields for this ReferenceType.
+        Return field requirements for this ReferenceType. Each requirement is either a single field
+        (string) or a list of alternative field names (at least one of which is required).
         """
         required_fields_map = {
             ReferenceType.ARTICLE: ["author", "title", "journal", "year"],
-            ReferenceType.BOOK: ["author", "title", "publisher", "year"],
+            ReferenceType.BOOK: [["author", "editor"], "title", "publisher", "year"],
             ReferenceType.BOOKLET: ["title"],
             ReferenceType.CONFERENCE: ["author", "title", "booktitle", "year"],
-            ReferenceType.INBOOK: ["author", "title", "chapter", "publisher", "year"],
+            ReferenceType.INBOOK: [["author", "editor"], "title", ["chapter", "pages"], "publisher", "year"],
             ReferenceType.INCOLLECTION: ["author", "title", "booktitle", "publisher", "year"],
             ReferenceType.INPROCEEDINGS: ["author", "title", "booktitle", "year"],
             ReferenceType.MANUAL: ["title"],
@@ -61,26 +69,30 @@ class ReferenceType(Enum):
         return display_strings.get(self, self.value.capitalize())
 
 class Reference:
-    def __init__(self, id_: int, key: str, type_: ReferenceType, content: dict):
-        """
-        Initialize a new Reference object.
+    """
+    Represents a bibliographic reference.
 
-        Parameters
-        ----------
-        id : int
-            Database primary key.
-        cite_key : str
-            Unique BibTeX-style citation key.
-        type : ReferenceType
-            Type of the reference (e.g., ARTICLE, BOOK).
-        content : dict
-            Metadata fields for the reference, parsed from JSON/BibTeX input.
-        """
-        print(type(type_))
-        self.id = id_
-        self.key = key
-        self.type = type_
+    Attributes
+    ----------
+    id : int
+        Database primary key.
+    key : str
+        Unique BibTeX-style citation key.
+    type : ReferenceType
+        Reference type as a ReferenceType enum member (e.g. ARTICLE, BOOK).
+    content : dict[str, str]
+        Mapping from field name to content.
+    """
+
+    def __init__(self, id_: int, key: str, type_: ReferenceType | str, content: dict[str, str]):
+        self.id = int(id_)
+        self.key = str(key)
         self.content = content
+
+        if isinstance(type_, ReferenceType):
+            self.type = type_
+        else:
+            self.type = ReferenceType(type_)
 
     def __str__(self):
         return f"{self.key}"

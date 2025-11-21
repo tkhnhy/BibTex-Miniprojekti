@@ -1,19 +1,32 @@
 from flask import redirect, render_template, request, jsonify, flash
 from db_helper import reset_db
-from entities.reference import ReferenceType
+from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType
 from repositories.reference_repository import get_references, create_reference, get_reference_by_key, delete_reference
 from config import app, test_env
 from util import validate_reference, UserInputError
 
 @app.route("/")
 def route_index():
-    references = get_references()
-    amount = len(references)
+    try:
+        references = get_references()
+        amount = len(references)
+    except Exception as error:
+        flash("Could not fetch references: " + str(error))
+        references = []
+        amount = 0
+
     return render_template("index.html", references=references, amount=amount)
 
 @app.route("/new_reference")
 def route_new_reference():
-    return render_template("new_reference.html", reference_types=list(ReferenceType))
+    field_requirements_map = {ref_type.value: ref_type.field_requirements() for ref_type in list(ReferenceType)}
+
+    return render_template(
+        "new_reference.html",
+        reference_types=list(ReferenceType),
+        reference_fields=COMMON_BIBTEX_FIELDS,
+        field_requirements_map=field_requirements_map
+    )
 
 @app.route("/create_reference", methods=["POST"])
 def route_reference_creation():
@@ -42,7 +55,10 @@ def route_confirm_delete(reference_key: str):
 
 @app.route("/delete_reference/<string:reference_key>", methods=["POST"])
 def route_delete_reference(reference_key):
-    delete_reference(reference_key)
+    try:
+        delete_reference(reference_key)
+    except Exception as error:
+        flash(f"Error deleting reference: {error}")
     return redirect("/")
 
 # testausta varten oleva reitti

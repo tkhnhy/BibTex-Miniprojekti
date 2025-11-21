@@ -8,7 +8,7 @@ Create a new reference
 
 <h2>Create a new reference</h2>
 
-<form action="/create_reference" method="post">
+<form id="create-ref-form" action="/create_reference" method="post">
     {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul>
@@ -18,45 +18,165 @@ Create a new reference
         </ul>
         {% endif %}
     {% endwith %}
-    <label for="reference_type">Entry Type:</label>
-        <select name="reference_type" id="reference_type" required>
-        <option value="" disabled selected>Select a type...</option>
-        {% for type in reference_types %}
-            <option value="{{ type.value }}">{{ type.display_str() }}</option>
-        {% endfor %}
-        </select>
-    <br><br>
-    <label>Reference Key:*</label><br>
-    <input type="text" name="reference_key" required><br><br><br>
 
-    <label>Author:*</label><br>
-    <input type="text" name="author" required><br><br>
-    <label>Title:*</label><br>
-    <input type="text" name="title" required><br><br>
-    <label>Publisher:*</label><br>
-    <input type="text" name="publisher" required><br><br>
-    <label>Year:*</label><br>
-    <input type="text" name="year" required><br><br>
-    <br>
-    <label>Volume:</label><br>
-    <input type="text" name="volume"><br><br>
-    <label>Number:</label><br>
-    <input type="text" name="number"><br><br>
-    <label>Pages:</label><br>
-    <input type="text" name="pages"><br><br>
-    <label>Month:</label><br>
-    <input type="text" name="month"><br><br>
-    <label>Editor:</label><br>
-    <input type="text" name="editor"><br><br>
-    <label>Note:</label><br>
-    <input type="text" name="note"><br><br>
+    <label for="reference_type">Entry Type:</label>
+    <select name="reference_type" id="reference_type" required>
+        <option value="" disabled selected>Select a type...</option>
+        {% for ref_type in reference_types %}
+            <option value="{{ ref_type.value }}">{{ ref_type.display_str() }}</option>
+        {% endfor %}
+    </select>
+    <br><br>
+    <div class="field-row">
+        <label for="reference_key">Reference Key:</label>
+        <input id="reference_key" type="text" name="reference_key" required>
+    </div>
+
+    <div id="fields-container">
+        <div id="required-group">
+            <h3>Required</h3>
+            <div id="required-fields"></div>
+        </div>
+        <div id="optional-group">
+            <h3>Optional</h3>
+            <div id="optional-fields"></div>
+        </div>
+        <div class="field-row" data-name="author">
+            <label for="author">Author:</label><br>
+            <input id="author" type="text" name="author"><br><br>
+        </div>
+        <div class="field-row" data-name="title">
+            <label for="title">Title:</label><br>
+            <input id="title" type="text" name="title"><br><br>
+        </div>
+        <div class="field-row" data-name="publisher">
+            <label for="publisher">Publisher:</label><br>
+            <input id="publisher" type="text" name="publisher"><br><br>
+        </div>
+        <div class="field-row" data-name="year">
+            <label for="year">Year:</label><br>
+            <input id="year" type="text" name="year"><br><br>
+        </div>
+        <div class="field-row" data-name="volume">
+            <label for="volume">Volume:</label><br>
+            <input id="volume" type="text" name="volume"><br><br>
+        </div>
+        <div class="field-row" data-name="number">
+            <label for="number">Number:</label><br>
+            <input id="number" type="text" name="number"><br><br>
+        </div>
+        <div class="field-row" data-name="pages">
+            <label for="pages">Pages:</label><br>
+            <input id="pages" type="text" name="pages"><br><br>
+        </div>
+        <div class="field-row" data-name="month">
+            <label for="month">Month:</label><br>
+            <input id="month" type="text" name="month"><br><br>
+        </div>
+        <div class="field-row" data-name="editor">
+            <label for="editor">Editor:</label><br>
+            <input id="editor" type="text" name="editor"><br><br>
+        </div>
+        <div class="field-row" data-name="note">
+            <label for="note">Note:</label><br>
+            <input id="note" type="text" name="note"><br><br>
+        </div>
+    </div>
+
     <button type="submit" class="button-green">
         Create
     </button>
+    <button type="button" onclick="location.href='/'" class="button-red" style="margin-top: 15px;">
+        Cancel
+    </button>
 </form>
-<button onclick="location.href='/'" class="button-red" style="margin-top: 15px;">
-    Cancel
-</button>
 
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+const requiredFieldsMap = {
+    {% for ref_type in reference_types %}
+    "{{ ref_type.value }}": {{ ref_type.required_fields() | tojson }},
+    {% endfor %}
+};
+const allFields = ["author", "title", "publisher", "year", "volume", "number", "pages", "month", "editor", "note"];
+const fieldsContainer = document.getElementById("fields-container");
+const referenceTypeSelect = document.getElementById("reference_type");
+const requiredContainer = document.getElementById("required-fields");
+const optionalContainer = document.getElementById("optional-fields");
+const requiredGroup = document.getElementById("required-group");
+
+function setRequiredAttributes(requiredFields) {
+    allFields.forEach(name => {
+        const input = document.querySelector(`[name="${name}"]`);
+        if (!input) return;
+        input.required = requiredFields.includes(name);
+    });
+}
+
+function reorderFields(requiredFields) {
+    // move any existing field rows back into fieldsContainer
+    let child;
+    while (requiredContainer.firstChild) {
+        child = requiredContainer.firstChild;
+        fieldsContainer.appendChild(child);
+    }
+    while (optionalContainer.firstChild) {
+        child = optionalContainer.firstChild;
+        fieldsContainer.appendChild(child);
+    }
+    const seen = new Set();
+
+    // Put required fields in order into required container
+    requiredFields.forEach(name => {
+        const row = fieldsContainer.querySelector(`.field-row[data-name="${name}"]`);
+        if (row) {
+            requiredContainer.appendChild(row);
+            seen.add(name);
+        }
+    });
+
+    // Put remaining fields into optional container in the defined allFields order
+    allFields.forEach(name => {
+        if (seen.has(name)) return;
+        const row = fieldsContainer.querySelector(`.field-row[data-name="${name}"]`);
+        if (row) {
+            optionalContainer.appendChild(row);
+        }
+    });
+
+    // Hide the required group when there are no required fields
+    if (!requiredFields || requiredFields.length === 0) {
+        requiredGroup.style.display = "none";
+    } else {
+        requiredGroup.style.display = "";
+    }
+}
+
+// Dynamic update to form based on selected reference type
+function applyReferenceType(typeValue) {
+    const requiredFields = requiredFieldsMap[typeValue] || [];
+    setRequiredAttributes(requiredFields);
+    reorderFields(requiredFields);
+}
+
+// Update form when reference type changes
+referenceTypeSelect.addEventListener("change", function() {
+    applyReferenceType(this.value);
+});
+
+// Initialize form on page load
+document.addEventListener("DOMContentLoaded", function() {
+    const initial = referenceTypeSelect.value;
+    if (initial) {
+        applyReferenceType(initial);
+    } else {
+        setRequiredAttributes([]);
+        // ensure all fields are placed under optional group by default
+        reorderFields([]);
+    }
+});
+</script>
 {% endblock %}

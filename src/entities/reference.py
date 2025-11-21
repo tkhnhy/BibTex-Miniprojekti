@@ -16,6 +16,28 @@ class ReferenceType(Enum):
     TECHREPORT = "techreport"
     UNPUBLISHED = "unpublished"
 
+    def required_fields(self) -> list[str]:
+        """
+        Return a list of required fields for this ReferenceType.
+        """
+        required_fields_map = {
+            ReferenceType.ARTICLE: ["author", "title", "journal", "year"],
+            ReferenceType.BOOK: ["author", "title", "publisher", "year"],
+            ReferenceType.BOOKLET: ["title"],
+            ReferenceType.CONFERENCE: ["author", "title", "booktitle", "year"],
+            ReferenceType.INBOOK: ["author", "title", "chapter", "publisher", "year"],
+            ReferenceType.INCOLLECTION: ["author", "title", "booktitle", "publisher", "year"],
+            ReferenceType.INPROCEEDINGS: ["author", "title", "booktitle", "year"],
+            ReferenceType.MANUAL: ["title"],
+            ReferenceType.MASTERSTHESIS: ["author", "title", "school", "year"],
+            ReferenceType.MISC: [],
+            ReferenceType.PHDTHESIS: ["author", "title", "school", "year"],
+            ReferenceType.PROCEEDINGS: ["title", "year"],
+            ReferenceType.TECHREPORT: ["author", "title", "institution", "year"],
+            ReferenceType.UNPUBLISHED: ["author", "title", "note"],
+        }
+        return required_fields_map.get(self, [])
+
     def display_str(self) -> str:
         """
         Return a human-readable display string for a ReferenceType.
@@ -37,7 +59,6 @@ class ReferenceType(Enum):
             ReferenceType.UNPUBLISHED: "Unpublished",
         }
         return display_strings.get(self, self.value.capitalize())
-
 
 class Reference:
     def __init__(self, id_: int, key: str, type_: ReferenceType, content: dict):

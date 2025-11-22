@@ -1,4 +1,5 @@
-from flask import redirect, render_template, request, jsonify, flash
+import io
+from flask import redirect, render_template, request, jsonify, flash, send_file
 from db_helper import reset_db
 from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType
 from repositories.reference_repository import get_references, create_reference, get_reference_by_key, delete_reference
@@ -60,6 +61,31 @@ def route_delete_reference(reference_key):
     except Exception as error:
         flash(f"Error deleting reference: {error}")
     return redirect("/")
+
+@app.route("/download_bib")
+def download_bib():
+    try:
+        #Since flask cannot send python objects, we just get our references again here.
+        #If filtered generation is needed later this is to be edited
+        references = get_references()
+    except Exception as error:
+        flash("Could not fetch references: " + str(error))
+        references = []
+
+    bibtex_content = "\n\n".join(str(r) for r in references)
+
+    #Turn the bibtex_content string into a file-like object, so it can be sent.
+    buffer = io.BytesIO()
+    buffer.write(bibtex_content.encode("utf-8"))
+    buffer.seek(0)
+
+    #Flasks own send_file function, save pop-up and location depends on browser settings.
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name="references.bib",
+        mimetype="application/x-bibtex"
+    )
 
 # testausta varten oleva reitti
 if test_env:

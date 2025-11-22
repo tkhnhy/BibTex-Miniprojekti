@@ -22,6 +22,16 @@ My references
   Number of references: {{ amount }}
 </div>
 
+<div>
+    <button onclick="location.href='/new_reference'" class="button-green" style="margin-top: 15px;">
+        New reference
+    </button>
+    <button onclick="location.href='/download_bib'" class="button-green" style="margin-top: 15px;">
+        Download as BibTex-file
+    </button>
+</div>
+
+
 <div class="table-container">
     <!-- Table header -->
     <div class="reference-item table-title">
@@ -59,12 +69,6 @@ My references
         </div>
     </div>
     {% endfor %}
-
-    <div>
-        <button onclick="location.href='/new_reference'" class="button-green" style="margin-top: 15px;">
-            New reference
-        </button>
-    </div>
 </div>
 
 {% endblock %}

@@ -37,10 +37,10 @@ def route_reference_creation():
         key: value for key, value in request.form.items()
         if key not in ("reference_type", "reference_key") and value.strip() != ""
     }
-
+    comment = request.form.get("comment", "").strip()
     try:
         validate_reference(reference_type, reference_key, reference_data)
-        create_reference(reference_type, reference_key, reference_data)
+        create_reference(reference_type, reference_key, reference_data, comment)
         return redirect("/")
     except UserInputError as error:
         flash(str(error))

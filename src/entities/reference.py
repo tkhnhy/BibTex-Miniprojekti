@@ -84,10 +84,11 @@ class Reference:
         Mapping from field name to content.
     """
 
-    def __init__(self, id_: int, key: str, type_: ReferenceType | str, content: dict[str, str]):
+    def __init__(self, id_: int, key: str, type_: ReferenceType | str, content: dict[str, str], *, comment: str = ''): # pylint: disable=too-many-arguments
         self.id = int(id_)
         self.key = str(key)
         self.content = content
+        self.comment = comment
 
         if isinstance(type_, ReferenceType):
             self.type = type_
@@ -96,9 +97,12 @@ class Reference:
 
     def __str__(self):
         #This makes the reference show as a bibtex style entry when calling it as a str. (as defined in the backlog)
+
         bibtex_string = f"@{str(self.type.value)}{{{self.key},\n"
         for key, value in self.content.items():
             bibtex_string += f"   {key} = {{{value}}},\n"
+        if self.comment:
+            bibtex_string += f"   % {self.comment}\n"
         bibtex_string += "}"
 
         return bibtex_string

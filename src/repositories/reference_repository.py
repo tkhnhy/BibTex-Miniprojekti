@@ -32,3 +32,14 @@ def delete_reference(reference_key: str):
     sql = text("DELETE FROM reference_table WHERE reference_key = :reference_key")
     db.session.execute(sql, { "reference_key": reference_key })
     db.session.commit()
+
+def update_reference(reference_type: str, old_reference_key: str, new_reference_key: str, reference_content: dict):
+    sql = text("UPDATE reference_table " \
+               "SET reference_type = :reference_type, " \
+                   "reference_key = :new_reference_key, " \
+                   "reference_data = :reference_data " \
+               "WHERE reference_key = :old_reference_key")
+    db.session.execute(sql, { "reference_type": reference_type, "old_reference_key": old_reference_key,
+                              "reference_data": json.dumps(reference_content),
+                              "new_reference_key": new_reference_key})
+    db.session.commit()

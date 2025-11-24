@@ -2,7 +2,8 @@ import io
 from flask import redirect, render_template, request, jsonify, flash, send_file
 from db_helper import reset_db
 from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType
-from repositories.reference_repository import get_references, create_reference, get_reference_by_key, delete_reference
+from repositories.reference_repository import get_references, create_reference, get_reference_by_key
+from repositories.reference_repository import delete_reference, update_reference
 from config import app, test_env
 from util import validate_reference, UserInputError
 
@@ -61,6 +62,38 @@ def route_delete_reference(reference_key):
     except Exception as error:
         flash(f"Error deleting reference: {error}")
     return redirect("/")
+
+@app.route("/edit_reference/<string:reference_key>")
+def route_edit_reference(reference_key: str):
+    reference = get_reference_by_key(reference_key)
+    field_requirements_map = {ref_type.value: ref_type.field_requirements() for ref_type in list(ReferenceType)}
+    if reference is None:
+        flash("Reference to be edited not found.")
+        return redirect("/")
+    return render_template("edit_reference.html", reference=reference,
+                           reference_types=list(ReferenceType),
+                           reference_fields=COMMON_BIBTEX_FIELDS,
+                           field_requirements_map=field_requirements_map)
+
+@app.route("/save_edited_reference/<string:old_reference_key>", methods=["POST"])
+def route_save_edited_reference(old_reference_key: str):
+    reference_type = request.form.get("reference_type")
+    new_reference_key = request.form.get("reference_key")
+    reference_data = {
+        key: value for key, value in request.form.items()
+        if key not in ("reference_type", "reference_key") and value.strip() != ""
+    }
+
+    try:
+        validate_reference(reference_type, new_reference_key, reference_data, old_key=old_reference_key)
+        update_reference(reference_type, old_reference_key, new_reference_key, reference_data)
+        return redirect("/")
+    except UserInputError as error:
+        flash(str(error))
+        return redirect(f"/edit_reference/{old_reference_key}")
+    except Exception as error:
+        flash(f"Error updating reference: {error}")
+        return redirect(f"/edit_reference/{old_reference_key}")
 
 @app.route("/download_bib")
 def download_bib():

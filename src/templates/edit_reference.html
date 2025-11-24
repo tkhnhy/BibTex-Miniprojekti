@@ -1,35 +1,37 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Create a new reference
+Edit reference
 {% endblock %}
 
 {% block body %}
 
-<h2>Create a new reference</h2>
-
-<form action="/create_reference" method="post">
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-        {% endif %}
-    {% endwith %}
-
-    <label for="reference_type">Entry Type:</label>
+<form action="/save_edited_reference/{{reference.key}}" method="post">
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  <strong>Edit the reference details below:</strong><br><br>
+  <label for="reference_type">Entry Type:</label>
     <select name="reference_type" id="reference_type" required>
-        <option value="" disabled selected>Select a type...</option>
         {% for ref_type in reference_types %}
-            <option value="{{ ref_type.value }}">{{ ref_type.display_str() }}</option>
+            {% if ref_type.display_str() != reference.type.display_str() %}
+                <option value="{{ ref_type.value }}">{{ ref_type.display_str() }}</option>
+            {% endif %}
+            {% if ref_type.display_str() == reference.type.display_str() %}
+                <option value="{{ ref_type.value }}" selected>{{ ref_type.display_str() }}</option>
+            {% endif %}
         {% endfor %}
     </select>
     <br><br>
     <div class="field-row">
         <label for="reference_key">Reference Key:</label>
-        <input id="reference_key" type="text" name="reference_key" required>
+        <input id="reference_key" type="text" name="reference_key" value="{{ reference.key }}" required>
     </div>
 
     <div id="fields-container">
@@ -45,24 +47,18 @@ Create a new reference
         {% for field in reference_fields %}
         <div class="field-row" data-name="{{ field }}">
             <label for="{{ field }}">{{ field | replace('_', ' ') | title }}:</label><br>
-            <input id="{{ field }}" type="text" name="{{ field }}"><br><br>
+            <input id="{{ field }}" type="text" name="{{ field }}" value="{{reference.content.get(field, '')}}"><br><br>
         </div>
         {% endfor %}
-        <div class="field-row">
-            <label for="comment">Comment:</label><br>
-            <textarea id="comment" type="text"name="comment"></textarea><br><br>
-        </div>
-        
     </div>
 
-    <button type="submit" class="button-green">
-        Create
-    </button>
-    <button type="button" class="button-red" onclick="location.href='/'" style="margin-top: 15px;">
-        Cancel
-    </button>
+  <button type="submit" class="button-green">
+    Save changes
+  </button>
+  <button type="reset" class="button-red" onclick="location.href='/'">
+    Cancel
+  </button>
 </form>
-
 
 {% endblock %}
 

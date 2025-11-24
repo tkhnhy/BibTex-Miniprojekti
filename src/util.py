@@ -5,7 +5,7 @@ from entities.reference import ReferenceType
 class UserInputError(Exception):
     pass
 
-def validate_reference(type_: str, key: str, content):
+def validate_reference(type_: str, key: str, content, old_key: str = None):
     """
     Parameters
     ----------
@@ -56,5 +56,6 @@ def validate_reference(type_: str, key: str, content):
                 raise UserInputError(f"Required field '{req}' must be filled")
 
     # check unique key
-    if get_reference_by_key(key):
-        raise UserInputError(f"Reference citation key '{key}' already exists")
+    if old_key is None or key != old_key:
+        if get_reference_by_key(key):
+            raise UserInputError(f"Reference citation key '{key}' already exists")

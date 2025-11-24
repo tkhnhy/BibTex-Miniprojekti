@@ -21,16 +21,13 @@ Open And Configure Browser
         ${options}=  Evaluate  sys.modules['selenium.webdriver'].ChromeOptions()  sys, selenium.webdriver
         Call Method  ${options}  add_argument  --incognito
         Call Method  ${options}  add_experimental_option  prefs  ${prefs}
-
         IF    '${HEADLESS}' == 'true'
-            Set Selenium Speed    0.01 seconds
-            Call Method    ${options}    add_argument    --headless
-            Call Method    ${options}    add_argument    --disable-gpu
+            Call Method    ${options}    add_argument    "--headless"
+            Call Method    ${options}    add_argument    "--disable-gpu"
             Call Method    ${options}    add_argument    "--window-size=1920,1080"
-            Call Method    ${options}    add_argument    --no-sandbox
-            Call Method    ${options}    add_argument    --disable-dev-shm-usage
-            Call Method    ${options}    add_argument    --enable-features=NetworkService,NetworkServiceInProcess
-        END
+            Call Method    ${options}    add_argument    "--no-sandbox"
+            Call Method    ${options}    add_argument    "--disable-dev-shm-usage"
+            Call Method    ${options}    add_argument    "--enable-features=NetworkService,NetworkServiceInProcess"
         ELSE
             Set Selenium Speed  ${DELAY}
         END

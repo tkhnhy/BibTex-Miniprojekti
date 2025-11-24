@@ -5,7 +5,7 @@ from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType
 from repositories.reference_repository import get_references, create_reference, get_reference_by_key
 from repositories.reference_repository import delete_reference, update_reference
 from config import app, test_env
-from util import validate_reference, UserInputError, validate_update_reference
+from util import validate_reference, UserInputError
 
 @app.route("/")
 def route_index():
@@ -85,7 +85,7 @@ def route_save_edited_reference(old_reference_key: str):
     }
 
     try:
-        validate_update_reference(reference_type, old_reference_key, reference_data)
+        validate_reference(reference_type, new_reference_key, reference_data, old_key=old_reference_key)
         update_reference(reference_type, old_reference_key, new_reference_key, reference_data)
         return redirect("/")
     except UserInputError as error:

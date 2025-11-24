@@ -9,12 +9,15 @@ ${RESET_URL}  http://${SERVER}/reset_db
 ${BROWSER}    chrome
 ${HEADLESS}   false
 ${CREATE_URL}  http://${SERVER}/new_reference
+${DOWNLOAD_DIR}  ${CURDIR}${/}downloads
 
 *** Keywords ***
 Open And Configure Browser
     IF  $BROWSER == 'chrome'
-        ${options}  Evaluate  sys.modules['selenium.webdriver'].ChromeOptions()  sys
-        Call Method  ${options}  add_argument  --incognito
+        ${prefs}=    Create Dictionary    download.default_directory=${DOWNLOAD_DIR}    download.prompt_for_download=${False}
+        ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
+        Call Method    ${options}    add_argument    --incognito
+        Call Method    ${options}    add_experimental_option    prefs    ${prefs}
     ELSE IF  $BROWSER == 'firefox'
         ${options}  Evaluate  sys.modules['selenium.webdriver'].FirefoxOptions()  sys
         Call Method  ${options}  add_argument  --private-window

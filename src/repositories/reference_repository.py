@@ -4,7 +4,8 @@ from entities.reference import Reference, ReferenceType
 from config import db
 
 def get_references():
-    sql = text("SELECT id, reference_key, reference_type, reference_data, comment FROM reference_table")
+    sql = text("SELECT id, reference_key, reference_type, reference_data, comment" \
+                " FROM reference_table ORDER BY id")
     rows = db.session.execute(sql).fetchall()
     return [
         Reference(row[0], row[1], ReferenceType(row[2]), row[3], comment=row[4])
@@ -33,13 +34,16 @@ def delete_reference(reference_key: str):
     db.session.execute(sql, { "reference_key": reference_key })
     db.session.commit()
 
-def update_reference(reference_type: str, old_reference_key: str, new_reference_key: str, reference_content: dict):
+def update_reference(reference_type: str, old_reference_key: str, new_reference_key: str,
+                     reference_content: dict, comment: str = ''):
     sql = text("UPDATE reference_table " \
                "SET reference_type = :reference_type, " \
                    "reference_key = :new_reference_key, " \
-                   "reference_data = :reference_data " \
+                   "reference_data = :reference_data, " \
+                   "comment = :comment " \
                "WHERE reference_key = :old_reference_key")
     db.session.execute(sql, { "reference_type": reference_type, "old_reference_key": old_reference_key,
                               "reference_data": json.dumps(reference_content),
-                              "new_reference_key": new_reference_key})
+                              "new_reference_key": new_reference_key,
+                              "comment": comment})
     db.session.commit()

@@ -36,7 +36,7 @@ def route_reference_creation():
     reference_key = request.form.get("reference_key")
     reference_data = {
         key: value for key, value in request.form.items()
-        if key not in ("reference_type", "reference_key") and value.strip() != ""
+        if key not in ("reference_type", "reference_key", "comment") and value.strip() != ""
     }
     comment = request.form.get("comment", "").strip()
     try:
@@ -81,12 +81,13 @@ def route_save_edited_reference(old_reference_key: str):
     new_reference_key = request.form.get("reference_key")
     reference_data = {
         key: value for key, value in request.form.items()
-        if key not in ("reference_type", "reference_key") and value.strip() != ""
+        if key not in ("reference_type", "reference_key", "comment") and value.strip() != ""
     }
+    comment = request.form.get("comment", "").strip()
 
     try:
         validate_reference(reference_type, new_reference_key, reference_data, old_key=old_reference_key)
-        update_reference(reference_type, old_reference_key, new_reference_key, reference_data)
+        update_reference(reference_type, old_reference_key, new_reference_key, reference_data, comment)
         return redirect("/")
     except UserInputError as error:
         flash(str(error))

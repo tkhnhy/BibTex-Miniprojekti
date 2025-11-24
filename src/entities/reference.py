@@ -100,7 +100,8 @@ class Reference:
 
         bibtex_string = f"@{str(self.type.value)}{{{self.key},\n"
         for key, value in self.content.items():
-            bibtex_string += f"   {key} = {{{value}}},\n"
+            if key != "comment":
+                bibtex_string += f"   {key} = {{{value}}},\n"
         if self.comment:
             bibtex_string += f"   % {self.comment}\n"
         bibtex_string += "}"

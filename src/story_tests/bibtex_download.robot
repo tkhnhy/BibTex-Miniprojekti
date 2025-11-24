@@ -1,6 +1,5 @@
 *** Settings ***
 Resource  resource.robot
-Library  OperatingSystem
 Suite Setup  Open And Configure Browser
 Suite Teardown   Close Browser
 Test Setup       Reset References

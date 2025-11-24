@@ -53,7 +53,10 @@ My references
         <div>{{ reference.content.get('title', '') }}</div>
         <div>{{ reference.content.get('year', '') }}</div>
         <div>
-            <button class="toggle-details">Details</button>
+            <button class="toggle-details">Details</button><br>
+            <button onclick="location.href='/edit_reference/{{ reference.key }}'" class="button-edit">
+                Edit
+            </button><br>
             <button onclick="location.href='/confirm_delete/{{ reference.key }}'" class="button-red">
                 Delete
             </button>

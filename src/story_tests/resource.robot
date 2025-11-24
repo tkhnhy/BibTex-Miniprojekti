@@ -13,6 +13,8 @@ ${DOWNLOAD_DIR}  ${CURDIR}${/}downloads
 
 *** Keywords ***
 Open And Configure Browser
+    Create Directory    ${DOWNLOAD_DIR}
+    
     IF  $BROWSER == 'chrome'
         ${prefs}=    Create Dictionary    download.default_directory=${DOWNLOAD_DIR}    download.prompt_for_download=${False}
         ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver

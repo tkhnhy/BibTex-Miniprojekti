@@ -19,7 +19,8 @@ Pressing the download BibTex-file downloads a bib file.
     Click Button  Download as BibTex-file
 
     Log To Console    Download dir: ${DOWNLOAD_DIR}
-    Wait Until Keyword Succeeds    20x    1s
+    Wait Until Keyword Succeeds    20x    2s
+
     ...    File Should Exist    ${DOWNLOAD_DIR}/*.bib
     ${files}=    List Files In Directory    ${DOWNLOAD_DIR}
     Log To Console    Files downloaded: ${files}

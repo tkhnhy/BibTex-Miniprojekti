@@ -30,6 +30,7 @@ Open And Configure Browser
             Call Method    ${options}    add_argument    --no-sandbox
             Call Method    ${options}    add_argument    --disable-dev-shm-usage
             Call Method    ${options}    add_argument    --enable-features=NetworkService,NetworkServiceInProcess
+        END
         ELSE
             Set Selenium Speed  ${DELAY}
         END

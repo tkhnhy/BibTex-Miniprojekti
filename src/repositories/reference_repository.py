@@ -7,7 +7,7 @@ def get_references():
     sql = text("SELECT id, reference_key, reference_type, reference_data, comment FROM reference_table")
     rows = db.session.execute(sql).fetchall()
     return [
-        Reference(row[0], row[1], ReferenceType(row[2]), row[3], row[4])
+        Reference(row[0], row[1], ReferenceType(row[2]), row[3], comment=row[4])
         for row in rows
     ]
 

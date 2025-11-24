@@ -84,7 +84,7 @@ class Reference:
         Mapping from field name to content.
     """
 
-    def __init__(self, id_: int, key: str, type_: ReferenceType | str, content: dict[str, str], comment: str = ''):
+    def __init__(self, id_: int, key: str, type_: ReferenceType | str, content: dict[str, str], comment: str = ''): # pylint: disable=too-many-arguments
         self.id = int(id_)
         self.key = str(key)
         self.content = content

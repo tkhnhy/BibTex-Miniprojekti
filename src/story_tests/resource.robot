@@ -24,12 +24,12 @@ Open And Configure Browser
 
         IF    '${HEADLESS}' == 'true'
             Set Selenium Speed    0.01 seconds
-            Call Method  ${options}  add_argument  --headless
-            Call Method  ${options}  add_argument  --disable-gpu
-            Call Method  ${options}  add_argument  --window-size=1920,1080
-            Call Method  ${options}  add_argument  --no-sandbox
-            Call Method  ${options}  add_argument  --disable-dev-shm-usage
-            Call Method  ${options}  add_argument  --enable-features=NetworkService,NetworkServiceInProcess
+            Call Method    ${options}    add_argument    --headless
+            Call Method    ${options}    add_argument    --disable-gpu
+            Call Method    ${options}    add_argument    "--window-size=1920,1080"
+            Call Method    ${options}    add_argument    --no-sandbox
+            Call Method    ${options}    add_argument    --disable-dev-shm-usage
+            Call Method    ${options}    add_argument    --enable-features=NetworkService,NetworkServiceInProcess
         ELSE
             Set Selenium Speed  ${DELAY}
         END

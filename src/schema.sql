@@ -8,7 +8,7 @@ CREATE TABLE reference_table (
 
 CREATE TABLE tags (
   id SERIAL PRIMARY KEY,
-  name TEXT UNIQUE NOT NULL,
+  name TEXT UNIQUE NOT NULL
 );
 
 CREATE TABLE referece_x_tags (

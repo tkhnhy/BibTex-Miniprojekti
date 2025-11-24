@@ -28,6 +28,12 @@ Open And Configure Browser
     IF  $HEADLESS == 'true'
         Set Selenium Speed  0.01 seconds
         Call Method  ${options}  add_argument  --headless
+        IF $BROWSER == 'chrome'
+            Call Method    ${options}    add_argument    --disable-gpu
+            Call Method    ${options}    add_argument    --no-sandbox
+            Call Method    ${options}    add_argument    --disable-dev-shm-usage
+            Call Method    ${options}    add_argument    --window-size=1920,1080
+        END
     ELSE
         Set Selenium Speed  ${DELAY}
     END

@@ -61,8 +61,13 @@ My references
 
         <!-- Extra details -->
         <div class="reference-item-details">
+            {% if reference.content.get('comment') %}
+                <span><b>Comment:</b> {{ reference.content.get('comment') }}</span>
+                <br>
+            {% endif %}
+
             {% for datapoint, value in reference.content.items() %}
-                {% if datapoint not in ['author', 'title', 'year'] %}
+                {% if datapoint not in ['author', 'title', 'year', 'comment'] %}
                 <span><b>{{ datapoint | replace('_', ' ') | title }}:</b> {{ value }}</span>
                 {% endif %}
             {% endfor %}

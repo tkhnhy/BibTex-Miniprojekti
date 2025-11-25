@@ -23,7 +23,7 @@ Open And Configure Browser
         ...    download.directory_upgrade=${True}
         ...    safebrowsing.enabled=${True}
         ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
-        Call Method    ${options}    add_argument    --incognito
+        # Call Method    ${options}    add_argument    --incognito
         Call Method    ${options}    add_experimental_option    prefs    ${prefs}
     ELSE IF  $BROWSER == 'firefox'
         ${options}  Evaluate  sys.modules['selenium.webdriver'].FirefoxOptions()  sys

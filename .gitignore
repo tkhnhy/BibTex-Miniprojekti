@@ -221,3 +221,6 @@ __marimo__/
 
 # macOS system files
 .DS_Store
+
+# Robot test download folder
+src/story_tests/downloads/

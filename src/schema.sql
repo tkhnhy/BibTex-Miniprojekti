@@ -11,7 +11,7 @@ CREATE TABLE tags (
   name TEXT UNIQUE NOT NULL
 );
 
-CREATE TABLE reference_x_tags (
+CREATE TABLE reference_taggins (
   reference_id INT NOT NULL,
   tag_id INT NOT NULL,
   PRIMARY KEY (reference_id, tag_id),

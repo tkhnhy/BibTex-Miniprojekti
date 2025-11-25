@@ -31,8 +31,8 @@ Open And Configure Browser
     END
     IF  $HEADLESS == 'true'
         Set Selenium Speed  0.01 seconds
-        Call Method    ${options}    add_argument    --headless=new
-        Call Method    ${options}    add_argument    --enable-features=AllowFileDownloadsInHeadless
+        Call Method    ${options}    add_argument    ${None}    --headless=new
+        Call Method    ${options}    add_argument    ${None}    --enable-features=AllowFileDownloadsInHeadless
     ELSE
         Set Selenium Speed  ${DELAY}
     END

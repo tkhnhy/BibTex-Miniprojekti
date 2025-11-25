@@ -1,4 +1,5 @@
 [![CI](https://github.com/tkhnhy/BibTex-Miniprojekti/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/tkhnhy/BibTex-Miniprojekti/actions/workflows/ci.yaml)
+[![codecov](https://codecov.io/gh/tkhnhy/BibTex-Miniprojekti/graph/badge.svg?token=5BRJIRS1FI)](https://codecov.io/gh/tkhnhy/BibTex-Miniprojekti)
 
 [**Product backlog + sprint backlogs**](https://helsinkifi-my.sharepoint.com/:x:/g/personal/hjhellen_ad_helsinki_fi/IQAvnQeKqT0uQYKpWgiyLJbaASYjHlJnmxERma5JgKgGz00)
 

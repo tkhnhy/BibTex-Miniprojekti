@@ -40,6 +40,8 @@ Check your [Poetry installation](https://python-poetry.org/docs/#installing-with
 
 5. Exit the application by pressing `Ctrl+C` while in the starting terminal and commanding `deactivate`.
 
+Consider excluding from your backups the created folder ./.venv occupying about 80–90 MB.
+
 ## Creating a local PostgreSQL database
 
 Assuming your username is "user". 

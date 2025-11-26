@@ -34,18 +34,11 @@ Creating a reference does not proceed, when a required field is empty
     
 After adding a reference, then adding another with same key, adding fails
     Go To  ${HOME_URL}
-    Click Button  New reference
-    Select From List By Label  reference_type  Book
-    Input Text  reference_key  ROB01
-    Input Text  author  Rob Bot
-    Input Text  title  Robot Book
-    Input Text  publisher  RobotPublishing
-    Input Text  year  2150
-    Click Button  Create
+    Quick Add Reference
     Page Should Contain  Number of references: 1
     Click Button  New reference
     Select From List By Label  reference_type  Book
-    Input Text  reference_key  ROB01
+    Input Text  reference_key  ROBSTORY01
     Input Text  author  Rob Bot
     Input Text  title  Robot Book
     Input Text  publisher  RobotPublishing
@@ -69,15 +62,7 @@ After filling reference fields, but canceling, none are created.
     
 After adding a reference, then removing it, there are no references
     Go To  ${HOME_URL}
-    Click Button  New reference
-    Select From List By Label  reference_type  Book
-    Input Text  reference_key  ROB02
-    Input Text  author  Rob Bot
-    Input Text  title  Robot Book
-    Input Text  publisher  RobotPublishing
-    Input Text  year  2150
-    Click Button  Create
-    Page Should Contain  ROB02
+    Quick Add Reference
     Page Should Contain  Number of references: 1
     Click Button  Delete
     Click Button  Delete
@@ -85,15 +70,7 @@ After adding a reference, then removing it, there are no references
     
 After adding a reference, pressing delete, but canceling, the reference stays
     Go To  ${HOME_URL}
-    Click Button  New reference
-    Select From List By Label  reference_type  Book
-    Input Text  reference_key  ROB03
-    Input Text  author  Rob Bot
-    Input Text  title  Robot Book
-    Input Text  publisher  RobotPublishing
-    Input Text  year  2150
-    Click Button  Create
-    Page Should Contain  ROB03
+    Quick Add Reference
     Page Should Contain  Number of references: 1
     Click Button  Delete
     Click Button  Cancel

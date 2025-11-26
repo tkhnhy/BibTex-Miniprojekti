@@ -35,6 +35,9 @@ My references
 <div class="table-container">
     <!-- Table header -->
     <div class="reference-item table-title">
+        <div>
+            <input type="checkbox" id="select-all" title="Select all">
+        </div>
         <div>Type</div>
         <div>Key</div>
         <div>Author</div>
@@ -46,6 +49,11 @@ My references
     <!-- Table rows -->
     {% for reference in references %}
     <div class="reference-item">
+        <!-- Checkbox -->
+        <div>
+            <input type="checkbox" class="select-row" data-key="{{ reference.key }}" aria-label="Select {{ reference.key }}">
+        </div>
+
         <!-- Main details -->
         <div>{{ reference.type.display_str() }}</div>
         <div>{{ reference.key }}</div>
@@ -95,5 +103,29 @@ document.querySelectorAll('.toggle-details').forEach(button => {
         }
     });
 });
+
+// Selection checkbox logic
+(function() {
+    const selectAll = document.getElementById('select-all');
+    const rowCheckboxes = () => Array.from(document.querySelectorAll('.select-row'));
+
+    if (!selectAll) return;
+
+    // Select all functionality
+    selectAll.addEventListener('change', () => {
+        rowCheckboxes().forEach(cb => { cb.checked = selectAll.checked; });
+    });
+
+    // When any row checkbox changes, update the select-all state
+    document.addEventListener('change', (e) => {
+        if (e.target && e.target.classList && e.target.classList.contains('select-row')) {
+            const boxes = rowCheckboxes();
+            const allChecked = boxes.length > 0 && boxes.every(cb => cb.checked);
+            const someChecked = boxes.some(cb => cb.checked);
+            selectAll.checked = allChecked;
+            selectAll.indeterminate = !allChecked && someChecked;
+        }
+    });
+})();
 </script>
 {% endblock %}

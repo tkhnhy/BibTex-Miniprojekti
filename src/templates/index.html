@@ -26,7 +26,7 @@ My references
     <button onclick="location.href='/new_reference'" class="button-green" style="margin-top: 15px;">
         New reference
     </button>
-    <button onclick="location.href='/download_bib'" class="button-green" style="margin-top: 15px;">
+    <button id="download-btn" onclick="location.href='/download_bib'" class="button-green" style="margin-top: 15px;">
         Download as BibTex-file
     </button>
 </div>
@@ -107,13 +107,20 @@ document.querySelectorAll('.toggle-details').forEach(button => {
 // Selection checkbox logic
 (function() {
     const selectAll = document.getElementById('select-all');
+    const downloadBtn = document.getElementById('download-btn');
     const rowCheckboxes = () => Array.from(document.querySelectorAll('.select-row'));
 
     if (!selectAll) return;
 
+    const updateDownloadButton = () => {
+        const anySelected = rowCheckboxes().some(cb => cb.checked);
+        downloadBtn.textContent = anySelected ? 'Download selected as BibTeX file' : 'Download all as BibTeX file';
+    };
+
     // Select all functionality
     selectAll.addEventListener('change', () => {
         rowCheckboxes().forEach(cb => { cb.checked = selectAll.checked; });
+        updateDownloadButton();
     });
 
     // When any row checkbox changes, update the select-all state
@@ -124,8 +131,12 @@ document.querySelectorAll('.toggle-details').forEach(button => {
             const someChecked = boxes.some(cb => cb.checked);
             selectAll.checked = allChecked;
             selectAll.indeterminate = !allChecked && someChecked;
+            updateDownloadButton();
         }
     });
+
+    // initialise button
+    updateDownloadButton();
 })();
 </script>
 {% endblock %}

@@ -105,6 +105,5 @@ class Reference:
         for key, value in self.content.items():
             bibtex_string += f"   {key} = {{{value}}},\n"
         bibtex_string += "}"
-        
 
         return bibtex_string

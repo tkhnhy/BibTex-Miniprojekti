@@ -12,6 +12,27 @@ def get_references():
         for row in rows
     ]
 
+def get_references_by_keys(keys: list[str]):
+    if not keys:
+        return []
+
+    placeholders = ", ".join(f":k{i}" for i in range(len(keys)))
+    sql = text(
+        "SELECT id, reference_key, reference_type, reference_data, comment "
+        f"FROM reference_table WHERE reference_key IN ({placeholders})"
+    )
+    params = {f"k{i}": keys[i] for i in range(len(keys))}
+    rows = db.session.execute(sql, params).fetchall()
+
+    refs = [
+        Reference(row[0], row[1], ReferenceType(row[2]), row[3], comment=row[4])
+        for row in rows
+    ]
+    # Preserve order
+    ref_map = {r.key: r for r in refs}
+    ordered_refs = [ref_map[k] for k in keys if k in ref_map]
+    return ordered_refs
+
 def create_reference(reference_type: str, reference_key: str, reference_content: dict, comment: str = ''):
     sql = text("INSERT INTO reference_table (reference_type, reference_key, reference_data, comment)" \
                 "VALUES (:reference_type, :reference_key, :reference_data, :comment)")

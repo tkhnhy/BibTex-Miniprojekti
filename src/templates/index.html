@@ -26,7 +26,7 @@ My references
     <button onclick="location.href='/new_reference'" class="button-green" style="margin-top: 15px;">
         New reference
     </button>
-    <button id="download-btn" onclick="location.href='/download_bib'" class="button-green" style="margin-top: 15px;">
+    <button id="download-btn" type="button" class="button-green" style="margin-top: 15px;">
         Download as BibTex-file
     </button>
 </div>
@@ -110,7 +110,7 @@ document.querySelectorAll('.toggle-details').forEach(button => {
     const downloadBtn = document.getElementById('download-btn');
     const rowCheckboxes = () => Array.from(document.querySelectorAll('.select-row'));
 
-    if (!selectAll) return;
+    if (!selectAll || !downloadBtn) return;
 
     const updateDownloadButton = () => {
         const anySelected = rowCheckboxes().some(cb => cb.checked);
@@ -135,7 +135,28 @@ document.querySelectorAll('.toggle-details').forEach(button => {
         }
     });
 
-    // initialise button
+    // Submit selected keys via POST to /download_bib
+    downloadBtn.addEventListener('click', () => {
+        const selectedKeys = rowCheckboxes().filter(cb => cb.checked).map(cb => cb.dataset.key);
+
+        // Create a form and POST selected_keys (one input per key).
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/download_bib';
+        // Add selected keys inputs
+        selectedKeys.forEach(k => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'selected_keys';
+            input.value = k;
+            form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+    });
+
+    // initialise button on load
     updateDownloadButton();
 })();
 </script>

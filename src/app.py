@@ -3,7 +3,7 @@ from flask import redirect, render_template, request, jsonify, flash, send_file
 from db_helper import reset_db
 from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType
 from repositories.reference_repository import get_references, create_reference, get_reference_by_key, \
-    add_ref_for_storytests
+    add_ref_for_storytests, get_references_by_keys
 from repositories.reference_repository import delete_reference, update_reference
 from config import app, test_env
 from util import validate_reference, UserInputError
@@ -97,15 +97,18 @@ def route_save_edited_reference(old_reference_key: str):
         flash(f"Error updating reference: {error}")
         return redirect(f"/edit_reference/{old_reference_key}")
 
-@app.route("/download_bib")
+@app.route("/download_bib", methods=["POST"])
 def download_bib():
+    selected_keys = request.form.getlist('selected_keys')
     try:
-        #Since flask cannot send python objects, we just get our references again here.
-        #If filtered generation is needed later this is to be edited
-        references = get_references()
+        if not selected_keys:
+            # Default to all references if none selected
+            references = get_references()
+        else:
+            references = get_references_by_keys(selected_keys)
     except Exception as error:
         flash("Could not fetch references: " + str(error))
-        references = []
+        return redirect("/")
 
     bibtex_content = "\n\n".join(str(r) for r in references)
 

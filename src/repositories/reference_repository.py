@@ -47,3 +47,16 @@ def update_reference(reference_type: str, old_reference_key: str, new_reference_
                               "new_reference_key": new_reference_key,
                               "comment": comment})
     db.session.commit()
+
+# Function for some story tests to skip frontend to add a reference.
+def add_ref_for_storytests():
+    story_reference_type = "book"
+    story_reference_key = "ROBSTORY01"
+    story_comment = ""
+    story_reference_data = {
+        "author": "Rob Bot",
+        "title": "Story Book 1",
+        "publisher": "Robot Publishing",
+        "year": "2000"
+    }
+    create_reference(story_reference_type, story_reference_key, story_reference_data, story_comment)

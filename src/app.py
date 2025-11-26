@@ -2,7 +2,8 @@ import io
 from flask import redirect, render_template, request, jsonify, flash, send_file
 from db_helper import reset_db
 from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType
-from repositories.reference_repository import get_references, create_reference, get_reference_by_key
+from repositories.reference_repository import get_references, create_reference, get_reference_by_key, \
+    add_ref_for_storytests
 from repositories.reference_repository import delete_reference, update_reference
 from config import app, test_env
 from util import validate_reference, UserInputError
@@ -121,9 +122,14 @@ def download_bib():
         mimetype="application/x-bibtex"
     )
 
-# testausta varten oleva reitti
+# Routes for testing
 if test_env:
     @app.route("/reset_db")
     def route_reset_db():
         reset_db()
         return jsonify({ 'message': "db reset" })
+
+    @app.route("/reference_for_storytest")
+    def reference_for_storytest():
+        add_ref_for_storytests()
+        return redirect("/")

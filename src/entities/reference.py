@@ -98,12 +98,13 @@ class Reference:
     def __str__(self):
         #This makes the reference show as a bibtex style entry when calling it as a str. (as defined in the backlog)
 
-        bibtex_string = f"@{str(self.type.value)}{{{self.key},\n"
-        for key, value in self.content.items():
-            if key != "comment":
-                bibtex_string += f"   {key} = {{{value}}},\n"
+        bibtex_string = ""
         if self.comment:
-            bibtex_string += f"   % {self.comment}\n"
+            bibtex_string += f"% {self.comment}\n"
+        bibtex_string += f"@{str(self.type.value)}{{{self.key},\n"
+        for key, value in self.content.items():
+            bibtex_string += f"   {key} = {{{value}}},\n"
         bibtex_string += "}"
+        
 
         return bibtex_string

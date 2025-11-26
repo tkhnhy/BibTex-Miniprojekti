@@ -52,15 +52,11 @@ def update_reference(reference_type: str, old_reference_key: str, new_reference_
 def add_ref_for_storytests():
     story_reference_type = "book"
     story_reference_key = "ROBSTORY01"
-    story_comment = str("")
+    story_comment = ""
     story_reference_data = {
-    "author": "Rob Bot",
-    "title": "Story Book 1",
-    "publisher": "Robot Publishing",
-    "year": "2000"
+        "author": "Rob Bot",
+        "title": "Story Book 1",
+        "publisher": "Robot Publishing",
+        "year": "2000"
     }
-    sql = text("INSERT INTO reference_table (reference_type, reference_key, reference_data, comment)" \
-                "VALUES (:reference_type, :reference_key, :reference_data, :comment)")
-    db.session.execute(sql, { "reference_type": story_reference_type, "reference_key": story_reference_key,
-                             "reference_data": json.dumps(story_reference_data), "comment": story_comment})
-    db.session.commit()
+    create_reference(story_reference_type, story_reference_key, story_reference_data, story_comment)

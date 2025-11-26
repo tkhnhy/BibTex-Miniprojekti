@@ -128,7 +128,7 @@ if test_env:
     def route_reset_db():
         reset_db()
         return jsonify({ 'message': "db reset" })
-        
+
     @app.route("/reference_for_storytest")
     def reference_for_storytest():
         add_ref_for_storytests()

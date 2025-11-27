@@ -20,10 +20,9 @@ def route_index():
     try:
         if not filters:
             references = get_references()
-            amount = len(references)
         else:
             references = get_filtered_references(filters)
-            amount = len(references)
+        amount = len(references)
     except Exception as error:
         flash("Could not fetch references: " + str(error))
         references = []

@@ -5,7 +5,7 @@ Suite Teardown   Close Browser
 Test Setup       Reset References
 
 *** Test Cases ***
-Pressing the download BibTex-file downloads a bib file.
+Pressing the download BibTeX-file downloads a bib file.
     Go To  ${HOME_URL}
     Quick Add Reference
     Click Element  id=download-btn

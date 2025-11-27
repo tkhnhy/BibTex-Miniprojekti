@@ -13,7 +13,7 @@ def route_index():
 
     # The filter is a list of tuples in format: (filter type, list of filter values).
     filters = []
-    selected_types = request.form.getlist("reference_type[]")
+    selected_types = request.args.getlist("reference_type[]")
     if selected_types:
         filters.append(("type", selected_types))
 

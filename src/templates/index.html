@@ -10,7 +10,7 @@ My references
 
 <div class="sidebar">
     <h2>Filters:</h2>
-    <form action="/" method="post">
+    <form action="/" method="get">
         <label><b>Select reference types:</b></label><br>
         {% for ref_type in reference_types %}
         <input type="checkbox" name="reference_type[]" value="{{ ref_type.value }}">

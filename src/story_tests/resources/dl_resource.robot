@@ -26,12 +26,12 @@ Open And Configure Download Browser
         ${options}    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
         Call Method    ${options}    add_experimental_option    prefs    ${prefs}
     ELSE IF  $BROWSER == 'firefox'
-        ${options}    Evaluate    sys.modules['selenium.webdriver'].FirefoxOptions()    sys
+        ${options}    Evaluate    sys.modules['selenium.webdriver'].FirefoxOptions()    sys, selenium.webdriver
 
         Call Method    ${options}    set_preference    browser.download.folderList    2
         Call Method    ${options}    set_preference    browser.download.dir    ${DOWNLOAD_DIR}
         Call Method    ${options}    set_preference    browser.download.useDownloadDir    True
-        Call Method    ${options}    set_preference    browser.helperApps.neverAsk.saveToDisk    application/pdf,application/octet-stream,application/vnd.ms-excel,application/zip
+        Call Method    ${options}    set_preference    browser.helperApps.neverAsk.saveToDisk    application/pdf,application/octet-stream,application/vnd.ms-excel,application/zip,application/x-bibtex
         Call Method    ${options}    set_preference    browser.download.manager.showWhenStarting    false
 
     END
@@ -44,7 +44,7 @@ Open And Configure Download Browser
             Call Method    ${options}    add_argument    @{download_feature}
         ELSE IF    $BROWSER == 'firefox'
             Call Method    ${options}    add_argument    -headless
-            Call Method    ${options}    set_preference    browser.helperApps.neverAsk.saveToDisk    text/csv,application/octet-stream,application/json
+            Call Method    ${options}    set_preference    browser.helperApps.neverAsk.saveToDisk    text/csv,application/octet-stream,application/json,application/x-bibtex
             Call Method    ${options}    set_preference    browser.download.forbid_open_with    true
         END
     ELSE

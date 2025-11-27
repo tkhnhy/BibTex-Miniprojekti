@@ -11,7 +11,7 @@ from util import validate_reference, UserInputError
 @app.route("/", methods=["GET", "POST"])
 def route_index():
 
-    #The filter is a list of tuples in format: (filter type, list of filter values)
+    # The filter is a list of tuples in format: (filter type, list of filter values).
     filters = []
     selected_types = request.form.getlist("reference_type[]")
     if selected_types:

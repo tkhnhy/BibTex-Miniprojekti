@@ -4,6 +4,7 @@ from db_helper import reset_db
 from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType
 from repositories.reference_repository import get_references, create_reference, get_reference_by_key
 from repositories.reference_repository import delete_reference, update_reference
+from repositories.tag_repository import get_tags_with_counts, get_tags_by_reference
 from config import app, test_env
 from util import validate_reference, UserInputError
 
@@ -12,12 +13,14 @@ def route_index():
     try:
         references = get_references()
         amount = len(references)
+        tags = get_tags_with_counts()
     except Exception as error:
         flash("Could not fetch references: " + str(error))
         references = []
         amount = 0
+        tags = []
 
-    return render_template("index.html", references=references, amount=amount)
+    return render_template("index.html", references=references, amount=amount, tags=tags)
 
 @app.route("/new_reference")
 def route_new_reference():
@@ -66,6 +69,7 @@ def route_delete_reference(reference_key):
 @app.route("/edit_reference/<string:reference_key>")
 def route_edit_reference(reference_key: str):
     reference = get_reference_by_key(reference_key)
+    tags = get_tags_by_reference(reference.id)
     field_requirements_map = {ref_type.value: ref_type.field_requirements() for ref_type in list(ReferenceType)}
     if reference is None:
         flash("Reference to be edited not found.")
@@ -73,7 +77,8 @@ def route_edit_reference(reference_key: str):
     return render_template("edit_reference.html", reference=reference,
                            reference_types=list(ReferenceType),
                            reference_fields=COMMON_BIBTEX_FIELDS,
-                           field_requirements_map=field_requirements_map)
+                           field_requirements_map=field_requirements_map,
+                           tags=tags)
 
 @app.route("/save_edited_reference/<string:old_reference_key>", methods=["POST"])
 def route_save_edited_reference(old_reference_key: str):

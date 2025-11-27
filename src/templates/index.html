@@ -79,6 +79,20 @@ My references
     {% endfor %}
 </div>
 
+{% block tags %}
+<div class="tags-container" style="margin-top: 25px;">
+    <h3>My tags with their reference counts</h3>
+    {% if tags and tags|length > 0 %}
+        <ul class="tag-list">
+            {% for tag in tags %}
+                <li class="tag-item">{{ tag.name }} <span class="tag-count">({{ tag.count }})</span></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div>No tags yet.</div>
+    {% endif %}
+</div>
+{% endblock %}
 {% endblock %}
 
 {% block scripts %}

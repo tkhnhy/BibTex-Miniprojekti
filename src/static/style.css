@@ -45,6 +45,10 @@
     margin-right: 1.5em;
 }
 
+.tag-item {
+    font-variant-caps: all-petite-caps;
+}
+
 /* Colored buttons */
 .button-red {
   background-color: #d9534f;

@@ -8,6 +8,23 @@ My references
 
 <h2 class="page-title">My references</h2>
 
+<div class="sidebar">
+    <h2>Filters:</h2>
+    <form action="/" method="post">
+        <label><b>Select reference types:</b></label><br>
+        {% for ref_type in reference_types %}
+        <input type="checkbox" name="reference_type[]" value="{{ ref_type.value }}">
+        {{ ref_type.display_str() }}<br>
+        {% endfor %}
+    <button type="submit" class="button-green">Apply Filters</button>
+</form>
+<form action="/" method="get" style="display:inline;">
+    <button type="submit" class="button-green">
+        Clear Filters
+    </button>
+</form>
+</div>
+
 {% with messages = get_flashed_messages() %}
     {% if messages %}
       <ul>

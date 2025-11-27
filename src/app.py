@@ -3,22 +3,32 @@ from flask import redirect, render_template, request, jsonify, flash, send_file
 from db_helper import reset_db
 from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType
 from repositories.reference_repository import get_references, create_reference, get_reference_by_key, \
-    add_ref_for_storytests, get_references_by_keys
+    add_ref_for_storytests, get_references_by_keys, get_filtered_references
 from repositories.reference_repository import delete_reference, update_reference
 from config import app, test_env
 from util import validate_reference, UserInputError
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def route_index():
+
+    # The filter is a list of tuples in format: (filter type, list of filter values).
+    filters = []
+    selected_types = request.form.getlist("reference_type[]")
+    if selected_types:
+        filters.append(("type", selected_types))
+
     try:
-        references = get_references()
+        if not filters:
+            references = get_references()
+        else:
+            references = get_filtered_references(filters)
         amount = len(references)
     except Exception as error:
         flash("Could not fetch references: " + str(error))
         references = []
         amount = 0
 
-    return render_template("index.html", references=references, amount=amount)
+    return render_template("index.html", references=references, amount=amount, reference_types=list(ReferenceType))
 
 @app.route("/new_reference")
 def route_new_reference():

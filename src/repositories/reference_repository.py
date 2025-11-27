@@ -50,6 +50,64 @@ def get_reference_by_key(key: str):
         return None
     return Reference(row[0], row[1], ReferenceType(row[2]), row[3], comment=row[4])
 
+def get_filtered_references(filters):
+
+    sql_parts = [
+        "SELECT id, reference_key, reference_type, reference_data, comment",
+        "FROM reference_table"
+    ]
+    where_clauses = []
+    params = {}
+
+    # Build WHERE clauses dynamically
+    for filter_type, values in filters:
+        if not values:
+            continue
+
+        param_name = f"{filter_type}_vals"
+
+        if filter_type == "type":
+            where_clauses.append(f"reference_type IN :{param_name}")
+            params[param_name] = tuple(values)
+
+        else:
+            # Filter defaults to assuming the filter_type points to reference_data,
+            # if it isn't in a previous if statement
+            where_clauses.append(
+                "(" + " OR ".join([f"reference_data->>'{filter_type}' = :{param_name}_{i}" 
+                                   for i in range(len(values))]) + ")"
+            )
+            for i, v in enumerate(values):
+                params[f"{param_name}_{i}"] = v
+
+    if where_clauses:
+        sql_parts.append("WHERE " + " AND ".join(where_clauses))
+
+    sql_parts.append("ORDER BY id")
+
+    sql = text(" ".join(sql_parts))
+
+    rows = db.session.execute(sql, params).fetchall()
+
+
+    # Make sure no duplicates are returned
+    seen = set()
+    references = []
+    for row in rows:
+        if row[0] not in seen:
+            seen.add(row[0])
+            references.append(
+                Reference(
+                    row[0],
+                    row[1],
+                    ReferenceType(row[2]),
+                    row[3],
+                    comment=row[4]
+                )
+            )
+
+    return references
+
 def delete_reference(reference_key: str):
     sql = text("DELETE FROM reference_table WHERE reference_key = :reference_key")
     db.session.execute(sql, { "reference_key": reference_key })

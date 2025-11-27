@@ -118,3 +118,21 @@
     font-style: italic;
     white-space: nowrap;
 }
+
+.sidebar {
+  height: 100%;
+  width: 200px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #A9A9A9;
+  overflow-x: hidden;
+  padding-top: 20px;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

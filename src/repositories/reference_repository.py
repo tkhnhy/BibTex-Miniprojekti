@@ -90,24 +90,17 @@ def get_filtered_references(filters):
     rows = db.session.execute(sql, params).fetchall()
 
 
-    # Make sure no duplicates are returned
-    seen = set()
-    references = []
-    for row in rows:
-        if row[0] not in seen:
-            seen.add(row[0])
-            references.append(
-                Reference(
-                    row[0],
-                    row[1],
-                    ReferenceType(row[2]),
-                    row[3],
-                    comment=row[4]
-                )
-            )
-
-    return references
-
+    # Map each row to a Reference object; duplicates should not occur if query is correct
+    return [
+        Reference(
+            row[0],
+            row[1],
+            ReferenceType(row[2]),
+            row[3],
+            comment=row[4]
+        )
+        for row in rows
+    ]
 def delete_reference(reference_key: str):
     sql = text("DELETE FROM reference_table WHERE reference_key = :reference_key")
     db.session.execute(sql, { "reference_key": reference_key })

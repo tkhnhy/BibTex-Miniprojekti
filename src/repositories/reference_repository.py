@@ -70,16 +70,6 @@ def get_filtered_references(filters):
             where_clauses.append(f"reference_type IN :{param_name}")
             params[param_name] = tuple(values)
 
-        else:
-            # Filter defaults to assuming the filter_type points to reference_data,
-            # if it isn't in a previous if statement
-            where_clauses.append(
-                "(" + " OR ".join([f"reference_data->>'{filter_type}' = :{param_name}_{i}" 
-                                   for i in range(len(values))]) + ")"
-            )
-            for i, v in enumerate(values):
-                params[f"{param_name}_{i}"] = v
-
     if where_clauses:
         sql_parts.append("WHERE " + " AND ".join(where_clauses))
 
@@ -88,7 +78,6 @@ def get_filtered_references(filters):
     sql = text(" ".join(sql_parts))
 
     rows = db.session.execute(sql, params).fetchall()
-
 
     # Map each row to a Reference object; duplicates should not occur if query is correct
     return [

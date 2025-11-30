@@ -1,7 +1,8 @@
 /* Content block */
 .page-content {
     max-width: 80em;
-    margin: 0 auto
+    margin-left: 200px;
+    padding: 20px;
 }
 
 /* Page heading */
@@ -25,8 +26,8 @@
 }
 
 .reference-item{
-    display: grid;         /* Type | Key | Author | Title | Year | Action */
-    grid-template-columns: minmax(2em, 3fr) minmax(2em, 3fr) minmax(4em, 5fr) minmax(6em, 7fr) minmax(2em, 3fr) minmax(2em, 3fr);
+    display: grid;         /* Checkbox | Type | Key | Author | Title | Year | Action */
+    grid-template-columns: 1.5em minmax(2em, 3fr) minmax(2em, 3fr) minmax(4em, 5fr) minmax(6em, 7fr) minmax(2em, 3fr) minmax(2em, 3fr);
     align-items: center;
     gap: 0.5em 1em;
     line-height: 1.8;
@@ -36,8 +37,7 @@
 
 .reference-item-details {
     display: none;
-    grid-column-start: 1;
-    grid-column-end: 6;
+    grid-column: 1 / -1;
     line-height: 1.5;
 }
 
@@ -118,4 +118,17 @@
     color: #161616;
     font-style: italic;
     white-space: nowrap;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200px;
+  height: 100%;
+  background-color: #A9A9A9;
+  padding-top: 20px;
+  padding-left: 10px;
+  overflow-y: auto;
+  z-index: 2;
 }

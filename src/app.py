@@ -2,22 +2,33 @@ import io
 from flask import redirect, render_template, request, jsonify, flash, send_file
 from db_helper import reset_db
 from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType
-from repositories.reference_repository import get_references, create_reference, get_reference_by_key
+from repositories.reference_repository import get_references, create_reference, get_reference_by_key, \
+    add_ref_for_storytests, get_references_by_keys, get_filtered_references
 from repositories.reference_repository import delete_reference, update_reference
 from config import app, test_env
 from util import validate_reference, UserInputError
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def route_index():
+
+    # The filter is a list of tuples in format: (filter type, list of filter values).
+    filters = []
+    selected_types = request.args.getlist("reference_type[]")
+    if selected_types:
+        filters.append(("type", selected_types))
+
     try:
-        references = get_references()
+        if not filters:
+            references = get_references()
+        else:
+            references = get_filtered_references(filters)
         amount = len(references)
     except Exception as error:
         flash("Could not fetch references: " + str(error))
         references = []
         amount = 0
 
-    return render_template("index.html", references=references, amount=amount)
+    return render_template("index.html", references=references, amount=amount, reference_types=list(ReferenceType))
 
 @app.route("/new_reference")
 def route_new_reference():
@@ -36,7 +47,7 @@ def route_reference_creation():
     reference_key = request.form.get("reference_key")
     reference_data = {
         key: value for key, value in request.form.items()
-        if key not in ("reference_type", "reference_key") and value.strip() != ""
+        if key not in ("reference_type", "reference_key", "comment") and value.strip() != ""
     }
     comment = request.form.get("comment", "").strip()
     try:
@@ -81,12 +92,13 @@ def route_save_edited_reference(old_reference_key: str):
     new_reference_key = request.form.get("reference_key")
     reference_data = {
         key: value for key, value in request.form.items()
-        if key not in ("reference_type", "reference_key") and value.strip() != ""
+        if key not in ("reference_type", "reference_key", "comment") and value.strip() != ""
     }
+    comment = request.form.get("comment", "").strip()
 
     try:
         validate_reference(reference_type, new_reference_key, reference_data, old_key=old_reference_key)
-        update_reference(reference_type, old_reference_key, new_reference_key, reference_data)
+        update_reference(reference_type, old_reference_key, new_reference_key, reference_data, comment)
         return redirect("/")
     except UserInputError as error:
         flash(str(error))
@@ -95,15 +107,18 @@ def route_save_edited_reference(old_reference_key: str):
         flash(f"Error updating reference: {error}")
         return redirect(f"/edit_reference/{old_reference_key}")
 
-@app.route("/download_bib")
+@app.route("/download_bib", methods=["POST"])
 def download_bib():
+    selected_keys = request.form.getlist('selected_keys')
     try:
-        #Since flask cannot send python objects, we just get our references again here.
-        #If filtered generation is needed later this is to be edited
-        references = get_references()
+        if not selected_keys:
+            # Default to all references if none selected
+            references = get_references()
+        else:
+            references = get_references_by_keys(selected_keys)
     except Exception as error:
         flash("Could not fetch references: " + str(error))
-        references = []
+        return redirect("/")
 
     bibtex_content = "\n\n".join(str(r) for r in references)
 
@@ -120,9 +135,14 @@ def download_bib():
         mimetype="application/x-bibtex"
     )
 
-# testausta varten oleva reitti
+# Routes for testing
 if test_env:
     @app.route("/reset_db")
     def route_reset_db():
         reset_db()
         return jsonify({ 'message': "db reset" })
+
+    @app.route("/reference_for_storytest")
+    def reference_for_storytest():
+        add_ref_for_storytests()
+        return redirect("/")

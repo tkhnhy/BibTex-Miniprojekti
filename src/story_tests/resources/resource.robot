@@ -9,6 +9,7 @@ ${RESET_URL}  http://${SERVER}/reset_db
 ${BROWSER}    chrome
 ${HEADLESS}   false
 ${CREATE_URL}  http://${SERVER}/new_reference
+${QUICK_ADD_URL}  http://${SERVER}/reference_for_storytest
 
 *** Keywords ***
 Open And Configure Browser
@@ -30,3 +31,5 @@ Open And Configure Browser
 Reset References
     Go To  ${RESET_URL}
 
+Quick Add Reference
+    Go To  ${QUICK_ADD_URL}

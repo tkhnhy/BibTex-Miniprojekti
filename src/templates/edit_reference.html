@@ -50,6 +50,10 @@ Edit reference
             <input id="{{ field }}" type="text" name="{{ field }}" value="{{reference.content.get(field, '')}}"><br><br>
         </div>
         {% endfor %}
+        <div class="field-row">
+            <label for="comment">Comment:</label><br>
+            <textarea id="comment" type="text"name="comment">{{reference.comment}}</textarea><br><br>
+        </div>
     </div>
 
   <button type="submit" class="button-green">

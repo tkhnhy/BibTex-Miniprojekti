@@ -1,4 +1,5 @@
 [![CI](https://github.com/tkhnhy/BibTex-Miniprojekti/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/tkhnhy/BibTex-Miniprojekti/actions/workflows/ci.yaml)
+[![codecov](https://codecov.io/gh/tkhnhy/BibTex-Miniprojekti/graph/badge.svg?token=5BRJIRS1FI)](https://codecov.io/gh/tkhnhy/BibTex-Miniprojekti)
 
 [**Product backlog + sprint backlogs**](https://helsinkifi-my.sharepoint.com/:x:/g/personal/hjhellen_ad_helsinki_fi/IQAvnQeKqT0uQYKpWgiyLJbaASYjHlJnmxERma5JgKgGz00)
 
@@ -22,16 +23,25 @@ Check your [Poetry installation](https://python-poetry.org/docs/#installing-with
     ```
     Look [below](#creating-a-local-postgresql-database) for instructions on how create a local PostgreSQL database.
 
-4. Initialize the database tables.
+4. Start the virtual environment.
+    ```bash
+    $ eval $(poetry env activate)
+    ```
+    Then either first:
+    * Initialize or clear the database tables.
     ```bash
     $ python src/db_helper.py
     ```
-
-5. Run the Flask app.
+    Or straight away:
+    * Run the Flask app using existing database entries.
     ```bash
-    $ poetry run python src/index.py
+    $ python src/index.py
     ```
     The application should now be running at ```http://localhost:5001/```.
+
+5. Exit the application by pressing `Ctrl+C` while in the starting terminal and commanding `deactivate`.
+
+Consider excluding from your backups the created folder ./.venv occupying about 80–90 MB.
 
 ## Creating a local PostgreSQL database
 
@@ -81,3 +91,7 @@ Testing
 - Automated unit tests are written where applicable, and test coverage is reasonable.
 - All tests pass successfully.
 - CI status is visible to the customer.
+
+# About
+
+The project was started using an OHTU [boilerplate](https://github.com/ohjelmistotuotanto-hy/miniprojekti-boilerplate).

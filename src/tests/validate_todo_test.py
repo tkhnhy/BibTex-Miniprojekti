@@ -43,3 +43,15 @@ class TestReferenceValidation(unittest.TestCase):
                 "juokse",
                 {"author": "aa", "title": "aa", "publisher": "aa"}  # missing year
             )
+
+    def test_invalid_json_string(self):
+        with self.assertRaises(UserInputError):
+            validate_reference("book", "abc", "{not: valid json}")
+
+    def test_content_not_dict(self):
+        with self.assertRaises(UserInputError):
+            validate_reference("book", "abc", 123)  # ei dict eikä JSON
+
+    def test_missing_reference_type(self):
+        with self.assertRaises(UserInputError):
+            validate_reference("", "abc", {"author": "A", "title": "T", "publisher": "P", "year": "2000"})

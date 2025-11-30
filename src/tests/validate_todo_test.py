@@ -65,3 +65,6 @@ class TestReferenceValidation(unittest.TestCase):
                     "abc",
                     {"author": "aa", "title": "aa", "publisher": "aa", "year": "2025"}
                 )
+    def test_alternative_required_fields_missing(self):
+        with self.assertRaises(UserInputError):
+            validate_reference("book", "abc", {"title": "T", "publisher": "P", "year": "2000"})

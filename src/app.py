@@ -7,6 +7,7 @@ from repositories.reference_repository import get_references, create_reference, 
 from repositories.reference_repository import delete_reference, update_reference
 from config import app, test_env
 from util import validate_reference, UserInputError
+from entities.reference import Reference
 
 @app.route("/", methods=["GET", "POST"])
 def route_index():
@@ -44,6 +45,7 @@ def route_new_reference():
 @app.route("/create_reference", methods=["POST"])
 def route_reference_creation():
     reference_type = request.form.get("reference_type")
+    # print("reference_type:", reference_type)
     reference_key = request.form.get("reference_key")
     reference_data = {
         key: value for key, value in request.form.items()
@@ -52,6 +54,7 @@ def route_reference_creation():
     comment = request.form.get("comment", "").strip()
     try:
         validate_reference(reference_type, reference_key, reference_data)
+        # print(reference_type)
         create_reference(reference_type, reference_key, reference_data, comment)
         return redirect("/")
     except UserInputError as error:
@@ -134,6 +137,42 @@ def download_bib():
         download_name="references.bib",
         mimetype="application/x-bibtex"
     )
+
+@app.route("/upload_bib", methods=["POST"])
+def upload_bib():
+    if 'file' not in request.files:
+        flash("No file part in the request.")
+        return redirect("/")
+
+    file = request.files['file']
+    if file.filename == '':
+        flash("No selected file.")
+        return redirect("/")
+
+    if file:
+        try:
+            reset_db()
+
+            content = file.read().decode("utf-8")
+            entries = content.split("\n@")
+            for i, entry in enumerate(entries):
+                if i > 0:
+                    entry = "@" + entry
+                # print(entry)
+                reference = Reference(i, None, None, None, None, entry)
+                # print("reference:", reference.type.display_str(), reference.key, reference.content)
+                if reference:
+                    create_reference(
+                        reference.type.value,
+                        reference.key,
+                        reference.content,
+                        comment=''
+                    )
+            flash("File uploaded and references imported successfully.")
+        except Exception as error:
+            flash(f"Error processing file: {error}")
+
+    return redirect("/")
 
 # Routes for testing
 if test_env:

@@ -83,17 +83,44 @@ class Reference:
     content : dict[str, str]
         Mapping from field name to content.
     """
+    
+    def __init__(self, id_: int, key: str | None, type_: ReferenceType | str | None, content: dict[str, str] | None, comment: str | None = '' , bibtex_str: str | None = None): # pylint: disable=too-many-arguments
+        if bibtex_str is not None:
+            lines = bibtex_str.strip().splitlines()
+            comment = ''
+            if lines[0].startswith('%'):
+                self.comment = lines[0][1:].strip()
+                lines = lines[1:]
 
-    def __init__(self, id_: int, key: str, type_: ReferenceType | str, content: dict[str, str], *, comment: str = ''): # pylint: disable=too-many-arguments
-        self.id = int(id_)
-        self.key = str(key)
-        self.content = content
-        self.comment = comment
+            header = lines[0].strip()
+            type_start = header.find('@') + 1
+            type_end = header.find('{')
+            self.type = ReferenceType(header[type_start:type_end].strip())
 
-        if isinstance(type_, ReferenceType):
-            self.type = type_
+            key_start = type_end + 1
+            key_end = header.find(',', key_start)
+            self.key = header[key_start:key_end].strip()
+
+            self.content = {}
+            for line in lines[1:-1]:
+                line = line.strip().rstrip(',')
+                if '=' in line:
+                    field, value = line.split('=', 1)
+                    field = field.strip()
+                    value = value.strip().strip('{}')
+                    self.content[field] = value
+
+            # return cls(id_=0, key=ref_key, type_=ref_type, content=content, comment=comment)
         else:
-            self.type = ReferenceType(type_)
+            self.id = int(id_)
+            self.key = str(key)
+            self.content = content
+            self.comment = comment
+
+            if isinstance(type_, ReferenceType):
+                self.type = type_
+            else:
+                self.type = ReferenceType(type_)
 
     def __str__(self):
         #This makes the reference show as a bibtex style entry when calling it as a str. (as defined in the backlog)

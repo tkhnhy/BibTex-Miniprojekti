@@ -4,7 +4,7 @@ COMMON_BIBTEX_FIELDS: list[str] = [
     "author", "editor", "title", "journal", "booktitle", "publisher",
     "year", "month", "volume", "number", "pages", "chapter", "school",
     "institution", "note", "series", "address", "edition", "howpublished",
-    "organization", "url",
+    "organization", "url", "doi",
 ]
 
 class ReferenceType(Enum):

@@ -51,7 +51,7 @@ class TestReferenceValidation(unittest.TestCase):
 
     def test_content_not_dict(self):
         with self.assertRaises(UserInputError):
-            validate_reference("book", "abc", 123)  # ei dict eikä JSON
+            validate_reference("book", "abc", 123)  # not dict or JSOn
 
     def test_missing_reference_type(self):
         with self.assertRaises(UserInputError):
@@ -67,4 +67,4 @@ class TestReferenceValidation(unittest.TestCase):
                 )
     def test_alternative_required_fields_missing(self):
         with self.assertRaises(UserInputError):
-            validate_reference("book", "abc", {"title": "T", "publisher": "P", "year": "2000"})
+            validate_reference("book", "abc", {"title": "T", "publisher": "P", "year": "2000"}) # missing author and editor

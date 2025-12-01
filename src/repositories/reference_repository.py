@@ -117,7 +117,6 @@ def get_filtered_references(filters):
     sql_parts.append("ORDER BY r.id")
 
     sql = text(" ".join(sql_parts))
-    print(" ".join(sql_parts))
     rows = db.session.execute(sql, params).fetchall()
     return [row_to_reference(row) for row in rows]
 

@@ -80,8 +80,20 @@ document.getElementById('fileInput').addEventListener('change', async function()
             method: 'POST',
             body: formData
         });
-        // Reload the page to see the uploaded references
-        window.location.reload();
+
+        if (response.ok) {
+            // Reload the page to see the uploaded references
+            window.location.reload();
+        } else {
+            let errorMsg = 'Upload failed.';
+            try {
+                const text = await response.text();
+                if (text) errorMsg += ' ' + text;
+            } catch (e) {
+                // ignore
+            }
+            alert(errorMsg);
+        }
     } catch (error) {
         console.error('Upload failed:', error);
         alert('Upload failed: ' + error.message);

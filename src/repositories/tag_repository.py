@@ -2,7 +2,7 @@ from sqlalchemy import text
 from config import db
 from entities.tag import Tag
 
-def get_tags_with_counts()-> list[tuple[Tag, int]]:
+def get_tags_with_counts() -> list[tuple[Tag, int]]:
     """Return a list of tags with their reference counts ordered by count desc."""
     sql = text(
         "SELECT t.name, COUNT(rt.reference_id) as cnt "
@@ -14,7 +14,7 @@ def get_tags_with_counts()-> list[tuple[Tag, int]]:
     rows = db.session.execute(sql).fetchall()
     return [(Tag(name=row[0]), int(row[1])) for row in rows]
 
-def get_reference_tags(reference_id: int):
+def get_reference_tags(reference_id: int) -> list[Tag]:
     sql = text(
         "SELECT t.name "
         "FROM tags t "

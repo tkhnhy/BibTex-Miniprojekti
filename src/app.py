@@ -24,7 +24,6 @@ def route_index():
         else:
             references = get_filtered_references(filters)
         tags = get_tags_with_counts()
-        print([reference.content for reference in references])
     except Exception as error:
         flash("Could not fetch references: " + str(error))
         references = []

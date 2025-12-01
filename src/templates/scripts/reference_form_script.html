@@ -140,7 +140,6 @@
 
     function addTag(value) {
         const norm = normalize(value);
-        console.log(`Adding tag: '${norm}'`);
         if (!norm) return;
         if (tagExists(norm)) {
             tagInput.value = '';

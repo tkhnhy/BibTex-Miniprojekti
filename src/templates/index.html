@@ -36,7 +36,7 @@ My references
   {% endwith %}
 
 <div class="reference-count">
-  Number of references: {{ amount }}
+    Number of references: {{ references|length }}
 </div>
 
 <div>
@@ -93,6 +93,15 @@ My references
 
         <!-- Extra details -->
         <div class="reference-item-details">
+            {% if reference.tags and reference.tags|length > 0 %}
+            <div class="tags-container">
+                <span><b>Tags:</b></span>
+                {% for tag in reference.tags %}
+                <span class="tag-item">{{ tag.name }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
             {% if reference.comment.strip() != '' %}
                 <span><b>Comment:</b> {{ reference.comment }}</span>
                 <br>
@@ -100,7 +109,7 @@ My references
 
             {% for datapoint, value in reference.content.items() %}
                 {% if datapoint not in ['author', 'title', 'year', 'comment'] %}
-                <span><b>{{ datapoint | replace('_', ' ') | title }}:</b> {{ value }}</span>
+                <span class="datapoint"><b>{{ datapoint | replace('_', ' ') | title }}:</b> {{ value }}</span>
                 {% endif %}
             {% endfor %}
         </div>
@@ -111,94 +120,5 @@ My references
 {% endblock %}
 
 {% block scripts %}
-<script>
-document.querySelectorAll('.toggle-details').forEach(button => {
-    button.addEventListener('click', () => {
-        // Toggle details
-        const parentItem = button.closest('.reference-item');
-        const details = parentItem.querySelector('.reference-item-details');
-        if (details.style.display === 'block') {
-            details.style.display = 'none';
-        } else {
-            details.style.display = 'block';
-        }
-    });
-});
-
-// Selection checkbox logic
-(function() {
-    const selectAll = document.getElementById('select-all');
-    const downloadBtn = document.getElementById('download-btn');
-    const rowCheckboxes = () => Array.from(document.querySelectorAll('.select-row'));
-
-    if (!selectAll || !downloadBtn) return;
-
-    const updateDownloadButton = () => {
-        const anySelected = rowCheckboxes().some(cb => cb.checked);
-        downloadBtn.textContent = anySelected ? 'Download selected as BibTeX file' : 'Download all as BibTeX file';
-    };
-
-    // Select all functionality
-    selectAll.addEventListener('change', () => {
-        rowCheckboxes().forEach(cb => { cb.checked = selectAll.checked; });
-        updateDownloadButton();
-    });
-
-    // When any row checkbox changes, update the select-all state
-    document.addEventListener('change', (e) => {
-        if (e.target && e.target.classList && e.target.classList.contains('select-row')) {
-            const boxes = rowCheckboxes();
-            const allChecked = boxes.length > 0 && boxes.every(cb => cb.checked);
-            const someChecked = boxes.some(cb => cb.checked);
-            selectAll.checked = allChecked;
-            selectAll.indeterminate = !allChecked && someChecked;
-            updateDownloadButton();
-        }
-    });
-
-    // Submit selected keys via POST to /download_bib
-    downloadBtn.addEventListener('click', () => {
-        const selectedKeys = rowCheckboxes().filter(cb => cb.checked).map(cb => cb.dataset.key);
-
-        // Create a form and POST selected_keys (one input per key).
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/download_bib';
-        // Add selected keys inputs
-        selectedKeys.forEach(k => {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'selected_keys';
-            input.value = k;
-            form.appendChild(input);
-        });
-
-        document.body.appendChild(form);
-        form.submit();
-    });
-
-    // initialise button on load
-    updateDownloadButton();
-})();
-
-// Upload file logic
-document.getElementById('fileInput').addEventListener('change', async function() {
-    if (!this.files[0]) return;
-
-    const formData = new FormData();
-    formData.append('file', this.files[0]);
-
-    try {
-        const response = await fetch('/upload_bib', {
-            method: 'POST',
-            body: formData
-        });
-        // Reload the page to see the uploaded references
-        window.location.reload();
-    } catch (error) {
-        console.error('Upload failed:', error);
-        alert('Upload failed: ' + error.message);
-    }
-});
-</script>
+{% include 'scripts/front_page_script.html' %}
 {% endblock %}

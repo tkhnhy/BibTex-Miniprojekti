@@ -5,6 +5,7 @@ from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType, Reference
 from repositories.reference_repository import get_references, create_reference, get_reference_by_key, \
     add_ref_for_storytests, get_references_by_keys, get_filtered_references
 from repositories.reference_repository import delete_reference, update_reference
+from repositories.tag_repository import get_tags_with_counts
 from config import app, test_env
 from util import validate_reference, UserInputError
 
@@ -22,13 +23,14 @@ def route_index():
             references = get_references()
         else:
             references = get_filtered_references(filters)
-        amount = len(references)
+        tags = get_tags_with_counts()
     except Exception as error:
         flash("Could not fetch references: " + str(error))
         references = []
-        amount = 0
+        tags = []
 
-    return render_template("index.html", references=references, amount=amount, reference_types=list(ReferenceType))
+    return render_template("index.html", references=references,
+                            reference_types=list(ReferenceType), tags=tags)
 
 @app.route("/new_reference")
 def route_new_reference():
@@ -46,15 +48,15 @@ def route_reference_creation():
     reference_type = request.form.get("reference_type")
     # print("reference_type:", reference_type)
     reference_key = request.form.get("reference_key")
+    tags = request.form.getlist("tags")
     reference_data = {
         key: value for key, value in request.form.items()
-        if key not in ("reference_type", "reference_key", "comment") and value.strip() != ""
+        if key not in ("reference_type", "reference_key", "comment", "tags") and value.strip() != ""
     }
     comment = request.form.get("comment", "").strip()
     try:
         validate_reference(reference_type, reference_key, reference_data)
-        # print(reference_type)
-        create_reference(reference_type, reference_key, reference_data, comment)
+        create_reference(reference_type, reference_key, reference_data, tags, comment)
         return redirect("/")
     except UserInputError as error:
         flash(str(error))
@@ -92,15 +94,16 @@ def route_edit_reference(reference_key: str):
 def route_save_edited_reference(old_reference_key: str):
     reference_type = request.form.get("reference_type")
     new_reference_key = request.form.get("reference_key")
+    tags = request.form.getlist("tags")
     reference_data = {
         key: value for key, value in request.form.items()
-        if key not in ("reference_type", "reference_key", "comment") and value.strip() != ""
+        if key not in ("reference_type", "reference_key", "comment", "tags") and value.strip() != ""
     }
     comment = request.form.get("comment", "").strip()
 
     try:
         validate_reference(reference_type, new_reference_key, reference_data, old_key=old_reference_key)
-        update_reference(reference_type, old_reference_key, new_reference_key, reference_data, comment)
+        update_reference(reference_type, old_reference_key, new_reference_key, reference_data, tags, comment)
         return redirect("/")
     except UserInputError as error:
         flash(str(error))
@@ -165,6 +168,7 @@ def upload_bib():
                     reference.type.value,
                     reference.key,
                     reference.content,
+                    tags=[],
                     comment=reference.comment
                 )
         flash("File uploaded and references imported successfully.")

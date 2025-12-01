@@ -1,4 +1,5 @@
 from enum import Enum
+from entities.tag import Tag
 
 COMMON_BIBTEX_FIELDS: list[str] = [
     "author", "editor", "title", "journal", "booktitle", "publisher",
@@ -82,12 +83,18 @@ class Reference:
         Reference type as a ReferenceType enum member (e.g. ARTICLE, BOOK).
     content : dict[str, str]
         Mapping from field name to content.
+    tags : list[Tag]
+        List of associated tags.
+    comment : str
+        Optional comment about the reference.
     """
 
-    def __init__(self, id_: int, key: str, type_: ReferenceType | str, content: dict[str, str], *, comment: str = ''): # pylint: disable=too-many-arguments
+    def __init__(self, id_: int, key: str, type_: ReferenceType | str, # pylint: disable=too-many-arguments
+                 content: dict[str, str], *, tags: list[Tag] = None, comment: str = ''):
         self.id = int(id_)
         self.key = str(key)
         self.content = content
+        self.tags = tags if tags is not None else []
         self.comment = comment
 
         if isinstance(type_, ReferenceType):

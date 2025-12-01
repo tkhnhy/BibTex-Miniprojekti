@@ -1,37 +1,77 @@
 import json
 from sqlalchemy import text
 from entities.reference import Reference, ReferenceType
+from entities.tag import Tag
 from config import db
 
+def row_to_reference(row) -> Reference:
+    return Reference(
+        id_=row[0],
+        key=row[1],
+        type_=ReferenceType(row[2]),
+        content=row[3],
+        comment=row[4],
+        tags=[Tag(name=name) for name in row[5]]
+    )
+
 def get_references():
-    sql = text("SELECT id, reference_key, reference_type, reference_data, comment" \
-                " FROM reference_table ORDER BY id")
+    sql = text(
+        """
+        SELECT r.id, r.reference_key, r.reference_type, r.reference_data, r.comment,
+               COALESCE(array_agg(DISTINCT t.name ORDER BY t.name) FILTER (WHERE t.name IS NOT NULL),
+               ARRAY[]::text[]) AS tags
+        FROM reference_table r
+        LEFT JOIN reference_taggins rt ON rt.reference_id = r.id
+        LEFT JOIN tags t ON t.id = rt.tag_id
+        GROUP BY r.id
+        ORDER BY r.id
+        """
+    )
     rows = db.session.execute(sql).fetchall()
-    return [
-        Reference(row[0], row[1], ReferenceType(row[2]), row[3], comment=row[4])
-        for row in rows
-    ]
+    return [row_to_reference(row) for row in rows]
+
 
 def get_references_by_keys(keys: list[str]):
     if not keys:
         return []
 
     placeholders = ", ".join(f":k{i}" for i in range(len(keys)))
-    sql = text(
-        "SELECT id, reference_key, reference_type, reference_data, comment "
-        f"FROM reference_table WHERE reference_key IN ({placeholders})"
-    )
     params = {f"k{i}": keys[i] for i in range(len(keys))}
+    sql = text(
+        f"""
+        SELECT r.id, r.reference_key, r.reference_type, r.reference_data, r.comment,
+               COALESCE(array_agg(DISTINCT t.name ORDER BY t.name) FILTER (WHERE t.name IS NOT NULL),
+               ARRAY[]::text[]) AS tags
+        FROM reference_table r
+        LEFT JOIN reference_taggins rt ON rt.reference_id = r.id
+        LEFT JOIN tags t ON t.id = rt.tag_id
+        WHERE r.reference_key IN ({placeholders})
+        GROUP BY r.id
+        ORDER BY r.id
+        """
+    )
     rows = db.session.execute(sql, params).fetchall()
+    return [row_to_reference(row) for row in rows]
 
-    refs = [
-        Reference(row[0], row[1], ReferenceType(row[2]), row[3], comment=row[4])
-        for row in rows
-    ]
-    # Preserve order
-    ref_map = {r.key: r for r in refs}
-    ordered_refs = [ref_map[k] for k in keys if k in ref_map]
-    return ordered_refs
+
+def get_reference_by_key(key: str):
+    sql = text(
+        """
+        SELECT r.id, r.reference_key, r.reference_type, r.reference_data, r.comment,
+               COALESCE(array_agg(DISTINCT t.name ORDER BY t.name) FILTER (WHERE t.name IS NOT NULL),
+               ARRAY[]::text[]) AS tags
+        FROM reference_table r
+        LEFT JOIN reference_taggins rt ON rt.reference_id = r.id
+        LEFT JOIN tags t ON t.id = rt.tag_id
+        WHERE r.reference_key = :key
+        GROUP BY r.id
+        """
+    )
+    row = db.session.execute(sql, {"key": key}).fetchone()
+    if row is None:
+        return None
+    return row_to_reference(row)
+
 
 def create_reference(reference_type: str, reference_key: str, reference_content: dict, comment: str = ''):
     sql = text("INSERT INTO reference_table (reference_type, reference_key, reference_data, comment)" \
@@ -40,21 +80,15 @@ def create_reference(reference_type: str, reference_key: str, reference_content:
                              "reference_data": json.dumps(reference_content), "comment": comment})
     db.session.commit()
 
-def get_reference_by_key(key: str):
-    sql = text(
-        "SELECT id, reference_key, reference_type, reference_data, comment "
-        "FROM reference_table WHERE reference_key = :key"
-    )
-    row = db.session.execute(sql, {"key": key}).fetchone()
-    if row is None:
-        return None
-    return Reference(row[0], row[1], ReferenceType(row[2]), row[3], comment=row[4])
 
 def get_filtered_references(filters):
-
     sql_parts = [
-        "SELECT id, reference_key, reference_type, reference_data, comment",
-        "FROM reference_table"
+        "SELECT r.id, r.reference_key, r.reference_type, r.reference_data, r.comment,",
+            "COALESCE(array_agg(DISTINCT t.name ORDER BY t.name) FILTER (WHERE t.name IS NOT NULL),",
+            "ARRAY[]::text[]) AS tags",
+        "FROM reference_table r",
+        "LEFT JOIN reference_taggins rt ON rt.reference_id = r.id",
+        "LEFT JOIN tags t ON t.id = rt.tag_id"
     ]
     where_clauses = []
     params = {}
@@ -67,29 +101,21 @@ def get_filtered_references(filters):
         param_name = f"{filter_type}_vals"
 
         if filter_type == "type":
-            where_clauses.append(f"reference_type IN :{param_name}")
+            where_clauses.append(f"r.reference_type IN :{param_name}")
             params[param_name] = tuple(values)
 
     if where_clauses:
         sql_parts.append("WHERE " + " AND ".join(where_clauses))
 
-    sql_parts.append("ORDER BY id")
+    sql_parts.append("GROUP BY r.id")
+    sql_parts.append("ORDER BY r.id")
 
     sql = text(" ".join(sql_parts))
-
+    print(" ".join(sql_parts))
     rows = db.session.execute(sql, params).fetchall()
+    return [row_to_reference(row) for row in rows]
 
-    # Map each row to a Reference object; duplicates should not occur if query is correct
-    return [
-        Reference(
-            row[0],
-            row[1],
-            ReferenceType(row[2]),
-            row[3],
-            comment=row[4]
-        )
-        for row in rows
-    ]
+
 def delete_reference(reference_key: str):
     sql = text("DELETE FROM reference_table WHERE reference_key = :reference_key")
     db.session.execute(sql, { "reference_key": reference_key })

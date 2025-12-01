@@ -1,14 +1,9 @@
-import json
 from sqlalchemy import text
-#from entities.reference import Reference, ReferenceType
 from config import db
+from entities.tag import Tag
 
-
-def get_tags_with_counts():
-    """Return a list of tags with their reference counts ordered by count desc.
-
-    Each item is a dict: { 'name': str, 'count': int }
-    """
+def get_tags_with_counts()-> list[tuple[Tag, int]]:
+    """Return a list of tags with their reference counts ordered by count desc."""
     sql = text(
         "SELECT t.name, COUNT(rt.reference_id) as cnt "
         "FROM tags t "
@@ -17,17 +12,18 @@ def get_tags_with_counts():
         "ORDER BY cnt DESC, t.name ASC"
     )
     rows = db.session.execute(sql).fetchall()
-    return [{ 'name': row[0], 'count': int(row[1]) } for row in rows]
-    
-def get_tags_by_reference(reference_id: int):
+    return [(Tag(name=row[0]), int(row[1])) for row in rows]
+
+def get_reference_tags(reference_id: int):
     sql = text(
         "SELECT t.name "
         "FROM tags t "
-        "LEFT JOIN reference_taggins rt ON rt.tag_id = t.id "
-        "WHERE rt.reference_id = :reference_id"
+        "JOIN reference_taggins rt ON rt.tag_id = t.id "
+        "WHERE rt.reference_id = :reference_id "
+        "ORDER BY t.name"
     )
-    tags = db.session.execute(sql, {"reference_id": reference_id}).fetchall()
-    return [tag for tag in tags]
-    
+    rows = db.session.execute(sql, {"reference_id": reference_id}).fetchall()
+    return [Tag(name=row[0]) for row in rows]
+
 def update_tags():
     pass

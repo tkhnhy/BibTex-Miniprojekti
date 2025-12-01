@@ -4,7 +4,7 @@ Suite Setup      Open And Configure Browser
 Suite Teardown   Close Browser
 Test Setup       Reset References
 
-**Keywords**
+*** Keywords ***
 Input Book With Fields
     [Arguments]    ${key}    ${author}    ${title}    ${publisher}    ${year}
     Select From List By Label  reference_type  Book
@@ -20,7 +20,7 @@ Input Tag
     Click Button  Add tag
 
 Remove Tag
-    Click Button  remove-tag-btn
+    Click Element  css:.remove-tag-btn
 
 *** Test Cases ***
 Add Tags On New Reference Form

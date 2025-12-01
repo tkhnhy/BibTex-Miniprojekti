@@ -130,9 +130,8 @@ def get_filtered_references(filters):
 
 
 def delete_reference(reference_key: str):
-    sql = text("DELETE FROM reference_table WHERE reference_key = :reference_key RETURNING id")
-    reference_id = db.session.execute(sql, { "reference_key": reference_key }).fetchone()[0]
-    delete_tags_from_reference(reference_id, commit=False)
+    sql = text("DELETE FROM reference_table WHERE reference_key = :reference_key")
+    db.session.execute(sql, { "reference_key": reference_key })
     db.session.commit()
 
 def update_reference(reference_type: str, old_reference_key: str, new_reference_key: str,

@@ -30,6 +30,7 @@ Filtering shows only the selected reference type
     Page Should Contain  ROB02
 
     Select Checkbox  xpath=//input[@value="book"]
+    Scroll Element Into View  btn-apply-filters
     Click Button  Apply Filters
 
     Page Should Contain  ROB01
@@ -48,10 +49,12 @@ Clearing filters restores all references
     Click Button  Create
 
     Select Checkbox  xpath=//input[@value="booklet"]
+    Scroll Element Into View  btn-apply-filters
     Click Button  Apply Filters
 
     Page Should Contain  Number of references: 0
-
+    
+    Scroll Element Into View  btn-clear-filters
     Click Button  Clear Filters
 
     # All references should now show

@@ -34,6 +34,7 @@ Filtering shows only the selected tag type
     Page Should Contain  ROB02
 
     Select Checkbox  xpath=//input[@value="reviewed"]
+    Scroll Element Into View  btn-apply-filters
     Click Button  Apply Filters
 
     Page Should Contain  ROB02
@@ -68,11 +69,13 @@ Clearing filters restores all references
     Page Should Contain  ROB02
 
     Select Checkbox  xpath=//input[@value="reviewed"]
+    Scroll Element Into View  btn-apply-filters
     Click Button  Apply Filters
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
 
+    Scroll Element Into View  btn-clear-filters
     Click Button  Clear Filters
 
     Page Should Contain  ROB01

@@ -6,18 +6,20 @@ Edit reference
 
 {% block body %}
 
+<h2>Edit reference details</h2>
+
 <form action="/save_edited_reference/{{reference.key}}" method="post">
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <ul>
-      {% for message in messages %}
-        <li>{{ message }}</li>
-      {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
-  <strong>Edit the reference details below:</strong><br><br>
-  <label for="reference_type">Entry Type:</label>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+
+    <label for="reference_type">Entry Type:</label>
     <select name="reference_type" id="reference_type" required>
         {% for ref_type in reference_types %}
             {% if ref_type.display_str() != reference.type.display_str() %}
@@ -33,6 +35,16 @@ Edit reference
         <label for="reference_key">Reference Key:</label>
         <input id="reference_key" type="text" name="reference_key" value="{{ reference.key }}" required>
     </div>
+    <br>
+    <div class="field-row" id="tag-row">
+        <div style="display:flex; gap:8px; align-items:center;">
+            <label for="tag-input">Tags:</label>
+            <input id="tag-input" type="text" placeholder="Enter tag" />
+            <button id="add-tag-btn" type="button" class="button-green">Add tag</button>
+        </div>
+        <div id="tags-list" style="margin-top: 8px;"></div>
+    </div>
+    <div id="hidden-tag-inputs"></div>
 
     <div id="fields-container">
         <div id="required-group">
@@ -56,129 +68,16 @@ Edit reference
         </div>
     </div>
 
-  <button type="submit" class="button-green">
-    Save changes
-  </button>
-  <button type="reset" class="button-red" onclick="location.href='/'">
-    Cancel
-  </button>
+    <button type="submit" class="button-green">
+        Save changes
+    </button>
+    <button type="reset" class="button-red" onclick="location.href='/'">
+        Cancel
+    </button>
 </form>
 
 {% endblock %}
 
 {% block scripts %}
-<script>
-const fieldRequirementsMap = {{ field_requirements_map | tojson }};
-const allFields = {{ reference_fields | tojson }};
-
-const referenceTypeSelect = document.getElementById("reference_type");
-const fieldsContainer = document.getElementById("fields-container");
-const requiredGroup = document.getElementById("required-group");
-const optionalGroup = document.getElementById("optional-group");
-const requiredContainer = document.getElementById("required-fields");
-const optionalContainer = document.getElementById("optional-fields");
-
-function setRequiredAttributes(requiredFields) {
-    // set HTML required for single-field requirements
-    allFields.forEach(name => {
-        const input = document.querySelector(`[name="${name}"]`);
-        if (!input) return;
-        const directlyRequired = requiredFields.some(r => !Array.isArray(r) && r === name);
-        input.required = !!directlyRequired;
-    });
-}
-
-function moveAllFieldRowsBack(container) {
-    // move all fields back to fieldsContainer from the given container
-    while (container.firstChild) {
-        const child = container.firstChild;
-        if (child.nodeType !== Node.ELEMENT_NODE) {
-            container.removeChild(child);
-        } else if (child.classList && child.classList.contains('alt-group')) {
-            const toMove = Array.from(child.querySelectorAll('.field-row'));
-            toMove.forEach(el => fieldsContainer.appendChild(el));
-            container.removeChild(child);
-        } else if (child.classList && child.classList.contains('field-row')) {
-            fieldsContainer.appendChild(child);
-        } else {
-            // unknown element, just remove?
-            container.removeChild(child);
-        }
-    }
-}
-
-function reorderFields(requiredFields) {
-    // Reorder fields into required and optional containers based on requiredFields
-    moveAllFieldRowsBack(requiredContainer);
-    moveAllFieldRowsBack(optionalContainer);
-    const seen = new Set();
-
-    // Put required fields into required container
-    requiredFields.forEach(req => {
-        if (Array.isArray(req)) { // alternative group
-            // create a group for alternative required fields
-            const group = document.createElement('div');
-            group.className = 'alt-group';
-            req.forEach(name => {
-                const row = fieldsContainer.querySelector(`.field-row[data-name="${name}"]`);
-                if(!row) return;
-                if (group.childElementCount > 0) {
-                    const sep = document.createElement('span');
-                    sep.className = 'alt-sep';
-                    sep.textContent = 'or';
-                    group.appendChild(sep);
-                }
-                group.appendChild(row);
-                seen.add(name);
-            });
-            if (group.childElementCount > 0) {
-                requiredContainer.appendChild(group);
-            }
-        } else {
-            const row = fieldsContainer.querySelector(`.field-row[data-name="${req}"]`);
-            if (row) {
-                requiredContainer.appendChild(row);
-                seen.add(req);
-            }
-        }
-    });
-
-    // Put remaining fields into optional container in allFields order
-    allFields.forEach(name => {
-        if (seen.has(name)) return;
-        const row = fieldsContainer.querySelector(`.field-row[data-name="${name}"]`);
-        if (row) optionalContainer.appendChild(row);
-    });
-
-    // Hide the required group when there are no required fields
-    if (!requiredFields || requiredFields.length === 0) {
-        requiredGroup.style.display = "none";
-    } else {
-        requiredGroup.style.display = "";
-    }
-}
-
-// Dynamic update to form based on selected reference type
-function applyReferenceType(typeValue) {
-    if (!typeValue || !(typeValue in fieldRequirementsMap)) {
-        fieldsContainer.style.display = "none";
-        return;
-    } else {
-        const requiredFields = fieldRequirementsMap[typeValue] || [];
-        setRequiredAttributes(requiredFields);
-        reorderFields(requiredFields);
-        fieldsContainer.style.display = "";
-    }
-}
-
-// Update form when reference type changes
-referenceTypeSelect.addEventListener("change", function() {
-    applyReferenceType(this.value);
-});
-
-// Initialize form on page load
-document.addEventListener("DOMContentLoaded", function() {
-    applyReferenceType(referenceTypeSelect.value);
-});
-</script>
+{% include "scripts/reference_form_script.html" %}
 {% endblock %}

@@ -3,8 +3,10 @@ from sqlalchemy import text
 from config import db, app
 
 def reset_db():
-    print("Clearing contents from table references")
-    sql = text("DELETE FROM reference_table")
+    print("Clearing contents from reference_table, tags, and reference_taggins")
+    sql = text("DELETE FROM reference_table;" \
+    "           DELETE FROM tags;" \
+    "           DELETE FROM reference_taggins;")
     db.session.execute(sql)
     db.session.commit()
 
@@ -39,6 +41,8 @@ def setup_db():
     schema_path = os.path.join(os.path.dirname(__file__), 'schema.sql')
     with open(schema_path, 'r', encoding='utf-8') as f:
         schema_sql = f.read().strip()
+    print("Executing schema SQL:")
+    print(text(schema_sql))
 
     sql = text(schema_sql)
     db.session.execute(sql)

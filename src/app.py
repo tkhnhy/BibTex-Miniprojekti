@@ -15,8 +15,11 @@ def route_index():
     # The filter is a list of tuples in format: (filter type, list of filter values).
     filters = []
     selected_types = request.args.getlist("reference_type[]")
+    selected_tags = request.args.getlist("tag[]")
     if selected_types:
         filters.append(("type", selected_types))
+    if selected_tags:
+        filters.append(("tag", selected_tags))
 
     try:
         if not filters:

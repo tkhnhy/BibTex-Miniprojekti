@@ -13,13 +13,22 @@ My references
     <form action="/" method="get">
         <label><b>Select reference types:</b></label><br>
         {% for ref_type in reference_types %}
-        <input type="checkbox" name="reference_type[]" value="{{ ref_type.value }}">
-        {{ ref_type.display_str() }}<br>
+            <input type="checkbox" name="reference_type[]" value="{{ ref_type.value }}">
+            {{ ref_type.display_str() }}<br>
         {% endfor %}
-    <button type="submit" class="button-green">Apply Filters</button>
+        <label><b>Select tags:</b></label><br>
+        {% if tags and tags|length > 0 %}
+            {% for tag, count in tags %}
+                <input type="checkbox" name="tag[]" value="{{ tag.name }}">
+                {{ tag.name }}<br>
+            {% endfor %}
+        {% else %}
+            <p>No tags available.</p>
+        {% endif %}
+    <button type="submit" class="button-green" id="btn-apply-filters">Apply Filters</button>
 </form>
 <form action="/" method="get" style="display:inline;">
-    <button type="submit" class="button-green">
+    <button type="submit" class="button-green" id="btn-clear-filters">
         Clear Filters
     </button>
 </form>

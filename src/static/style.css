@@ -70,6 +70,7 @@
   text-decoration: none;
   display: inline-block;
   font-size: 0.9em;
+  margin-top:0.5rem;
 }
 
 .button-green:hover {

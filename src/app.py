@@ -165,7 +165,7 @@ def upload_bib():
                     reference.type.value,
                     reference.key,
                     reference.content,
-                    comment=''
+                    comment=reference.comment
                 )
         flash("File uploaded and references imported successfully.")
     except Exception as error:

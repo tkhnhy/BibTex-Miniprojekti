@@ -100,12 +100,12 @@ class Reference:
         #This makes the reference show as a bibtex style entry when calling it as a str. (as defined in the backlog)
 
         bibtex_string = ""
-        if self.comment:
-            bibtex_string += f"% {self.comment}\n"
         bibtex_string += f"@{str(self.type.value)}{{{self.key},\n"
         for key, value in self.content.items():
             bibtex_string += f"   {key} = {{{value}}},\n"
-        bibtex_string += "}"
+        bibtex_string += "}\n"
+        if self.comment:
+            bibtex_string += f"% {self.comment}\n"
 
         return bibtex_string
 
@@ -113,12 +113,6 @@ class Reference:
     def from_bibtex(cls, id_: int, bibtex_str: str):
         """Create a Reference instance from a BibTeX formatted string."""
         lines = bibtex_str.strip().splitlines()
-
-        # Extract comment if present
-        comment = ''
-        if lines[0].startswith('%'):
-            comment = lines[0][1:].strip()
-            lines = lines[1:]
 
         # Parse header: @type{key,
         header = lines[0].strip()
@@ -136,5 +130,10 @@ class Reference:
             if '=' in line:
                 field, value = line.split('=', 1)
                 content[field.strip()] = value.strip().strip('{}')
+
+        # Extract comment if present
+        comment = ''
+        if lines[-1].strip().startswith('%'):
+            comment = lines[-1].strip().removeprefix('%').strip()
 
         return cls(id_=id_, key=key, type_=type_, content=content, comment=comment)

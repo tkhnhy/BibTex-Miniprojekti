@@ -113,8 +113,8 @@ My references
     <h3>My tags with their reference counts</h3>
     {% if tags and tags|length > 0 %}
         <ul class="tag-list">
-            {% for tag in tags %}
-                <li class="tag-item">{{ tag.name }} <span class="tag-count">({{ tag.count }})</span></li>
+            {% for tag_tuple in tags %}
+                <li class="tag-item">{{ tag_tuple[0].name }} <span class="tag-count">({{ tag_tuple[1] }})</span></li>
             {% endfor %}
         </ul>
     {% else %}

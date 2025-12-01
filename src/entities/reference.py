@@ -89,7 +89,7 @@ class Reference:
         Optional comment about the reference.
     """
 
-    def __init__(self, id_: int, key: str, type_: ReferenceType | str, # pylint: disable=too-many-arguments
+    def __init__(self, id_: int, key: str, type_: ReferenceType | str,
                  content: dict[str, str], *, tags: list[Tag] = None, comment: str = ''):
         self.id = int(id_)
         self.key = str(key)
@@ -103,8 +103,7 @@ class Reference:
             self.type = ReferenceType(type_)
 
     def __str__(self):
-        #This makes the reference show as a bibtex style entry when calling it as a str. (as defined in the backlog)
-
+        #This makes the reference show as a bibtex style entry when calling it as a str
         bibtex_string = ""
         bibtex_string += f"@{str(self.type.value)}{{{self.key},\n"
         for key, value in self.content.items():

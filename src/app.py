@@ -1,7 +1,7 @@
 import io
 from flask import redirect, render_template, request, jsonify, flash, send_file
 from db_helper import reset_db
-from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType
+from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType, Reference
 from repositories.reference_repository import get_references, create_reference, get_reference_by_key, \
     add_ref_for_storytests, get_references_by_keys, get_filtered_references
 from repositories.reference_repository import delete_reference, update_reference
@@ -46,6 +46,7 @@ def route_new_reference():
 @app.route("/create_reference", methods=["POST"])
 def route_reference_creation():
     reference_type = request.form.get("reference_type")
+    # print("reference_type:", reference_type)
     reference_key = request.form.get("reference_key")
     reference_data = {
         key: value for key, value in request.form.items()
@@ -54,6 +55,7 @@ def route_reference_creation():
     comment = request.form.get("comment", "").strip()
     try:
         validate_reference(reference_type, reference_key, reference_data)
+        # print(reference_type)
         create_reference(reference_type, reference_key, reference_data, comment)
         return redirect("/")
     except UserInputError as error:
@@ -138,6 +140,42 @@ def download_bib():
         download_name="references.bib",
         mimetype="application/x-bibtex"
     )
+
+@app.route("/upload_bib", methods=["POST"])
+def upload_bib():
+    if 'file' not in request.files:
+        flash("No file part in the request.")
+        return redirect("/")
+
+    file = request.files['file']
+    if file.filename == '':
+        flash("No selected file.")
+        return redirect("/")
+
+    if not file:
+        return redirect("/")
+
+    try:
+        reset_db()
+        content = file.read().decode("utf-8")
+        entries = content.split("\n@")
+
+        for i, entry in enumerate(entries):
+            if i > 0:
+                entry = "@" + entry
+            reference = Reference.from_bibtex(i, entry)
+            if reference:
+                create_reference(
+                    reference.type.value,
+                    reference.key,
+                    reference.content,
+                    comment=reference.comment
+                )
+        flash("File uploaded and references imported successfully.")
+    except Exception as error:
+        flash(f"Error processing file: {error}")
+
+    return redirect("/")
 
 # Routes for testing
 if test_env:

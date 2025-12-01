@@ -10,6 +10,7 @@ ${BROWSER}    chrome
 ${HEADLESS}   false
 ${CREATE_URL}  http://${SERVER}/new_reference
 ${QUICK_ADD_URL}  http://${SERVER}/reference_for_storytest
+${FILES_DIR}    ${EXECDIR}/src/story_tests/files
 
 *** Keywords ***
 Open And Configure Browser

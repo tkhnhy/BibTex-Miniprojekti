@@ -98,6 +98,10 @@
   margin-bottom: 0.5rem;
 }
 
+#upload-btn {
+  font-size: 0.9em;
+}
+
 .toggle-details:hover {
   background-color: #025aa5;
 }

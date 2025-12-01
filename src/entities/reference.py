@@ -5,7 +5,7 @@ COMMON_BIBTEX_FIELDS: list[str] = [
     "author", "editor", "title", "journal", "booktitle", "publisher",
     "year", "month", "volume", "number", "pages", "chapter", "school",
     "institution", "note", "series", "address", "edition", "howpublished",
-    "organization", "url",
+    "organization", "url", "doi",
 ]
 
 class ReferenceType(Enum):
@@ -106,11 +106,40 @@ class Reference:
         #This makes the reference show as a bibtex style entry when calling it as a str. (as defined in the backlog)
 
         bibtex_string = ""
-        if self.comment:
-            bibtex_string += f"% {self.comment}\n"
         bibtex_string += f"@{str(self.type.value)}{{{self.key},\n"
         for key, value in self.content.items():
             bibtex_string += f"   {key} = {{{value}}},\n"
-        bibtex_string += "}"
+        bibtex_string += "}\n"
+        if self.comment:
+            bibtex_string += f"% {self.comment}\n"
 
         return bibtex_string
+
+    @classmethod
+    def from_bibtex(cls, id_: int, bibtex_str: str):
+        """Create a Reference instance from a BibTeX formatted string."""
+        lines = bibtex_str.strip().splitlines()
+
+        # Parse header: @type{key,
+        header = lines[0].strip()
+        at_pos = header.find('@')
+        brace_pos = header.find('{')
+        comma_pos = header.find(',', brace_pos)
+
+        type_ = ReferenceType(header[at_pos + 1:brace_pos].strip())
+        key = header[brace_pos + 1:comma_pos].strip()
+
+        # Parse content fields
+        content = {}
+        for line in lines[1:-1]:
+            line = line.strip().rstrip(',')
+            if '=' in line:
+                field, value = line.split('=', 1)
+                content[field.strip()] = value.strip().strip('{}')
+
+        # Extract comment if present
+        comment = ''
+        if lines[-1].strip().startswith('%'):
+            comment = lines[-1].strip().removeprefix('%').strip()
+
+        return cls(id_=id_, key=key, type_=type_, content=content, comment=comment)

@@ -67,4 +67,24 @@ document.querySelectorAll('.toggle-details').forEach(button => {
     // initialise button on load
     updateDownloadButton();
 })();
+
+// Upload file logic
+document.getElementById('fileInput').addEventListener('change', async function() {
+    if (!this.files[0]) return;
+
+    const formData = new FormData();
+    formData.append('file', this.files[0]);
+
+    try {
+        const response = await fetch('/upload_bib', {
+            method: 'POST',
+            body: formData
+        });
+        // Reload the page to see the uploaded references
+        window.location.reload();
+    } catch (error) {
+        console.error('Upload failed:', error);
+        alert('Upload failed: ' + error.message);
+    }
+});
 </script>

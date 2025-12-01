@@ -2,6 +2,7 @@ import unittest
 from app import app
 from db_helper import setup_db, reset_db
 from util import validate_reference, UserInputError
+from unittest.mock import patch
 
 class TestReferenceValidation(unittest.TestCase):
     @classmethod
@@ -43,3 +44,27 @@ class TestReferenceValidation(unittest.TestCase):
                 "juokse",
                 {"author": "aa", "title": "aa", "publisher": "aa"}  # missing year
             )
+
+    def test_invalid_json_string(self):
+        with self.assertRaises(UserInputError):
+            validate_reference("book", "abc", "{not: valid json}")
+
+    def test_content_not_dict(self):
+        with self.assertRaises(UserInputError):
+            validate_reference("book", "abc", 123)  # not dict or JSOn
+
+    def test_missing_reference_type(self):
+        with self.assertRaises(UserInputError):
+            validate_reference("", "abc", {"author": "aa", "title": "aa", "publisher": "aa", "year": "2025"})
+    
+    def test_duplicate_key(self):
+        with patch("util.get_reference_by_key", return_value={"key": "abc"}):
+            with self.assertRaises(UserInputError):
+                validate_reference(
+                    "book",
+                    "abc",
+                    {"author": "aa", "title": "aa", "publisher": "aa", "year": "2025"}
+                )
+    def test_alternative_required_fields_missing(self):
+        with self.assertRaises(UserInputError):
+            validate_reference("book", "abc", {"title": "T", "publisher": "P", "year": "2000"}) # missing author and editor

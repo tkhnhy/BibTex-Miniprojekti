@@ -1,13 +1,12 @@
 import io
 from flask import redirect, render_template, request, jsonify, flash, send_file
 from db_helper import reset_db
-from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType
+from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType, Reference
 from repositories.reference_repository import get_references, create_reference, get_reference_by_key, \
     add_ref_for_storytests, get_references_by_keys, get_filtered_references
 from repositories.reference_repository import delete_reference, update_reference
 from config import app, test_env
 from util import validate_reference, UserInputError
-from entities.reference import Reference
 
 @app.route("/", methods=["GET", "POST"])
 def route_index():
@@ -149,28 +148,28 @@ def upload_bib():
         flash("No selected file.")
         return redirect("/")
 
-    if file:
-        try:
-            reset_db()
+    if not file:
+        return redirect("/")
 
-            content = file.read().decode("utf-8")
-            entries = content.split("\n@")
-            for i, entry in enumerate(entries):
-                if i > 0:
-                    entry = "@" + entry
-                # print(entry)
-                reference = Reference(i, None, None, None, None, entry)
-                # print("reference:", reference.type.display_str(), reference.key, reference.content)
-                if reference:
-                    create_reference(
-                        reference.type.value,
-                        reference.key,
-                        reference.content,
-                        comment=''
-                    )
-            flash("File uploaded and references imported successfully.")
-        except Exception as error:
-            flash(f"Error processing file: {error}")
+    try:
+        reset_db()
+        content = file.read().decode("utf-8")
+        entries = content.split("\n@")
+
+        for i, entry in enumerate(entries):
+            if i > 0:
+                entry = "@" + entry
+            reference = Reference.from_bibtex(i, entry)
+            if reference:
+                create_reference(
+                    reference.type.value,
+                    reference.key,
+                    reference.content,
+                    comment=''
+                )
+        flash("File uploaded and references imported successfully.")
+    except Exception as error:
+        flash(f"Error processing file: {error}")
 
     return redirect("/")
 

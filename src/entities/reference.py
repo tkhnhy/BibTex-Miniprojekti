@@ -83,44 +83,18 @@ class Reference:
     content : dict[str, str]
         Mapping from field name to content.
     """
-    
-    def __init__(self, id_: int, key: str | None, type_: ReferenceType | str | None, content: dict[str, str] | None, comment: str | None = '' , bibtex_str: str | None = None): # pylint: disable=too-many-arguments
-        if bibtex_str is not None:
-            lines = bibtex_str.strip().splitlines()
-            comment = ''
-            if lines[0].startswith('%'):
-                self.comment = lines[0][1:].strip()
-                lines = lines[1:]
 
-            header = lines[0].strip()
-            type_start = header.find('@') + 1
-            type_end = header.find('{')
-            self.type = ReferenceType(header[type_start:type_end].strip())
+    def __init__(self, id_: int, key: str, type_: ReferenceType | str, # pylint: disable=too-many-arguments,too-many-positional-arguments
+                 content: dict[str, str], comment: str = ''):
+        self.id = int(id_)
+        self.key = str(key)
+        self.content = content
+        self.comment = comment
 
-            key_start = type_end + 1
-            key_end = header.find(',', key_start)
-            self.key = header[key_start:key_end].strip()
-
-            self.content = {}
-            for line in lines[1:-1]:
-                line = line.strip().rstrip(',')
-                if '=' in line:
-                    field, value = line.split('=', 1)
-                    field = field.strip()
-                    value = value.strip().strip('{}')
-                    self.content[field] = value
-
-            # return cls(id_=0, key=ref_key, type_=ref_type, content=content, comment=comment)
+        if isinstance(type_, ReferenceType):
+            self.type = type_
         else:
-            self.id = int(id_)
-            self.key = str(key)
-            self.content = content
-            self.comment = comment
-
-            if isinstance(type_, ReferenceType):
-                self.type = type_
-            else:
-                self.type = ReferenceType(type_)
+            self.type = ReferenceType(type_)
 
     def __str__(self):
         #This makes the reference show as a bibtex style entry when calling it as a str. (as defined in the backlog)
@@ -134,3 +108,33 @@ class Reference:
         bibtex_string += "}"
 
         return bibtex_string
+
+    @classmethod
+    def from_bibtex(cls, id_: int, bibtex_str: str):
+        """Create a Reference instance from a BibTeX formatted string."""
+        lines = bibtex_str.strip().splitlines()
+
+        # Extract comment if present
+        comment = ''
+        if lines[0].startswith('%'):
+            comment = lines[0][1:].strip()
+            lines = lines[1:]
+
+        # Parse header: @type{key,
+        header = lines[0].strip()
+        at_pos = header.find('@')
+        brace_pos = header.find('{')
+        comma_pos = header.find(',', brace_pos)
+
+        type_ = ReferenceType(header[at_pos + 1:brace_pos].strip())
+        key = header[brace_pos + 1:comma_pos].strip()
+
+        # Parse content fields
+        content = {}
+        for line in lines[1:-1]:
+            line = line.strip().rstrip(',')
+            if '=' in line:
+                field, value = line.split('=', 1)
+                content[field.strip()] = value.strip().strip('{}')
+
+        return cls(id_=id_, key=key, type_=type_, content=content, comment=comment)

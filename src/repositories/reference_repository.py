@@ -109,6 +109,9 @@ def get_filtered_references(filters):
         if filter_type == "type":
             where_clauses.append(f"r.reference_type IN :{param_name}")
             params[param_name] = tuple(values)
+        elif filter_type == "tag":
+            where_clauses.append(f"t.name IN :{param_name}")
+            params[param_name] = tuple(values)
 
     if where_clauses:
         sql_parts.append("WHERE " + " AND ".join(where_clauses))

@@ -8,6 +8,7 @@ from repositories.reference_repository import delete_reference, update_reference
 from repositories.tag_repository import get_tags_with_counts, get_reference_tags
 from config import app, test_env
 from util import validate_reference, UserInputError
+from entities.reference import Reference
 
 @app.route("/", methods=["GET", "POST"])
 def route_index():

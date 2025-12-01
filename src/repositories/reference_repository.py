@@ -2,6 +2,7 @@ import json
 from sqlalchemy import text
 from entities.reference import Reference, ReferenceType
 from entities.tag import Tag
+from repositories.tag_repository import add_tags_to_reference, delete_tags_from_reference
 from config import db
 
 def row_to_reference(row) -> Reference:
@@ -73,13 +74,18 @@ def get_reference_by_key(key: str):
     return row_to_reference(row)
 
 
-def create_reference(reference_type: str, reference_key: str, reference_content: dict, comment: str = ''):
-    sql = text("INSERT INTO reference_table (reference_type, reference_key, reference_data, comment)" \
-                "VALUES (:reference_type, :reference_key, :reference_data, :comment)")
-    db.session.execute(sql, { "reference_type": reference_type, "reference_key": reference_key,
+def create_reference(reference_type: str, reference_key: str, reference_content: dict,
+                     tags: list[str], comment: str = ''):
+    sql = text(
+        "INSERT INTO reference_table (reference_type, reference_key, reference_data, comment) "
+        "VALUES (:reference_type, :reference_key, :reference_data, :comment) "
+        "RETURNING id"
+    )
+    result = db.session.execute(sql, { "reference_type": reference_type, "reference_key": reference_key,
                              "reference_data": json.dumps(reference_content), "comment": comment})
+    reference_id = result.fetchone()[0]
+    add_tags_to_reference(reference_id, tags, commit=False)
     db.session.commit()
-
 
 def get_filtered_references(filters):
     sql_parts = [
@@ -122,7 +128,11 @@ def delete_reference(reference_key: str):
     db.session.commit()
 
 def update_reference(reference_type: str, old_reference_key: str, new_reference_key: str,
-                     reference_content: dict, comment: str = ''):
+                     reference_content: dict, tags: list[str], comment: str = ''):
+    reference = get_reference_by_key(old_reference_key)
+    if reference is None:
+        raise ValueError("Reference not found")
+
     sql = text("UPDATE reference_table " \
                "SET reference_type = :reference_type, " \
                    "reference_key = :new_reference_key, " \
@@ -133,6 +143,8 @@ def update_reference(reference_type: str, old_reference_key: str, new_reference_
                               "reference_data": json.dumps(reference_content),
                               "new_reference_key": new_reference_key,
                               "comment": comment})
+    delete_tags_from_reference(reference.id, commit=False)
+    add_tags_to_reference(reference.id, tags, commit=False)
     db.session.commit()
 
 # Function for some story tests to skip frontend to add a reference.

@@ -1,0 +1,197 @@
+<script>
+
+// Reference fields dynamic handling
+(function() {
+    const fieldRequirementsMap = {{ field_requirements_map | tojson }};
+    const allFields = {{ reference_fields | tojson }};
+
+    const referenceTypeSelect = document.getElementById("reference_type");
+    const fieldsContainer = document.getElementById("fields-container");
+    const requiredGroup = document.getElementById("required-group");
+    const optionalGroup = document.getElementById("optional-group");
+    const requiredContainer = document.getElementById("required-fields");
+    const optionalContainer = document.getElementById("optional-fields");
+
+    function setRequiredAttributes(requiredFields) {
+        // set HTML required for single-field requirements
+        allFields.forEach(name => {
+            const input = document.querySelector(`[name="${name}"]`);
+            if (!input) return;
+            const directlyRequired = requiredFields.some(r => !Array.isArray(r) && r === name);
+            input.required = !!directlyRequired;
+        });
+    }
+
+    function moveAllFieldRowsBack(container) {
+        // move all fields back to fieldsContainer from the given container
+        while (container.firstChild) {
+            const child = container.firstChild;
+            if (child.nodeType !== Node.ELEMENT_NODE) {
+                container.removeChild(child);
+            } else if (child.classList && child.classList.contains('alt-group')) {
+                const toMove = Array.from(child.querySelectorAll('.field-row'));
+                toMove.forEach(el => fieldsContainer.appendChild(el));
+                container.removeChild(child);
+            } else if (child.classList && child.classList.contains('field-row')) {
+                fieldsContainer.appendChild(child);
+            } else {
+                // unknown element, just remove?
+                container.removeChild(child);
+            }
+        }
+    }
+
+    function reorderFields(requiredFields) {
+        // Reorder fields into required and optional containers based on requiredFields
+        moveAllFieldRowsBack(requiredContainer);
+        moveAllFieldRowsBack(optionalContainer);
+        const seen = new Set();
+
+        // Put required fields into required container
+        requiredFields.forEach(req => {
+            if (Array.isArray(req)) { // alternative group
+                // create a group for alternative required fields
+                const group = document.createElement('div');
+                group.className = 'alt-group';
+                req.forEach(name => {
+                    const row = fieldsContainer.querySelector(`.field-row[data-name="${name}"]`);
+                    if(!row) return;
+                    if (group.childElementCount > 0) {
+                        const sep = document.createElement('span');
+                        sep.className = 'alt-sep';
+                        sep.textContent = 'or';
+                        group.appendChild(sep);
+                    }
+                    group.appendChild(row);
+                    seen.add(name);
+                });
+                if (group.childElementCount > 0) {
+                    requiredContainer.appendChild(group);
+                }
+            } else {
+                const row = fieldsContainer.querySelector(`.field-row[data-name="${req}"]`);
+                if (row) {
+                    requiredContainer.appendChild(row);
+                    seen.add(req);
+                }
+            }
+        });
+
+        // Put remaining fields into optional container in allFields order
+        allFields.forEach(name => {
+            if (seen.has(name)) return;
+            const row = fieldsContainer.querySelector(`.field-row[data-name="${name}"]`);
+            if (row) optionalContainer.appendChild(row);
+        });
+
+        // Hide the required group when there are no required fields
+        if (!requiredFields || requiredFields.length === 0) {
+            requiredGroup.style.display = "none";
+        } else {
+            requiredGroup.style.display = "";
+        }
+    }
+
+    // Dynamic update to form based on selected reference type
+    function applyReferenceType(typeValue) {
+        if (!typeValue || !(typeValue in fieldRequirementsMap)) {
+            fieldsContainer.style.display = "none";
+            return;
+        } else {
+            const requiredFields = fieldRequirementsMap[typeValue] || [];
+            setRequiredAttributes(requiredFields);
+            reorderFields(requiredFields);
+            fieldsContainer.style.display = "";
+        }
+    }
+
+    // Update form when reference type changes
+    referenceTypeSelect.addEventListener("change", function() {
+        applyReferenceType(this.value);
+    });
+
+    // Initialize form on page load
+    document.addEventListener("DOMContentLoaded", function() {
+        applyReferenceType(referenceTypeSelect.value);
+    });
+})();
+
+// Tag input handling
+(function() {
+    const tagInput = document.getElementById('tag-input');
+    const addBtn = document.getElementById('add-tag-btn');
+    const tagsList = document.getElementById('tags-list');
+    const hiddenTagInputs = document.getElementById('hidden-tag-inputs');
+
+    const normalize = (s) => s.trim();
+
+    function createHiddenInput(value) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'tags';
+        input.value = value;
+        return input;
+    }
+
+    function tagExists(value) {
+        return Array.from(hiddenTagInputs.querySelectorAll('input[name="tags"]'))
+            .some(i => i.value.toLowerCase() === value.toLowerCase());
+    }
+
+    function addTag(value) {
+        const norm = normalize(value);
+        console.log(`Adding tag: '${norm}'`);
+        if (!norm) return;
+        if (tagExists(norm)) {
+            tagInput.value = '';
+            return;
+        }
+
+        // create visible tag item
+        const span = document.createElement('span');
+        span.className = 'tag-item';
+
+        const textSpan = document.createElement('span');
+        textSpan.textContent = norm;
+        span.appendChild(textSpan);
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.textContent = '✕';
+        removeBtn.title = 'remove tag';
+        span.appendChild(removeBtn);
+
+        // create and append hidden input
+        const hidden = createHiddenInput(norm);
+        hiddenTagInputs.appendChild(hidden);
+
+        // remove handler
+        removeBtn.addEventListener('click', () => {
+            hidden.remove();
+            span.remove();
+        });
+
+        tagsList.appendChild(span);
+        tagInput.value = '';
+        tagInput.focus();
+    }
+
+    // allow Enter or button to add tag
+    addBtn.addEventListener('click', () => addTag(tagInput.value));
+    tagInput.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter') {
+            ev.preventDefault();
+            addTag(tagInput.value);
+        }
+    });
+
+    // initialize when editing existing reference
+    {% set initial_tags = reference.tags | map(attribute='name') | list if reference is defined else [] %}
+    const initial = {{ initial_tags | tojson }};
+    document.addEventListener("DOMContentLoaded", function() {
+        if (Array.isArray(initial) && initial.length) {
+            initial.forEach(t => addTag(t));
+        }
+    });
+})();
+</script>

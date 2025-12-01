@@ -5,7 +5,7 @@ from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType
 from repositories.reference_repository import get_references, create_reference, get_reference_by_key, \
     add_ref_for_storytests, get_references_by_keys, get_filtered_references
 from repositories.reference_repository import delete_reference, update_reference
-from repositories.tag_repository import get_tags_with_counts, get_reference_tags
+from repositories.tag_repository import get_tags_with_counts
 from config import app, test_env
 from util import validate_reference, UserInputError
 
@@ -24,6 +24,7 @@ def route_index():
         else:
             references = get_filtered_references(filters)
         tags = get_tags_with_counts()
+        print([reference.content for reference in references])
     except Exception as error:
         flash("Could not fetch references: " + str(error))
         references = []
@@ -47,14 +48,15 @@ def route_new_reference():
 def route_reference_creation():
     reference_type = request.form.get("reference_type")
     reference_key = request.form.get("reference_key")
+    tags = request.form.getlist("tags")
     reference_data = {
         key: value for key, value in request.form.items()
-        if key not in ("reference_type", "reference_key", "comment") and value.strip() != ""
+        if key not in ("reference_type", "reference_key", "comment", "tags") and value.strip() != ""
     }
     comment = request.form.get("comment", "").strip()
     try:
         validate_reference(reference_type, reference_key, reference_data)
-        create_reference(reference_type, reference_key, reference_data, comment)
+        create_reference(reference_type, reference_key, reference_data, tags, comment)
         return redirect("/")
     except UserInputError as error:
         flash(str(error))
@@ -79,7 +81,6 @@ def route_delete_reference(reference_key):
 @app.route("/edit_reference/<string:reference_key>")
 def route_edit_reference(reference_key: str):
     reference = get_reference_by_key(reference_key)
-    tags = get_reference_tags(reference.id)
     field_requirements_map = {ref_type.value: ref_type.field_requirements() for ref_type in list(ReferenceType)}
     if reference is None:
         flash("Reference to be edited not found.")
@@ -87,22 +88,22 @@ def route_edit_reference(reference_key: str):
     return render_template("edit_reference.html", reference=reference,
                            reference_types=list(ReferenceType),
                            reference_fields=COMMON_BIBTEX_FIELDS,
-                           field_requirements_map=field_requirements_map,
-                           tags=tags)
+                           field_requirements_map=field_requirements_map)
 
 @app.route("/save_edited_reference/<string:old_reference_key>", methods=["POST"])
 def route_save_edited_reference(old_reference_key: str):
     reference_type = request.form.get("reference_type")
     new_reference_key = request.form.get("reference_key")
+    tags = request.form.getlist("tags")
     reference_data = {
         key: value for key, value in request.form.items()
-        if key not in ("reference_type", "reference_key", "comment") and value.strip() != ""
+        if key not in ("reference_type", "reference_key", "comment", "tags") and value.strip() != ""
     }
     comment = request.form.get("comment", "").strip()
 
     try:
         validate_reference(reference_type, new_reference_key, reference_data, old_key=old_reference_key)
-        update_reference(reference_type, old_reference_key, new_reference_key, reference_data, comment)
+        update_reference(reference_type, old_reference_key, new_reference_key, reference_data, tags, comment)
         return redirect("/")
     except UserInputError as error:
         flash(str(error))

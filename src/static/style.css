@@ -41,12 +41,8 @@
     line-height: 1.5;
 }
 
-.reference-item-details span {
+.reference-item-details .datapoint {
     margin-right: 1.5em;
-}
-
-.tag-item {
-    font-variant-caps: all-petite-caps;
 }
 
 /* Colored buttons */
@@ -106,7 +102,7 @@
   background-color: #025aa5;
 }
 
-/** Create new reference page **/
+/** Reference create and edit forms **/
 .fields-container {
     display: none;
 }
@@ -135,4 +131,23 @@
   padding-left: 10px;
   overflow-y: auto;
   z-index: 2;
+}
+
+.tag-item {
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tag-item button {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 1em;
+    line-height: 1;
+    padding: 0;
 }

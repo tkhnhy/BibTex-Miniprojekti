@@ -110,7 +110,12 @@ def get_filtered_references(filters):
             where_clauses.append(f"r.reference_type IN :{param_name}")
             params[param_name] = tuple(values)
         elif filter_type == "tag":
-            where_clauses.append(f"t.name IN :{param_name}")
+            # use a subquery to filter references that have any of the requested tags
+            # without limiting the outer LEFT JOIN used for collecting all tags
+            where_clauses.append(
+                f"r.id IN (SELECT rt.reference_id FROM reference_taggins rt "
+                f"JOIN tags t2 ON t2.id = rt.tag_id WHERE t2.name IN :{param_name})"
+            )
             params[param_name] = tuple(values)
 
     if where_clauses:

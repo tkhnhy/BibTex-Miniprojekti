@@ -1,3 +1,4 @@
+Sprint 1:
 
 Using Glad, Sad, Mad method.
 
@@ -23,3 +24,27 @@ but it did not fit the course requirements.
 Improvement measures:
 - Agree on common rules for using version control.
 - Having better communication, even on smaller things.
+
+
+Sprint 2:
+
+Using Glad, Sad, Mad method.
+
+Sad:
+- Tag story couldn't be finished
+- Robot testing downloading is challenging
+- Would be nice to make some more progress in the start of the sprint
+- Robot have repetition and maybe theres a way to initialize them nicely
+
+Mad:
+- Week is busy, hard to find enough time to contribute much
+
+Glad:
+- Copilot review works nicely
+- Git management was nice this time
+- The application looks mostly nicely
+
+Improvements:
+- Make some more consistent progress, starting in the beginning of the sprint already
+- Research robot test initialization
+- Keep the communication up

@@ -1,4 +1,5 @@
 [![CI](https://github.com/tkhnhy/BibTex-Miniprojekti/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/tkhnhy/BibTex-Miniprojekti/actions/workflows/ci.yaml)
+[![codecov](https://codecov.io/gh/tkhnhy/BibTex-Miniprojekti/graph/badge.svg?token=5BRJIRS1FI)](https://codecov.io/gh/tkhnhy/BibTex-Miniprojekti)
 
 [**Product backlog + sprint backlogs**](https://helsinkifi-my.sharepoint.com/:x:/g/personal/hjhellen_ad_helsinki_fi/IQAvnQeKqT0uQYKpWgiyLJbaASYjHlJnmxERma5JgKgGz00)
 
@@ -39,6 +40,8 @@ Check your [Poetry installation](https://python-poetry.org/docs/#installing-with
     The application should now be running at ```http://localhost:5001/```.
 
 5. Exit the application by pressing `Ctrl+C` while in the starting terminal and commanding `deactivate`.
+
+Consider excluding from your backups the created folder ./.venv occupying about 80–90 MB.
 
 ## Creating a local PostgreSQL database
 

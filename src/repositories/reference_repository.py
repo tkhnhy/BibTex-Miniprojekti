@@ -34,11 +34,14 @@ def get_references_by_keys(keys: list[str]):
     return ordered_refs
 
 def create_reference(reference_type: str, reference_key: str, reference_content: dict, comment: str = ''):
-    sql = text("INSERT INTO reference_table (reference_type, reference_key, reference_data, comment)" \
-                "VALUES (:reference_type, :reference_key, :reference_data, :comment)")
-    db.session.execute(sql, { "reference_type": reference_type, "reference_key": reference_key,
-                             "reference_data": json.dumps(reference_content), "comment": comment})
-    db.session.commit()
+    try:
+        sql = text("INSERT INTO reference_table (reference_type, reference_key, reference_data, comment)" \
+                    "VALUES (:reference_type, :reference_key, :reference_data, :comment)")
+        db.session.execute(sql, { "reference_type": reference_type, "reference_key": reference_key,
+                                 "reference_data": json.dumps(reference_content), "comment": comment})
+        db.session.commit()
+    except Exception as error:
+        print("Error when creating reference:", error)
 
 def get_reference_by_key(key: str):
     sql = text(
@@ -48,7 +51,8 @@ def get_reference_by_key(key: str):
     row = db.session.execute(sql, {"key": key}).fetchone()
     if row is None:
         return None
-    return Reference(row[0], row[1], ReferenceType(row[2]), row[3], comment=row[4])
+    # print("Fetched reference row:", row)
+    return Reference(row[0], row[1], ReferenceType(row[2].lower()), row[3], comment=row[4])
 
 def get_filtered_references(filters):
 

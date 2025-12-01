@@ -59,7 +59,11 @@ Edit reference
         {% for field in reference_fields %}
         <div class="field-row" data-name="{{ field }}">
             <label for="{{ field }}">{{ field | replace('_', ' ') | title }}:</label><br>
+<<<<<<< Updated upstream
             <input id="{{ field }}" type="text" name="{{ field }}" value="{{reference.content.get(field, '')}}"><br><br>
+=======
+            <input id="{{ field }}" type="text" name="{{ field }}" value="{{reference.content.get(field, '')}}"{% if field == 'author' %} style="min-width:20rem;"{% endif %}>{% if field == 'author' %}<br><span class="note">Use "and" between authors for BibTeX compatibility</span>{% endif %}<br><br>
+>>>>>>> Stashed changes
         </div>
         {% endfor %}
         <div class="field-row">

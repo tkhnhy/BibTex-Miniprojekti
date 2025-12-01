@@ -55,7 +55,11 @@ Create a new reference
         {% for field in reference_fields %}
         <div class="field-row" data-name="{{ field }}">
             <label for="{{ field }}">{{ field | replace('_', ' ') | title }}:</label><br>
+<<<<<<< Updated upstream
             <input id="{{ field }}" type="text" name="{{ field }}"><br><br>
+=======
+            <input id="{{ field }}" type="text" name="{{ field }}"{% if field == 'author' %} placeholder="Lastname, Firstname and Doe, John and Doe, Jane" style="min-width:20rem;"{% endif %}>{% if field == 'author' %}<br><span class="note">Use "and" between authors for BibTeX compatibility</span>{% endif %}<br><br>
+>>>>>>> Stashed changes
         </div>
         {% endfor %}
         <div class="field-row">

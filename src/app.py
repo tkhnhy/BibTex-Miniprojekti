@@ -23,12 +23,10 @@ def route_index():
             references = get_references()
         else:
             references = get_filtered_references(filters)
-        amount = len(references)
         tags = get_tags_with_counts()
     except Exception as error:
         flash("Could not fetch references: " + str(error))
         references = []
-        amount = 0
         tags = []
 
     return render_template("index.html", references=references,

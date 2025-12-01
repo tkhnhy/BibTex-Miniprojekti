@@ -55,18 +55,6 @@ Edit reference
             <textarea id="comment" type="text"name="comment">{{reference.comment}}</textarea><br><br>
         </div>
     </div>
-            <!-- TAGS -->
-        <div>
-            <p>Tags:<br>
-                {% if tags and tags|length > 0 %}
-                    {% for tag in tags %}
-                        <input class="tag-item" type="text" name="tags" value="{{ tag[0] }}"><br>
-                    {% endfor %}
-                {% else %}
-                    <div>No tags yet.</div>
-                {% endif %}
-            </p>
-        </div>
 
     <!-- TAGS -->
     <div>

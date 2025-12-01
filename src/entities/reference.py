@@ -89,8 +89,8 @@ class Reference:
         Optional comment about the reference.
     """
 
-    def __init__(self, id_: int, key: str, type_: ReferenceType | str, # pylint: disable=too-many-arguments,too-many-positional-arguments
-                 content: dict[str, str], comment: str = ''):
+    def __init__(self, id_: int, key: str, type_: ReferenceType | str, # pylint: disable=too-many-arguments
+                 content: dict[str, str], *, tags: list[Tag] = None, comment: str = ''):
         self.id = int(id_)
         self.key = str(key)
         self.content = content

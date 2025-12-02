@@ -48,3 +48,24 @@ Improvements:
 - Make some more consistent progress, starting in the beginning of the sprint already
 - Research robot test initialization
 - Keep the communication up
+
+
+Sprint 3:
+
+Sad:
+- Not enough tasks/features taken for the sprint for everyone
+- Having trouble understanding the architecture of the project, making contribution harder
+- A bit of overlap with multiple people working on a feature
+- A user story was being bottlenecked by another user story being unfinished for most of the week
+
+Mad:
+- A member fell ill, another woke up with a headache.
+- Product backlog accidentaly got deleted.
+
+Glad:
+- More work was achieved this sprint than previous sprints
+
+Improvements:
+- Maybe write some short documentation on the workings of the program, so everyone can get a clear understanding of how it works.
+- While more work was done earlier in the week, some was still left to the last day.
+- Communicate better, WHEN and what exactly each member is going to develop.

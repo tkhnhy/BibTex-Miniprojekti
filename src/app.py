@@ -121,7 +121,7 @@ def route_confirm_delete(reference_key: str):
     return render_template("delete_reference.html", reference=reference)
 
 @app.route("/delete_reference/<string:reference_key>", methods=["POST"])
-def route_delete_reference(reference_key):
+def route_delete_reference(reference_key: str):
     """
     Deletes a reference from the database.
 

@@ -57,6 +57,7 @@ Sad:
 - Having trouble understanding the architecture of the project, making contribution harder
 - A bit of overlap with multiple people working on a feature
 - A user story was being bottlenecked by another user story being unfinished for most of the week
+- Increase in code smell, when a new implementation is created, but old code is not removed
 
 Mad:
 - A member fell ill, another woke up with a headache.

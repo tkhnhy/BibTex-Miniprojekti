@@ -43,6 +43,20 @@ Edit reference
             <button id="add-tag-btn" type="button" class="button-green">Add tag</button>
         </div>
         <div id="tags-list" style="margin-top: 8px;"></div>
+        {% block tags %}
+        <div class="tags-container" style="margin-top: 25px;">
+            <h3>My current tags with their reference counts</h3>
+            {% if tags and tags|length > 0 %}
+            <ul class="tag-list">
+                {% for tag_tuple in tags %}
+                    <li class="tag-item">{{ tag_tuple[0].name }} <span class="tag-count">({{ tag_tuple[1] }})</span></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div>No tags yet.</div>
+        {% endif %}
+        </div>
+        {% endblock %}
     </div>
     <div id="hidden-tag-inputs"></div>
 

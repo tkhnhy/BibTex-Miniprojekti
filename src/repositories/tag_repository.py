@@ -30,13 +30,13 @@ def add_tags_to_reference(reference_id: int, tag_names: list[str], *, commit: bo
     for tag_name in tag_names:
         # Check if the tag exists
         sql_select = text("SELECT id FROM tags WHERE name = :name")
-        result = db.session.execute(sql_select, {"name": tag_name}).fetchone()
+        result = db.session.execute(sql_select, {"name": tag_name.lower()}).fetchone()
         if result:
             tag_id = result[0]
         else:
             # Insert new tag if not found
             sql_insert_tag = text("INSERT INTO tags (name) VALUES (:name) RETURNING id")
-            tag_id = db.session.execute(sql_insert_tag, {"name": tag_name}).fetchone()[0]
+            tag_id = db.session.execute(sql_insert_tag, {"name": tag_name.lower()}).fetchone()[0]
 
         # Add link between reference and tag
         sql_insert_link = text(

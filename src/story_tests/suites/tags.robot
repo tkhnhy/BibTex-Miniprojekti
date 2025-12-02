@@ -27,35 +27,35 @@ Add Tags On New Reference Form
     Go To  ${HOME_URL}
     Click Button  New reference
     Input Book With Fields  ROB05  Rob Bot  Robot Book  RobotPublishing  2150
-    Input Tag  ABC
-    Page Should Contain  ABC
+    Input Tag  abc
+    Page Should Contain  abc
     Remove Tag
-    Page Should Not Contain  ABC
-    Input Tag  ABC
+    Page Should Not Contain  abc
+    Input Tag  abc
     Click Button  Create
 
     Page Should Contain  ROB05
     Click Button  Details
-    Page Should Contain  ABC
+    Page Should Contain  abc
 
 Add And Remove Tags On Edit Form
     Go To  ${HOME_URL}
     Click Button  New reference
 
     Input Book With Fields  ROB06  Rob Bot  Robot Book  RobotPublishing  2150
-    Input Tag  InitialTag
+    Input Tag  initialtag
     Click Button  Create
     Page Should Contain  ROB06
 
     # Add a new tag
     Click Button  Edit
-    Input Tag  NewTag
+    Input Tag  newtag
     Click Button  Save changes
 
     Page Should Contain  ROB06
     Click Button  Details
-    Page Should Contain  InitialTag
-    Page Should Contain  NewTag
+    Page Should Contain  initialtag
+    Page Should Contain  newtag
 
     # Remove the tags
     Click Button  Edit
@@ -65,8 +65,8 @@ Add And Remove Tags On Edit Form
 
     Page Should Contain  ROB06
     Click Button  Details
-    Page Should Not Contain  NewTag
-    Page Should Not Contain  InitialTag
+    Page Should Not Contain  newtag
+    Page Should Not Contain  initialtag
     
 
 

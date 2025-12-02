@@ -145,6 +145,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    font-variant-caps: all-petite-caps;
 }
 
 .tag-item button {

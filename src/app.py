@@ -84,6 +84,7 @@ def route_delete_reference(reference_key):
 @app.route("/edit_reference/<string:reference_key>")
 def route_edit_reference(reference_key: str):
     reference = get_reference_by_key(reference_key)
+    tags = get_tags_with_counts()
     field_requirements_map = {ref_type.value: ref_type.field_requirements() for ref_type in list(ReferenceType)}
     if reference is None:
         flash("Reference to be edited not found.")
@@ -91,7 +92,8 @@ def route_edit_reference(reference_key: str):
     return render_template("edit_reference.html", reference=reference,
                            reference_types=list(ReferenceType),
                            reference_fields=COMMON_BIBTEX_FIELDS,
-                           field_requirements_map=field_requirements_map)
+                           field_requirements_map=field_requirements_map,
+                           tags=tags)
 
 @app.route("/save_edited_reference/<string:old_reference_key>", methods=["POST"])
 def route_save_edited_reference(old_reference_key: str):

@@ -137,7 +137,7 @@ def delete_reference(reference_key: str):
 def delete_references(reference_keys: list[str]):
     if not reference_keys:
         return
-    
+
     placeholders = ", ".join(f":k{i}" for i in range(len(reference_keys)))
     params = {f"k{i}": reference_keys[i] for i in range(len(reference_keys))}
     sql = text(f"DELETE FROM reference_table WHERE reference_key IN ({placeholders})")

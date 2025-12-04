@@ -16,6 +16,7 @@ document.querySelectorAll('.toggle-details').forEach(button => {
 (function() {
     const selectAll = document.getElementById('select-all');
     const downloadBtn = document.getElementById('download-btn');
+    const deleteSelectedBtn = document.getElementById('delete-selected-btn');
     const rowCheckboxes = () => Array.from(document.querySelectorAll('.select-row'));
 
     if (!selectAll || !downloadBtn) return;
@@ -25,10 +26,16 @@ document.querySelectorAll('.toggle-details').forEach(button => {
         downloadBtn.textContent = anySelected ? 'Download selected as BibTeX file' : 'Download all as BibTeX file';
     };
 
+    const updateDeleteSelectedButton = () => {
+        const anySelected = rowCheckboxes().some(cb => cb.checked);
+        deleteSelectedBtn.disabled = !anySelected;
+    };
+
     // Select all functionality
     selectAll.addEventListener('change', () => {
         rowCheckboxes().forEach(cb => { cb.checked = selectAll.checked; });
         updateDownloadButton();
+        updateDeleteSelectedButton();
     });
 
     // When any row checkbox changes, update the select-all state
@@ -40,6 +47,7 @@ document.querySelectorAll('.toggle-details').forEach(button => {
             selectAll.checked = allChecked;
             selectAll.indeterminate = !allChecked && someChecked;
             updateDownloadButton();
+            updateDeleteSelectedButton();
         }
     });
 
@@ -64,8 +72,34 @@ document.querySelectorAll('.toggle-details').forEach(button => {
         form.submit();
     });
 
+    // Delete selected functionality
+    deleteSelectedBtn.addEventListener('click', () => {
+        const selectedKeys = rowCheckboxes().filter(cb => cb.checked).map(cb => cb.dataset.key);
+        
+        if (selectedKeys.length === 0) {
+            alert('No references selected.');
+            return;
+        }
+
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/confirm_delete_selected';
+        
+        selectedKeys.forEach(k => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'selected_keys';
+            input.value = k;
+            form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+    });
+
     // initialise button on load
     updateDownloadButton();
+    updateDeleteSelectedButton();
 })();
 
 // Upload file logic

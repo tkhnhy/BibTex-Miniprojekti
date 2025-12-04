@@ -76,10 +76,6 @@ document.querySelectorAll('.toggle-details').forEach(button => {
     deleteSelectedBtn.addEventListener('click', () => {
         const selectedKeys = rowCheckboxes().filter(cb => cb.checked).map(cb => cb.dataset.key);
         
-        if (selectedKeys.length === 0) {
-            alert('No references selected.');
-            return;
-        }
 
         const form = document.createElement('form');
         form.method = 'POST';

@@ -19,7 +19,7 @@ document.querySelectorAll('.toggle-details').forEach(button => {
     const deleteSelectedBtn = document.getElementById('delete-selected-btn');
     const rowCheckboxes = () => Array.from(document.querySelectorAll('.select-row'));
 
-    if (!selectAll || !downloadBtn) return;
+    if (!selectAll || !downloadBtn || !deleteSelectedBtn) return;
 
     const updateDownloadButton = () => {
         const anySelected = rowCheckboxes().some(cb => cb.checked);

@@ -99,6 +99,9 @@ def route_delete_reference(reference_key):
 @app.route("/delete_selected", methods=["POST"])
 def route_delete_selected():
     selected_keys = request.form.getlist('selected_keys')
+    if not selected_keys:
+        flash("No references selected.")
+        return redirect("/")
     try:
         delete_references(selected_keys)
         flash(f"Successfully deleted {len(selected_keys)} reference(s).")

@@ -103,8 +103,13 @@ def route_delete_selected():
         flash("No references selected.")
         return redirect("/")
     try:
-        delete_references(selected_keys)
-        flash(f"Successfully deleted {len(selected_keys)} reference(s).")
+        references = get_references_by_keys(selected_keys)
+        if not references:
+            flash("No valid references selected for deletion.")
+        else:
+            valid_keys = [ref.key for ref in references]
+            delete_references(valid_keys)
+            flash(f"Successfully deleted {len(valid_keys)} reference(s).")
     except Exception as error:
         flash(f"Error deleting references: {error}")
     return redirect("/")

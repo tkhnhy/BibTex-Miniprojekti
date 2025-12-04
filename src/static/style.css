@@ -87,11 +87,6 @@
   background-color: #449d44;
 }
 
-/* Use .button-red as base for .delete-selected-btn */
-.button-red.delete-selected-btn {
-  /* No additional base styles needed; only override states below */
-}
-
 .button-red.delete-selected-btn:disabled {
   background-color: #999;
   cursor: not-allowed;

@@ -18,3 +18,29 @@ CREATE TABLE reference_taggins (
   FOREIGN KEY (reference_id) REFERENCES reference_table(id) ON DELETE CASCADE,
   FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
 );
+
+
+-- INDEXES for the full JSONB and most commonly searched keys for speed --
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
+CREATE INDEX idx_reference_data_ft
+ON reference_table USING GIN (
+    to_tsvector('english', reference_data::text)
+);
+
+CREATE INDEX idx_reference_year
+ON reference_table ((CAST(reference_data->>'year' AS INT)));
+
+CREATE INDEX idx_reference_title_trgm
+ON reference_table USING GIN ((reference_data->>'title') gin_trgm_ops);
+
+CREATE INDEX idx_reference_author_trgm
+ON reference_table USING GIN ((reference_data->>'author') gin_trgm_ops);
+
+CREATE INDEX idx_reference_publisher_trgm
+ON reference_table USING GIN ((reference_data->>'publisher') gin_trgm_ops);
+
+CREATE INDEX idx_reference_key_trgm
+ON reference_table USING GIN (reference_key gin_trgm_ops);

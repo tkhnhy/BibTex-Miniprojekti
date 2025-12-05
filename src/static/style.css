@@ -93,10 +93,6 @@
   opacity: 0.6;
 }
 
-.button-red.delete-selected-btn:not(:disabled):hover {
-  background-color: #c9302c;
-}
-
 .toggle-details {
   background-color: #0275d8;
   border: none;

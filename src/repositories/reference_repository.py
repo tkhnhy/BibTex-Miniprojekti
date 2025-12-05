@@ -101,14 +101,81 @@ def create_reference(reference_type: str, reference_key: str, reference_content:
     add_tags_to_reference(reference_id, tags, commit=False)
     db.session.commit()
 
+def year_to_sql_condition(year_input, column_name="(reference_data->>'year')::int"):
+    # Types of input "2015", "<2000", ">2000", "2000-2010"
+    year_input = year_input.strip()
+
+    # Handle range
+    if "-" in year_input:
+        parts = year_input.split("-")
+        if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
+            return f"{column_name} BETWEEN {parts[0]} AND {parts[1]}"
+
+    # Handle < or >
+    if year_input.startswith("<") or year_input.startswith(">"):
+        operator = year_input[0]
+        value = year_input[1:]
+        if value.isdigit():
+            return f"{column_name} {operator} {value}"
+
+    # Handle exact year
+    if year_input.isdigit():
+        return f"{column_name} = {year_input}"
+
+    # If input doesn't match known patterns
+    raise ValueError(f"Invalid year input: {year_input}")
+
+def id_search_any_field(word: str) -> set[int]:
+    sql = text("""
+        SELECT id
+        FROM reference_table
+        WHERE to_tsvector('english', reference_data::text)
+              @@ plainto_tsquery(:word)
+    """)
+
+    return set(db.session.execute(sql, {"word": word}).scalars().all())
+
+def id_search_specific_field(field: str, word: str) -> set[int]:
+    if field in ("title", "author", "publisher"):
+
+        sql = text(f"""
+            SELECT id
+            FROM reference_table
+            WHERE unaccent(reference_data->>'{field}')
+            ILIKE '%{word}%'
+            """)
+
+        return set(db.session.execute(sql, {"word": word}).scalars().all())
+    if field == "year":
+        year_condition = year_to_sql_condition(word)
+
+        sql = text(f"""
+            SELECT id
+            FROM reference_table
+            WHERE {year_condition}
+            """)
+
+        return set(db.session.execute(sql).scalars().all())
+    return set(-1,)
+def id_search_keys_partial(substring: str) -> set[int]:
+    sql = text("""
+        SELECT id
+        FROM reference_table
+        WHERE reference_key ILIKE :pattern
+    """)
+    pattern = f"%{substring}%"
+    return set(db.session.execute(sql, {"pattern": pattern}).scalars().all())
+
 def get_filtered_references(filters, sort_by=None):
     allowed = {
     "author": "r.reference_data->>'author'",
     "year": "CAST(r.reference_data->>'year' AS INTEGER)",
     "key": "r.reference_key",
     "type": "r.reference_type",
-}
+    }
+    
     order_sql = allowed.get(sort_by, "r.id")
+    
     sql_parts = [
         "SELECT r.id, r.reference_key, r.reference_type, r.reference_data, r.comment,",
             "COALESCE(array_agg(DISTINCT t.name ORDER BY t.name) FILTER (WHERE t.name IS NOT NULL),",
@@ -138,6 +205,24 @@ def get_filtered_references(filters, sort_by=None):
                 f"JOIN tags t2 ON t2.id = rt.tag_id WHERE t2.name IN :{param_name})"
             )
             params[param_name] = tuple(values)
+        elif filter_type == "keyword":
+            search_word = values[1]
+            search_word = search_word.strip()
+            search_field = values[0]
+            returned_ids = set()
+
+            if search_field == "any":
+                returned_ids.update(id_search_any_field(search_word), id_search_keys_partial(search_word))
+            elif search_field == "key":
+                returned_ids.update(id_search_keys_partial(search_word))
+            else:
+                returned_ids.update(id_search_specific_field(search_field, search_word))
+
+            where_clauses.append(f"r.id IN :{param_name}")
+            if not returned_ids:
+                params[param_name] = (-1,)
+            else:
+                params[param_name] = tuple(returned_ids)
 
     if where_clauses:
         sql_parts.append("WHERE " + " AND ".join(where_clauses))

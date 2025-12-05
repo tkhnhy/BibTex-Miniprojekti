@@ -18,12 +18,17 @@ def route_index():
     filters = []
     selected_types = request.args.getlist("reference_type[]")
     selected_tags = request.args.getlist("tag[]")
+    selected_field = request.args.get("keyword_field")
+    selected_keyword = request.args.get("keyword_value", "").strip()
+
     sort_by = request.args.get("sort_by")
+
     if selected_types:
         filters.append(("type", selected_types))
     if selected_tags:
         filters.append(("tag", selected_tags))
-
+    if selected_keyword and selected_field:
+        filters.append(("keyword", (selected_field, selected_keyword)))
     try:
         if not filters:
             references = get_references(sort_by)

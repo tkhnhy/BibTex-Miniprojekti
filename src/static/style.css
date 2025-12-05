@@ -177,3 +177,28 @@
 .note {
   font-size: small;
 }
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+  display: none;
+  width: 300px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: fixed; /* instead of absolute */
+  bottom: auto;
+  top: 5%; /* calculate relative to viewport */
+  left: 10%;
+  z-index: 9999; /* above everything */
+}
+
+.tooltip.active .tooltiptext {
+  display: block;
+}

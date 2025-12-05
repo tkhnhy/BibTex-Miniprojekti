@@ -10,7 +10,24 @@ My references
 
 <div class="sidebar">
     <h2>Filters:</h2>
-    <form action="/" method="get">
+    <form id="filterForm" action="/" method="get">
+        <label for="choose_field"><b>Search field:</b></label>
+        <select name="keyword_field" id="choose_field">
+            <option value="any">Any</option>
+            <option value="author">Author</option>
+            <option value="title">Title</option>
+            <option value="publisher">Publisher</option>
+            <option value="year">Year</option>
+            <option value="key">Key</option>
+        </select>
+        <span class="tooltip" onclick="this.classList.toggle('active')">i
+        <span class="tooltiptext">When searching for year, you can use "&lt;" ,"&gt;" and "-" operators!
+        <br> e. g., "&lt;2000", "&gt;1980", "2010-2020"
+        </span>
+        </span>
+        
+        <input type="text" name="keyword_value" placeholder="Enter search word"><br>
+
         <label><b>Select reference types:</b></label><br>
         {% for ref_type in reference_types %}
             <input type="checkbox" name="reference_type[]" value="{{ ref_type.value }}">

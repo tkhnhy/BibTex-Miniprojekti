@@ -16,6 +16,7 @@ def route_index():
     filters = []
     selected_types = request.args.getlist("reference_type[]")
     selected_tags = request.args.getlist("tag[]")
+    sort_by = request.args.get("sort_by")
     if selected_types:
         filters.append(("type", selected_types))
     if selected_tags:
@@ -23,9 +24,9 @@ def route_index():
 
     try:
         if not filters:
-            references = get_references()
+            references = get_references(sort_by)
         else:
-            references = get_filtered_references(filters)
+            references = get_filtered_references(filters, sort_by)
         tags = get_tags_with_counts()
     except Exception as error:
         flash("Could not fetch references: " + str(error))
@@ -33,7 +34,8 @@ def route_index():
         tags = []
 
     return render_template("index.html", references=references,
-                            reference_types=list(ReferenceType), tags=tags)
+                            reference_types=list(ReferenceType), tags=tags,
+                            sort_selected=sort_by)
 
 @app.route("/new_reference")
 def route_new_reference():

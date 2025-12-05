@@ -57,7 +57,6 @@ Clearing filters restores all references
     Scroll Element Into View  btn-clear-filters
     Click Button  Clear Filters
 
-    # All references should now show
     Page Should Contain  ROB01
 
 *** Comments ***

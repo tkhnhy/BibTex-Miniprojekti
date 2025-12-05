@@ -75,8 +75,6 @@ document.querySelectorAll('.toggle-details').forEach(button => {
     // Delete selected functionality
     deleteSelectedBtn.addEventListener('click', () => {
         const selectedKeys = rowCheckboxes().filter(cb => cb.checked).map(cb => cb.dataset.key);
-        
-
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = '/confirm_delete_selected';

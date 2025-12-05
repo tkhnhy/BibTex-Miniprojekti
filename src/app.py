@@ -2,9 +2,11 @@ import io
 from flask import redirect, render_template, request, jsonify, flash, send_file
 from db_helper import reset_db
 from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType, Reference
-from repositories.reference_repository import get_references, create_reference, get_reference_by_key, \
-    add_ref_for_storytests, get_references_by_keys, get_filtered_references
-from repositories.reference_repository import delete_reference, delete_references, update_reference
+from repositories.reference_repository import (
+    get_references, create_reference, get_reference_by_key,
+    add_ref_for_storytests, get_references_by_keys, get_filtered_references,
+    delete_reference, delete_references, update_reference
+)
 from repositories.tag_repository import get_tags_with_counts
 from config import app, test_env
 from util import validate_reference, UserInputError

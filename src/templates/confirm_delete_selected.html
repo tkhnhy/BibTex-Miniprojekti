@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Delete references
+{% endblock %}
+
+{% block body %}
+
+<h2>Are you sure you want to delete the following {{ references|length }} reference(s)?</h2>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+{% endwith %}
+
+<div class="table-container">
+    <div class="reference-item-deletion-confirmation table-title">
+        <div>Type</div>
+        <div>Key</div>
+        <div>Author</div>
+        <div>Title</div>
+        <div>Year</div>
+    </div>
+
+    {% for reference in references %}
+    <div class="reference-item-deletion-confirmation">
+        <div>{{ reference.type.display_str() }}</div>
+        <div>{{ reference.key }}</div>
+        <div>{{ reference.content.get('author', '') }}</div>
+        <div>{{ reference.content.get('title', '') }}</div>
+        <div>{{ reference.content.get('year', '') }}</div>
+    </div>
+    {% endfor %}
+</div>
+
+<form action="/delete_selected" method="post">
+    {% for reference in references %}
+    <input type="hidden" name="selected_keys" value="{{ reference.key }}">
+    {% endfor %}
+    <button type="submit">
+        Delete
+    </button>
+    <button type="reset" onclick="location.href='/'">
+        Cancel
+    </button>
+</form>
+
+{% endblock %}

@@ -134,6 +134,16 @@ def delete_reference(reference_key: str):
     db.session.execute(sql, { "reference_key": reference_key })
     db.session.commit()
 
+def delete_references(reference_keys: list[str]):
+    if not reference_keys:
+        return
+
+    placeholders = ", ".join(f":k{i}" for i in range(len(reference_keys)))
+    params = {f"k{i}": reference_keys[i] for i in range(len(reference_keys))}
+    sql = text(f"DELETE FROM reference_table WHERE reference_key IN ({placeholders})")
+    db.session.execute(sql, params)
+    db.session.commit()
+
 def update_reference(reference_type: str, old_reference_key: str, new_reference_key: str,
                      reference_content: dict, tags: list[str], comment: str = ''):
     reference = get_reference_by_key(old_reference_key)

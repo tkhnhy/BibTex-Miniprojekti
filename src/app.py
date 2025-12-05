@@ -84,6 +84,9 @@ def route_confirm_delete_selected():
 
     try:
         references = get_references_by_keys(selected_keys)
+        if not references:
+            flash("No valid references selected for deletion.")
+            return redirect("/")
     except Exception as error:
         flash("Could not fetch references: " + str(error))
         return redirect("/")

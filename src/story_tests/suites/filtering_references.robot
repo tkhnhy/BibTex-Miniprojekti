@@ -29,8 +29,7 @@ Filtering shows only the selected reference type
     Page Should Contain  ROB01
     Page Should Contain  ROB02
 
-    Scroll Element Into View  xpath=//input[@value="book"]
-    Select Checkbox  xpath=//input[@value="book"]
+    Select Checkbox  book
     Scroll Element Into View  btn-apply-filters
     Click Button  Apply Filters
 
@@ -49,7 +48,7 @@ Clearing filters restores all references
     Input Text  year  2150
     Click Button  Create
 
-    Select Checkbox  xpath=//input[@value="booklet"]
+    Select Checkbox  booklet
     Scroll Element Into View  btn-apply-filters
     Click Button  Apply Filters
 

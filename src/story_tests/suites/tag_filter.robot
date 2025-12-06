@@ -33,7 +33,8 @@ Filtering shows only the selected tag type
     Page Should Contain  ROB01
     Page Should Contain  ROB02
 
-    Select Checkbox  xpath=//input[@value="reviewed"]
+    Execute Javascript  document.querySelector("input[name='tag[]'][value='reviewed']").click()
+
     Scroll Element Into View  btn-apply-filters
     Click Button  Apply Filters
 
@@ -68,7 +69,7 @@ Clearing filters restores all references
     Page Should Contain  ROB01
     Page Should Contain  ROB02
 
-    Select Checkbox  reviewed
+    Execute Javascript  document.querySelector("input[name='tag[]'][value='reviewed']").click()
     Scroll Element Into View  btn-apply-filters
     Click Button  Apply Filters
 

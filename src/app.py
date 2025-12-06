@@ -19,6 +19,9 @@ def route_index():
     selected_types = request.args.getlist("reference_type[]")
     selected_tags = request.args.getlist("tag[]")
     selected_field = request.args.get("keyword_field")
+    ALLOWED_SEARCH_FIELDS = {"any", "author", "title", "publisher", "year", "key"}
+    if selected_field and selected_field not in ALLOWED_SEARCH_FIELDS:
+        selected_field = None
     selected_keyword = request.args.get("keyword_value", "").strip()
 
     sort_by = request.args.get("sort_by")

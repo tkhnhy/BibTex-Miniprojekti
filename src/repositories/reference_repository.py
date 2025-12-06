@@ -142,10 +142,10 @@ def id_search_specific_field(field: str, word: str) -> set[int]:
             SELECT id
             FROM reference_table
             WHERE unaccent(reference_data->>'{field}')
-            ILIKE '%{word}%'
+            ILIKE :pattern
             """)
-
-        return set(db.session.execute(sql, {"word": word}).scalars().all())
+        pattern = f"%{word}%"
+        return set(db.session.execute(sql, {"pattern": pattern}).scalars().all())
     if field == "year":
         year_condition = year_to_sql_condition(word)
 
@@ -156,7 +156,7 @@ def id_search_specific_field(field: str, word: str) -> set[int]:
             """)
 
         return set(db.session.execute(sql).scalars().all())
-    return set(-1,)
+    return {-1}
 def id_search_keys_partial(substring: str) -> set[int]:
     sql = text("""
         SELECT id
@@ -212,7 +212,8 @@ def get_filtered_references(filters, sort_by=None):
             returned_ids = set()
 
             if search_field == "any":
-                returned_ids.update(id_search_any_field(search_word), id_search_keys_partial(search_word))
+                returned_ids.update(id_search_any_field(search_word))
+                returned_ids.update(id_search_keys_partial(search_word))
             elif search_field == "key":
                 returned_ids.update(id_search_keys_partial(search_word))
             else:

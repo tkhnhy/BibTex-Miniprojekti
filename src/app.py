@@ -20,7 +20,7 @@ def route_index():
     selected_tags = request.args.getlist("tag[]")
     selected_field = request.args.get("keyword_field")
     allowed_search_fields = {"any", "author", "title", "publisher", "year", "key"}
-    if selected_field and selected_field not in ALLOWED_SEARCH_FIELDS:
+    if selected_field and selected_field not in allowed_search_fields:
         selected_field = None
     selected_keyword = request.args.get("keyword_value", "").strip()
 

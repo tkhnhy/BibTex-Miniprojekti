@@ -29,6 +29,7 @@ Filtering shows only the selected reference type
     Page Should Contain  ROB01
     Page Should Contain  ROB02
 
+    Scroll Element Into View  xpath=//input[@value="book"]
     Select Checkbox  xpath=//input[@value="book"]
     Scroll Element Into View  btn-apply-filters
     Click Button  Apply Filters

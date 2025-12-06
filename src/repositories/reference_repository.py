@@ -18,7 +18,7 @@ def row_to_reference(row) -> Reference:
 def get_references(sort_by=None):
     allowed = {
         "author": "r.reference_data->>'author'",
-        "year": "r.reference_data->>'year'",
+        "year": "CAST(r.reference_data->>'year' AS INTEGER)",
         "key": "r.reference_key",
         "type": "r.reference_type",
     }
@@ -47,7 +47,7 @@ def get_references_by_keys(keys: list[str], sort_by=None):
     params = {f"k{i}": keys[i] for i in range(len(keys))}
     allowed = {
     "author": "r.reference_data->>'author'",
-    "year": "r.reference_data->>'year'",
+    "year": "CAST(r.reference_data->>'year' AS INTEGER)",
     "key": "r.reference_key",
     "type": "r.reference_type",
 }
@@ -104,7 +104,7 @@ def create_reference(reference_type: str, reference_key: str, reference_content:
 def get_filtered_references(filters, sort_by=None):
     allowed = {
     "author": "r.reference_data->>'author'",
-    "year": "r.reference_data->>'year'",
+    "year": "CAST(r.reference_data->>'year' AS INTEGER)",
     "key": "r.reference_key",
     "type": "r.reference_type",
 }

@@ -5,7 +5,7 @@ Suite Teardown   Close Browser
 Test Setup       Reset References
 
 *** Test Cases ***
-Filtering shows only the selected tag type
+Sorting by year sorts the references in right order
     Go To  ${HOME_URL}
 
     Click Button  New reference
@@ -34,6 +34,7 @@ Filtering shows only the selected tag type
     Page Should Contain  ROB02
 
     Select From List By Label  sort_by  Year
+    Scroll Element Into View    btn-apply-filters
     Click Button  Apply Filters
 
     ${first}=    Get Text    xpath=(//div[@class="reference-item"]/div[3])[1]

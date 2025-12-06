@@ -33,7 +33,6 @@ Filtering shows only the selected tag type
     Page Should Contain  ROB01
     Page Should Contain  ROB02
 
-    Scroll Element Into View  reviewed
     Select Checkbox  reviewed
     Scroll Element Into View  btn-apply-filters
     Click Button  Apply Filters

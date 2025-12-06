@@ -25,7 +25,17 @@ My references
         {% else %}
             <p>No tags available.</p>
         {% endif %}
+        <label><b>Sort by:</b></label><br>
+        <select name="sort_by">
+            <option value="">-- No sorting --</option>
+            <option value="author">Author</option>
+            <option value="year">Year</option>
+            <option value="type">Type</option>
+            <option value="key">Key</option>
+        </select>
+        <br><br>
     <button type="submit" class="button-green" id="btn-apply-filters">Apply Filters</button>
+
 </form>
 <form action="/" method="get" style="display:inline;">
     <button type="submit" class="button-green" id="btn-clear-filters">

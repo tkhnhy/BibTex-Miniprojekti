@@ -15,9 +15,16 @@ def row_to_reference(row) -> Reference:
         tags=[Tag(name=name) for name in row[5]]
     )
 
-def get_references():
+def get_references(sort_by=None):
+    allowed = {
+        "author": "r.reference_data->>'author'",
+        "year": "CAST(r.reference_data->>'year' AS INTEGER)",
+        "key": "r.reference_key",
+        "type": "r.reference_type",
+    }
+    order_sql = allowed.get(sort_by, "r.id")
     sql = text(
-        """
+        f"""
         SELECT r.id, r.reference_key, r.reference_type, r.reference_data, r.comment,
                COALESCE(array_agg(DISTINCT t.name ORDER BY t.name) FILTER (WHERE t.name IS NOT NULL),
                ARRAY[]::text[]) AS tags
@@ -25,19 +32,26 @@ def get_references():
         LEFT JOIN reference_taggins rt ON rt.reference_id = r.id
         LEFT JOIN tags t ON t.id = rt.tag_id
         GROUP BY r.id
-        ORDER BY r.id
+        ORDER BY {order_sql}
         """
     )
     rows = db.session.execute(sql).fetchall()
     return [row_to_reference(row) for row in rows]
 
 
-def get_references_by_keys(keys: list[str]):
+def get_references_by_keys(keys: list[str], sort_by=None):
     if not keys:
         return []
 
     placeholders = ", ".join(f":k{i}" for i in range(len(keys)))
     params = {f"k{i}": keys[i] for i in range(len(keys))}
+    allowed = {
+    "author": "r.reference_data->>'author'",
+    "year": "CAST(r.reference_data->>'year' AS INTEGER)",
+    "key": "r.reference_key",
+    "type": "r.reference_type",
+}
+    order_sql = allowed.get(sort_by, "r.id")
     sql = text(
         f"""
         SELECT r.id, r.reference_key, r.reference_type, r.reference_data, r.comment,
@@ -48,7 +62,7 @@ def get_references_by_keys(keys: list[str]):
         LEFT JOIN tags t ON t.id = rt.tag_id
         WHERE r.reference_key IN ({placeholders})
         GROUP BY r.id
-        ORDER BY r.id
+        ORDER BY {order_sql}
         """
     )
     rows = db.session.execute(sql, params).fetchall()
@@ -87,7 +101,14 @@ def create_reference(reference_type: str, reference_key: str, reference_content:
     add_tags_to_reference(reference_id, tags, commit=False)
     db.session.commit()
 
-def get_filtered_references(filters):
+def get_filtered_references(filters, sort_by=None):
+    allowed = {
+    "author": "r.reference_data->>'author'",
+    "year": "CAST(r.reference_data->>'year' AS INTEGER)",
+    "key": "r.reference_key",
+    "type": "r.reference_type",
+}
+    order_sql = allowed.get(sort_by, "r.id")
     sql_parts = [
         "SELECT r.id, r.reference_key, r.reference_type, r.reference_data, r.comment,",
             "COALESCE(array_agg(DISTINCT t.name ORDER BY t.name) FILTER (WHERE t.name IS NOT NULL),",
@@ -122,7 +143,7 @@ def get_filtered_references(filters):
         sql_parts.append("WHERE " + " AND ".join(where_clauses))
 
     sql_parts.append("GROUP BY r.id")
-    sql_parts.append("ORDER BY r.id")
+    sql_parts.append(f"ORDER BY {order_sql}")
 
     sql = text(" ".join(sql_parts))
     rows = db.session.execute(sql, params).fetchall()

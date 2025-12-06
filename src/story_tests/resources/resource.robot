@@ -34,3 +34,24 @@ Reset References
 
 Quick Add Reference
     Go To  ${QUICK_ADD_URL}
+    
+Add Two References
+    Go To  ${HOME_URL}
+
+    Click Button  New reference
+    Select From List By Label  reference_type  Book
+    Input Text  reference_key  ROB01
+    Input Text  author  Rob Bot
+    Input Text  title  Robot Book
+    Input Text  publisher  RobotPublishing
+    Input Text  year  2150
+    Click Button  Create
+
+    Click Button  New reference
+    Select From List By Label  reference_type  Article
+    Input Text  reference_key  DR02
+    Input Text  author  Anne Droid
+    Input Text  title  Droid Article
+    Input Text  journal  DroidJournal
+    Input Text  year  2200
+    Click Button  Create

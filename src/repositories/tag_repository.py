@@ -9,6 +9,7 @@ def get_tags_with_counts() -> list[tuple[Tag, int]]:
         "FROM tags t "
         "LEFT JOIN reference_taggins rt ON rt.tag_id = t.id "
         "GROUP BY t.id "
+        "HAVING COUNT(rt.reference_id) > 0 "
         "ORDER BY cnt DESC, t.name ASC"
     )
     rows = db.session.execute(sql).fetchall()
@@ -29,13 +30,13 @@ def add_tags_to_reference(reference_id: int, tag_names: list[str], *, commit: bo
     for tag_name in tag_names:
         # Check if the tag exists
         sql_select = text("SELECT id FROM tags WHERE name = :name")
-        result = db.session.execute(sql_select, {"name": tag_name}).fetchone()
+        result = db.session.execute(sql_select, {"name": tag_name.lower()}).fetchone()
         if result:
             tag_id = result[0]
         else:
             # Insert new tag if not found
             sql_insert_tag = text("INSERT INTO tags (name) VALUES (:name) RETURNING id")
-            tag_id = db.session.execute(sql_insert_tag, {"name": tag_name}).fetchone()[0]
+            tag_id = db.session.execute(sql_insert_tag, {"name": tag_name.lower()}).fetchone()[0]
 
         # Add link between reference and tag
         sql_insert_link = text(
@@ -50,6 +51,14 @@ def add_tags_to_reference(reference_id: int, tag_names: list[str], *, commit: bo
 def delete_tags_from_reference(reference_id: int, *, commit: bool = True):
     sql = text("DELETE FROM reference_taggins WHERE reference_id = :reference_id")
     db.session.execute(sql, {"reference_id": reference_id})
+
+    # Remove any tags that are no longer in use
+    cleanup_sql = text(
+        "DELETE FROM tags t "
+        "WHERE NOT EXISTS (SELECT 1 FROM reference_taggins rt WHERE rt.tag_id = t.id)"
+    )
+    db.session.execute(cleanup_sql)
+
     if commit:
         db.session.commit()
 

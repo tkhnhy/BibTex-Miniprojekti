@@ -2,9 +2,11 @@ import io
 from flask import redirect, render_template, request, jsonify, flash, send_file
 from db_helper import reset_db
 from entities.reference import COMMON_BIBTEX_FIELDS, ReferenceType, Reference
-from repositories.reference_repository import get_references, create_reference, get_reference_by_key, \
-    add_ref_for_storytests, get_references_by_keys, get_filtered_references
-from repositories.reference_repository import delete_reference, update_reference
+from repositories.reference_repository import (
+    get_references, create_reference, get_reference_by_key,
+    add_ref_for_storytests, get_references_by_keys, get_filtered_references,
+    delete_reference, delete_references, update_reference
+)
 from repositories.tag_repository import get_tags_with_counts
 from config import app, test_env
 from util import validate_reference, UserInputError
@@ -75,6 +77,24 @@ def route_confirm_delete(reference_key: str):
         return redirect("/")
     return render_template("delete_reference.html", reference=reference)
 
+@app.route("/confirm_delete_selected", methods=["POST"])
+def route_confirm_delete_selected():
+    selected_keys = request.form.getlist('selected_keys')
+    if not selected_keys:
+        flash("No references selected.")
+        return redirect("/")
+
+    try:
+        references = get_references_by_keys(selected_keys)
+        if not references:
+            flash("No valid references selected for deletion.")
+            return redirect("/")
+    except Exception as error:
+        flash("Could not fetch references: " + str(error))
+        return redirect("/")
+
+    return render_template("confirm_delete_selected.html", references=references)
+
 @app.route("/delete_reference/<string:reference_key>", methods=["POST"])
 def route_delete_reference(reference_key):
     try:
@@ -83,9 +103,28 @@ def route_delete_reference(reference_key):
         flash(f"Error deleting reference: {error}")
     return redirect("/")
 
+@app.route("/delete_selected", methods=["POST"])
+def route_delete_selected():
+    selected_keys = request.form.getlist('selected_keys')
+    if not selected_keys:
+        flash("No references selected.")
+        return redirect("/")
+    try:
+        references = get_references_by_keys(selected_keys)
+        if not references:
+            flash("No valid references selected for deletion.")
+        else:
+            valid_keys = [ref.key for ref in references]
+            delete_references(valid_keys)
+            flash(f"Successfully deleted {len(valid_keys)} reference(s).")
+    except Exception as error:
+        flash(f"Error deleting references: {error}")
+    return redirect("/")
+
 @app.route("/edit_reference/<string:reference_key>")
 def route_edit_reference(reference_key: str):
     reference = get_reference_by_key(reference_key)
+    tags = get_tags_with_counts()
     field_requirements_map = {ref_type.value: ref_type.field_requirements() for ref_type in list(ReferenceType)}
     if reference is None:
         flash("Reference to be edited not found.")
@@ -93,7 +132,8 @@ def route_edit_reference(reference_key: str):
     return render_template("edit_reference.html", reference=reference,
                            reference_types=list(ReferenceType),
                            reference_fields=COMMON_BIBTEX_FIELDS,
-                           field_requirements_map=field_requirements_map)
+                           field_requirements_map=field_requirements_map,
+                           tags=tags)
 
 @app.route("/save_edited_reference/<string:old_reference_key>", methods=["POST"])
 def route_save_edited_reference(old_reference_key: str):

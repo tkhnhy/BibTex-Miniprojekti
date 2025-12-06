@@ -20,7 +20,7 @@ My references
         {% if tags and tags|length > 0 %}
             {% for tag, count in tags %}
                 <input type="checkbox" name="tag[]" value="{{ tag.name }}">
-                {{ tag.name }}<br>
+                <span style="font-variant-caps: all-petite-caps;">{{ tag.name }}</span><br>
             {% endfor %}
         {% else %}
             <p>No tags available.</p>
@@ -61,6 +61,9 @@ My references
 <div>
     <button onclick="location.href='/new_reference'" class="button-green" style="margin-top: 15px;">
         New reference
+    </button>
+    <button id="delete-selected-btn" type="button" class="button-red delete-selected-btn" disabled style="margin-top: 15px;">
+        Delete selected
     </button>
     <button id="download-btn" type="button" class="button-green" style="margin-top: 15px;">
         Download as BibTex-file

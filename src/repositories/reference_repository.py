@@ -131,7 +131,12 @@ def get_filtered_references(filters, sort_by=None):
             where_clauses.append(f"r.reference_type IN :{param_name}")
             params[param_name] = tuple(values)
         elif filter_type == "tag":
-            where_clauses.append(f"t.name IN :{param_name}")
+            # use a subquery to filter references that have any of the requested tags
+            # without limiting the outer LEFT JOIN used for collecting all tags
+            where_clauses.append(
+                f"r.id IN (SELECT rt.reference_id FROM reference_taggins rt "
+                f"JOIN tags t2 ON t2.id = rt.tag_id WHERE t2.name IN :{param_name})"
+            )
             params[param_name] = tuple(values)
 
     if where_clauses:
@@ -148,6 +153,16 @@ def get_filtered_references(filters, sort_by=None):
 def delete_reference(reference_key: str):
     sql = text("DELETE FROM reference_table WHERE reference_key = :reference_key")
     db.session.execute(sql, { "reference_key": reference_key })
+    db.session.commit()
+
+def delete_references(reference_keys: list[str]):
+    if not reference_keys:
+        return
+
+    placeholders = ", ".join(f":k{i}" for i in range(len(reference_keys)))
+    params = {f"k{i}": reference_keys[i] for i in range(len(reference_keys))}
+    sql = text(f"DELETE FROM reference_table WHERE reference_key IN ({placeholders})")
+    db.session.execute(sql, params)
     db.session.commit()
 
 def update_reference(reference_type: str, old_reference_key: str, new_reference_key: str,

@@ -33,10 +33,10 @@ Filtering shows only the selected tag type
     Page Should Contain  ROB01
     Page Should Contain  ROB02
 
-    Select Checkbox  xpath=//input[@value="reviewed"]
-    ${btn}=  Get WebElement  id=btn-apply-filters
-    Execute Javascript  arguments[0].scrollIntoView(true);  ${btn}
-    Click Element  ${btn}
+    Select Checkbox  reviewed
+    Wait Until Element Is Visible    id=btn-apply-filters    timeout=10s
+    Execute Javascript    document.getElementById("btn-apply-filters").scrollIntoView(true);
+    Click Button    id=btn-apply-filters
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
@@ -69,17 +69,17 @@ Clearing filters restores all references
     Page Should Contain  ROB01
     Page Should Contain  ROB02
 
-    Select Checkbox  xpath=//input[@value="reviewed"]
-    ${btn}=  Get WebElement  id=btn-apply-filters
-    Execute Javascript  arguments[0].scrollIntoView(true);  ${btn}
-    Click Element  ${btn}
+    Select Checkbox  reviewed
+    Wait Until Element Is Visible    id=btn-apply-filters    timeout=10s
+    Execute Javascript    document.getElementById("btn-apply-filters").scrollIntoView(true);
+    Click Button    id=btn-apply-filters
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
 
-    ${btn}=  Get WebElement  id=btn-clear-filters
-    Execute Javascript  arguments[0].scrollIntoView(true);  ${btn}
-    Click Element  ${btn}
+    Wait Until Element Is Visible    id=btn-clear-filters    timeout=10s
+    Execute Javascript    document.getElementById("btn-clear-filters").scrollIntoView(true);
+    Click Button    id=btn-clear-filters
 
     Page Should Contain  ROB01
     Page Should Contain  ROB02

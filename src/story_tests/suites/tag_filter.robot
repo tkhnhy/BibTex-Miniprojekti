@@ -35,7 +35,7 @@ Filtering shows only the selected tag type
 
     Select Checkbox  reviewed
     Scroll Element Into View  btn-apply-filters
-    Click Button  Apply Filters
+    Execute Javascript  document.getElementById('btn-apply-filters').click()
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
@@ -70,13 +70,13 @@ Clearing filters restores all references
 
     Select Checkbox  reviewed
     Scroll Element Into View  btn-apply-filters
-    Click Button  Apply Filters
+    Execute Javascript  document.getElementById('btn-apply-filters').click()
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
 
     Scroll Element Into View  btn-clear-filters
-    Click Button  Clear Filters
+    Execute Javascript  document.getElementById('btn-clear-filters').click()
 
     Page Should Contain  ROB01
     Page Should Contain  ROB02

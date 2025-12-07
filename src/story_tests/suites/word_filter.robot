@@ -30,7 +30,7 @@ Filtering by author gives only the reference containing the searchword in author
     Input Text  year  2150
     Click Button  Create
 
-    Select From List By Label  choose_field  Author
+    Select From List By Label  keyword_field  Author
     Input Text  keyword_value  Anne
     Scroll Element Into View  btn-apply-filters
     Click Button  Apply Filters
@@ -41,7 +41,7 @@ Filtering by author gives only the reference containing the searchword in author
 
 Filtering by year only returns only the approriate references
     Add Two References
-    Select From List By Label  choose_field  Year
+    Select From List By Label  keyword_field  Year
     Input Text  keyword_value  2150
     
     Scroll Element Into View  btn-apply-filters
@@ -53,7 +53,7 @@ Filtering by year only returns only the approriate references
 Filtering by year, different modifiers work
     Add Two References
     
-    Select From List By Label  choose_field  Year
+    Select From List By Label  keyword_field  Year
     Input Text  keyword_value  <2200
     
     Scroll Element Into View  btn-apply-filters
@@ -66,7 +66,7 @@ Filtering by year, different modifiers work
     Click Button  Clear Filters
     
     
-    Select From List By Label  choose_field  Year
+    Select From List By Label  keyword_field  Year
     Input Text  keyword_value  >2150
     
     Scroll Element Into View  btn-apply-filters
@@ -79,7 +79,7 @@ Filtering by year, different modifiers work
     Click Button  Clear Filters
     
     
-    Select From List By Label  choose_field  Year
+    Select From List By Label  keyword_field  Year
     Input Text  keyword_value  2000-2199
     
     Scroll Element Into View  btn-apply-filters
@@ -91,7 +91,7 @@ Filtering by year, different modifiers work
 Searching a specific title works
     Add Two References
 
-    Select From List By Label  choose_field  Title
+    Select From List By Label  keyword_field  Title
     Input Text  keyword_value  Robot
     Scroll Element Into View  btn-apply-filters
     Click Button  Apply Filters
@@ -102,7 +102,7 @@ Searching a specific title works
 Searching a specific a partial key works
     Add Two References
 
-    Select From List By Label  choose_field  Key
+    Select From List By Label  keyword_field  Key
     Input Text  keyword_value  ROB
     Scroll Element Into View  btn-apply-filters
     Click Button  Apply Filters

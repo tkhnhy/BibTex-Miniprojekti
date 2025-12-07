@@ -30,6 +30,9 @@ ON reference_table USING GIN (
     to_tsvector('english', reference_data::text)
 );
 
+CREATE INDEX idx_reference_data_trgm
+ON reference_table USING GIN ((reference_data::text) gin_trgm_ops);
+
 CREATE INDEX idx_reference_year
 ON reference_table ((CAST(reference_data->>'year' AS INT)));
 

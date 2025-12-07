@@ -126,14 +126,31 @@ def year_to_sql_condition(year_input, column_name="(reference_data->>'year')::in
     raise ValueError(f"Invalid year input: {year_input}")
 
 def id_search_any_field(word: str) -> set[int]:
-    sql = text("""
+    matches = set()
+    
+    sql1 = text("""
         SELECT id
         FROM reference_table
         WHERE to_tsvector('english', reference_data::text)
               @@ plainto_tsquery(:word)
     """)
 
-    return set(db.session.execute(sql, {"word": word}).scalars().all())
+    matches.update(set(db.session.execute(sql1, {"word": word}).scalars().all()))
+    
+    sql2 = text(f"""
+            SELECT id
+            FROM reference_table
+            WHERE unaccent(reference_data::text)
+            ILIKE :pattern
+            """)
+    pattern = f"%{word}%"
+
+    matches.update(set(db.session.execute(sql2, {"pattern": pattern}).scalars().all()))
+    
+    if matches:
+        return matches
+    else:
+        return {-1}
 
 def id_search_specific_field(field: str, word: str) -> set[int]:
     if field in ("title", "author", "publisher"):

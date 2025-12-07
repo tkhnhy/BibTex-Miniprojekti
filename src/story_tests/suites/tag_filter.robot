@@ -33,6 +33,8 @@ Filtering shows only the selected tag type
     Page Should Contain  ROB01
     Page Should Contain  ROB02
 
+    Execute Javascript    document.querySelectorAll('.tooltiptext').forEach(e => e.style.display = 'none');
+
     Select Checkbox  reviewed
     Scroll Element Into View  id=btn-apply-filters
     Click Element  id=btn-apply-filters
@@ -67,6 +69,8 @@ Clearing filters restores all references
 
     Page Should Contain  ROB01
     Page Should Contain  ROB02
+
+    Execute Javascript    document.querySelectorAll('.tooltiptext').forEach(e => e.style.display = 'none');
 
     Select Checkbox  reviewed
     Scroll Element Into View  id=btn-apply-filters

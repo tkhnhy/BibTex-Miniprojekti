@@ -127,7 +127,7 @@ def year_to_sql_condition(year_input, column_name="(reference_data->>'year')::in
 
 def id_search_any_field(word: str) -> set[int]:
     matches = set()
-    
+
     sql1 = text("""
         SELECT id
         FROM reference_table
@@ -136,8 +136,8 @@ def id_search_any_field(word: str) -> set[int]:
     """)
 
     matches.update(set(db.session.execute(sql1, {"word": word}).scalars().all()))
-    
-    sql2 = text(f"""
+
+    sql2 = text("""
             SELECT id
             FROM reference_table
             WHERE unaccent(reference_data::text)
@@ -146,11 +146,10 @@ def id_search_any_field(word: str) -> set[int]:
     pattern = f"%{word}%"
 
     matches.update(set(db.session.execute(sql2, {"pattern": pattern}).scalars().all()))
-    
+
     if matches:
         return matches
-    else:
-        return {-1}
+    return {-1}
 
 def id_search_specific_field(field: str, word: str) -> set[int]:
     if field in ("title", "author", "publisher"):
@@ -190,9 +189,9 @@ def get_filtered_references(filters, sort_by=None):
     "key": "r.reference_key",
     "type": "r.reference_type",
     }
-    
+
     order_sql = allowed.get(sort_by, "r.id")
-    
+
     sql_parts = [
         "SELECT r.id, r.reference_key, r.reference_type, r.reference_data, r.comment,",
             "COALESCE(array_agg(DISTINCT t.name ORDER BY t.name) FILTER (WHERE t.name IS NOT NULL),",

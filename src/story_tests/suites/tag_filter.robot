@@ -34,13 +34,8 @@ Filtering shows only the selected tag type
     Page Should Contain  ROB02
 
     Select Checkbox  reviewed
-    Wait Until Page Contains Element    id=btn-apply-filters    timeout=10s
-    Until Element Is Visible       id=btn-apply-filters    timeout=10s
-    Wait Until Element Is Enabled       id=btn-apply-filters    timeout=10s
-    Scroll Element Into View            id=btn-apply-filters
-    Sleep    200ms
-    Click Element                       id=btn-apply-filters
-
+    Scroll Element Into View  btn-apply-filters
+    Click Button  Apply Filters
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
@@ -74,23 +69,14 @@ Clearing filters restores all references
     Page Should Contain  ROB02
 
     Select Checkbox  reviewed
-    Wait Until Page Contains Element    id=btn-apply-filters    timeout=10s
-    Until Element Is Visible       id=btn-apply-filters    timeout=10s
-    Wait Until Element Is Enabled       id=btn-apply-filters    timeout=10s
-    Scroll Element Into View            id=btn-apply-filters
-    Sleep    200ms
-    Click Element                       id=btn-apply-filters
+    Scroll Element Into View  btn-apply-filters
+    Click Button  Apply Filters
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
 
-    Wait Until Page Contains Element    id=btn-clear-filters    timeout=10s
-    Until Element Is Visible       id=btn-clear-filters    timeout=10s
-    Wait Until Element Is Enabled       id=btn-clear-filters    timeout=10s
-    Scroll Element Into View            id=btn-clear-filters
-    Sleep    200ms
-    Click Element                       id=btn-clear-filters
-
+    Scroll Element Into View  btn-clear-filters
+    Click Button  Clear Filters
 
     Page Should Contain  ROB01
     Page Should Contain  ROB02

@@ -34,8 +34,11 @@ Filtering shows only the selected tag type
     Page Should Contain  ROB02
 
     Execute Javascript    document.querySelectorAll('.tooltiptext').forEach(e => e.style.display = 'none');
+    Execute Javascript    document.querySelectorAll('.tooltip').forEach(e => e.style.display = 'none');
+    Sleep    0.5s
 
     Select Checkbox  reviewed
+    Sleep    0.3s
     Execute Javascript    document.getElementById('btn-apply-filters').click();
 
     Page Should Contain  ROB02
@@ -70,13 +73,17 @@ Clearing filters restores all references
     Page Should Contain  ROB02
 
     Execute Javascript    document.querySelectorAll('.tooltiptext').forEach(e => e.style.display = 'none');
+    Execute Javascript    document.querySelectorAll('.tooltip').forEach(e => e.style.display = 'none');
+    Sleep    0.5s
 
     Select Checkbox  reviewed
+    Sleep    0.3s
     Execute Javascript    document.getElementById('btn-apply-filters').click();
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
 
+    Sleep    0.3s
     Execute Javascript    document.getElementById('btn-clear-filters').click();
 
     Page Should Contain  ROB01

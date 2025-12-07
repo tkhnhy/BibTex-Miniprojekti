@@ -196,7 +196,7 @@
   bottom: auto;
   top: 5%; /* calculate relative to viewport */
   left: 10%;
-  z-index: 9999; /* above everything */
+  z-index: 1; /* below sidebar to avoid click interception */
 }
 
 .tooltip.active .tooltiptext {

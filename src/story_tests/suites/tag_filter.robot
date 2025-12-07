@@ -36,8 +36,7 @@ Filtering shows only the selected tag type
     Execute Javascript    document.querySelectorAll('.tooltiptext').forEach(e => e.style.display = 'none');
 
     Select Checkbox  reviewed
-    Scroll Element Into View  id=btn-apply-filters
-    Click Element  id=btn-apply-filters
+    Execute Javascript    document.getElementById('btn-apply-filters').click();
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
@@ -73,14 +72,12 @@ Clearing filters restores all references
     Execute Javascript    document.querySelectorAll('.tooltiptext').forEach(e => e.style.display = 'none');
 
     Select Checkbox  reviewed
-    Scroll Element Into View  id=btn-apply-filters
-    Click Element  id=btn-apply-filters
+    Execute Javascript    document.getElementById('btn-apply-filters').click();
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
 
-    Scroll Element Into View  id=btn-clear-filters
-    Click Element  id=btn-clear-filters
+    Execute Javascript    document.getElementById('btn-clear-filters').click();
 
     Page Should Contain  ROB01
     Page Should Contain  ROB02

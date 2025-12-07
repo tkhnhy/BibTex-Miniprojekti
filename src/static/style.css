@@ -81,6 +81,7 @@
   display: inline-block;
   font-size: 0.9em;
   margin-top:0.5rem;
+  z-index: 9999;
 }
 
 .button-green:hover {

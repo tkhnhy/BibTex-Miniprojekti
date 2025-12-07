@@ -34,9 +34,13 @@ Filtering shows only the selected tag type
     Page Should Contain  ROB02
 
     Select Checkbox  reviewed
-    Wait Until Element Is Visible    id=btn-apply-filters    timeout=10s
-    Execute Javascript    document.getElementById("btn-apply-filters").scrollIntoView(true);
-    Click Button    id=btn-apply-filters
+    Wait Until Page Contains Element    id=btn-apply-filters    timeout=10s
+    Until Element Is Visible       id=btn-apply-filters    timeout=10s
+    Wait Until Element Is Enabled       id=btn-apply-filters    timeout=10s
+    Scroll Element Into View            id=btn-apply-filters
+    Sleep    200ms
+    Click Element                       id=btn-apply-filters
+
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
@@ -70,16 +74,23 @@ Clearing filters restores all references
     Page Should Contain  ROB02
 
     Select Checkbox  reviewed
-    Wait Until Element Is Visible    id=btn-apply-filters    timeout=10s
-    Execute Javascript    document.getElementById("btn-apply-filters").scrollIntoView(true);
-    Click Button    id=btn-apply-filters
+    Wait Until Page Contains Element    id=btn-apply-filters    timeout=10s
+    Until Element Is Visible       id=btn-apply-filters    timeout=10s
+    Wait Until Element Is Enabled       id=btn-apply-filters    timeout=10s
+    Scroll Element Into View            id=btn-apply-filters
+    Sleep    200ms
+    Click Element                       id=btn-apply-filters
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
 
-    Wait Until Element Is Visible    id=btn-clear-filters    timeout=10s
-    Execute Javascript    document.getElementById("btn-clear-filters").scrollIntoView(true);
-    Click Button    id=btn-clear-filters
+    Wait Until Page Contains Element    id=btn-clear-filters    timeout=10s
+    Until Element Is Visible       id=btn-clear-filters    timeout=10s
+    Wait Until Element Is Enabled       id=btn-clear-filters    timeout=10s
+    Scroll Element Into View            id=btn-clear-filters
+    Sleep    200ms
+    Click Element                       id=btn-clear-filters
+
 
     Page Should Contain  ROB01
     Page Should Contain  ROB02

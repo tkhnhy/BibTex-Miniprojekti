@@ -30,6 +30,7 @@ Filtering by author gives only the reference containing the searchword in author
     Input Text  year  2150
     Click Button  Create
 
+    Wait Until Element Is Visible  name=keyword_field  timeout=5s
     Select From List By Label  keyword_field  Author
     Input Text  keyword_value  Anne
     Scroll Element Into View  btn-apply-filters
@@ -41,6 +42,7 @@ Filtering by author gives only the reference containing the searchword in author
 
 Filtering by year only returns only the approriate references
     Add Two References
+    Wait Until Element Is Visible  name=keyword_field  timeout=5s
     Select From List By Label  keyword_field  Year
     Input Text  keyword_value  2150
     
@@ -53,6 +55,7 @@ Filtering by year only returns only the approriate references
 Filtering by year, different modifiers work
     Add Two References
     
+    Wait Until Element Is Visible  name=keyword_field  timeout=5s
     Select From List By Label  keyword_field  Year
     Input Text  keyword_value  <2200
     
@@ -66,6 +69,7 @@ Filtering by year, different modifiers work
     Click Button  Clear Filters
     
     
+    Wait Until Element Is Visible  name=keyword_field  timeout=5s
     Select From List By Label  keyword_field  Year
     Input Text  keyword_value  >2150
     
@@ -79,6 +83,7 @@ Filtering by year, different modifiers work
     Click Button  Clear Filters
     
     
+    Wait Until Element Is Visible  name=keyword_field  timeout=5s
     Select From List By Label  keyword_field  Year
     Input Text  keyword_value  2000-2199
     
@@ -91,6 +96,7 @@ Filtering by year, different modifiers work
 Searching a specific title works
     Add Two References
 
+    Wait Until Element Is Visible  name=keyword_field  timeout=5s
     Select From List By Label  keyword_field  Title
     Input Text  keyword_value  Robot
     Scroll Element Into View  btn-apply-filters
@@ -102,6 +108,7 @@ Searching a specific title works
 Searching a specific a partial key works
     Add Two References
 
+    Wait Until Element Is Visible  name=keyword_field  timeout=5s
     Select From List By Label  keyword_field  Key
     Input Text  keyword_value  ROB
     Scroll Element Into View  btn-apply-filters

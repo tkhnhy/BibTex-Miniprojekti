@@ -33,12 +33,15 @@ Filtering shows only the selected tag type
     Page Should Contain  ROB01
     Page Should Contain  ROB02
 
+    Sleep  1s
     Execute Javascript    document.querySelectorAll('.tooltiptext').forEach(e => e.style.display = 'none');
 
     Wait Until Element Is Visible  xpath=//input[@value='reviewed']  timeout=5s
     Select Checkbox  reviewed
+    Sleep  0.5s
     Wait Until Element Is Visible  id=btn-apply-filters  timeout=5s
     Scroll Element Into View  id=btn-apply-filters
+    Sleep  0.5s
     Click Element  id=btn-apply-filters
 
     Page Should Contain  ROB02
@@ -72,12 +75,15 @@ Clearing filters restores all references
     Page Should Contain  ROB01
     Page Should Contain  ROB02
 
+    Sleep  1s
     Execute Javascript    document.querySelectorAll('.tooltiptext').forEach(e => e.style.display = 'none');
 
     Wait Until Element Is Visible  xpath=//input[@value='reviewed']  timeout=5s
     Select Checkbox  reviewed
+    Sleep  0.5s
     Wait Until Element Is Visible  id=btn-apply-filters  timeout=5s
     Scroll Element Into View  id=btn-apply-filters
+    Sleep  0.5s
     Click Element  id=btn-apply-filters
 
     Page Should Contain  ROB02
@@ -85,6 +91,7 @@ Clearing filters restores all references
 
     Wait Until Element Is Visible  id=btn-clear-filters  timeout=5s
     Scroll Element Into View  id=btn-clear-filters
+    Sleep  0.5s
     Click Element  id=btn-clear-filters
 
     Page Should Contain  ROB01

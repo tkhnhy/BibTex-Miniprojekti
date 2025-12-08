@@ -1,0 +1,122 @@
+*** Settings ***
+Resource         ../resources/resource.robot
+Suite Setup      Open And Configure Browser
+Suite Teardown   Close Browser
+Test Setup       Reset References
+
+*** Keywords ***
+Input Book With Fields
+    [Arguments]    ${key}    ${author}    ${title}    ${publisher}    ${year}
+    Select From List By Label  reference_type  Book
+    Input Text  reference_key  ${key}
+    Input Text  author  ${author}
+    Input Text  title  ${title}
+    Input Text  publisher  ${publisher}
+    Input Text  year  ${year}
+
+Input Tag
+    [Arguments]    ${tag}
+    Input Text  tag-input  ${tag}
+    Click Button  Add tag
+
+*** Test Cases ***
+Manage tags button opens the managing panel
+    Go To  ${HOME_URL}
+    Page Should Contain  Manage tags
+
+    Click Button  New reference
+    Input Book With Fields  ROB05  Rob Bot  Robot Book  RobotPublishing  2150
+    Input Tag  abc
+    Input Tag  def
+    Click Button  Create
+
+    Click Button  Manage tags
+    Textfield Value Should Be  new_tag_name_abc  abc
+    Textfield Value Should Be  new_tag_name_def  def
+
+Renaming tags works correctly
+    Go To  ${HOME_URL}
+    Page Should Contain  Manage tags
+
+    Click Button  New reference
+    Input Book With Fields  ROB05  Rob Bot  Robot Book  RobotPublishing  2150
+    Input Tag  abc
+    Input Tag  def
+    Click Button  Create
+
+    Click Button  Manage tags
+    Input Text  new_tag_name_abc  xyz
+    Click Button  Apply edit
+    Click Button  To main page
+    
+    Click Button  Details
+    Page Should Contain  xyz
+    Page Should Not Contain  abc
+
+Deleting tags works correctly
+    Go To  ${HOME_URL}
+    Page Should Contain  Manage tags
+
+    Click Button  New reference
+    Input Book With Fields  ROB05  Rob Bot  Robot Book  RobotPublishing  2150
+    Input Tag  abc
+    Input Tag  def
+    Click Button  Create
+
+    Click Button  Manage tags
+    Click Button  delete_tag_def
+    Click Button  To main page
+    
+    Click Button  Details
+    Page Should Contain  abc
+    Page Should Not Contain  def
+
+
+
+# Add Tags On New Reference Form
+#     Go To  ${HOME_URL}
+#     Click Button  New reference
+#     Input Book With Fields  ROB05  Rob Bot  Robot Book  RobotPublishing  2150
+#     Input Tag  abc
+#     Page Should Contain  abc
+#     Remove Tag
+#     Page Should Not Contain  abc
+#     Input Tag  abc
+#     Click Button  Create
+
+#     Page Should Contain  ROB05
+#     Click Button  Details
+#     Page Should Contain  abc
+
+# Add And Remove Tags On Edit Form
+#     Go To  ${HOME_URL}
+#     Click Button  New reference
+
+#     Input Book With Fields  ROB06  Rob Bot  Robot Book  RobotPublishing  2150
+#     Input Tag  initialtag
+#     Click Button  Create
+#     Page Should Contain  ROB06
+
+#     # Add a new tag
+#     Click Button  Edit
+#     Input Tag  newtag
+#     Click Button  Save changes
+
+#     Page Should Contain  ROB06
+#     Click Button  Details
+#     Page Should Contain  initialtag
+#     Page Should Contain  newtag
+
+#     # Remove the tags
+#     Click Button  Edit
+#     Remove Tag
+#     Remove Tag
+#     Click Button  Save changes
+
+#     Page Should Contain  ROB06
+#     Click Button  Details
+#     Page Should Not Contain  newtag
+#     Page Should Not Contain  initialtag
+    
+
+

@@ -228,7 +228,6 @@ def route_tag_management():
 def route_delete_tag(tag_name: str):
     try:
         delete_tag(tag_name)
-        flash(f"Tag '{tag_name}' deleted successfully.")
     except Exception as error:
         flash(f"Error deleting tag: {error}")
     return redirect("/tag_management")
@@ -241,7 +240,6 @@ def route_rename_tag(old_tag_name: str):
         return redirect("/tag_management")
     try:
         rename_tag(old_tag_name, new_tag_name)
-        flash(f"Tag '{old_tag_name}' renamed to '{new_tag_name}' successfully.")
     except Exception as error:
         flash(f"Error renaming tag: {error}")
     return redirect("/tag_management")

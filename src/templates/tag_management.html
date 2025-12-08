@@ -7,14 +7,14 @@ My references
 {% for tag, count in tags %}
     <div class="tag-item">
         <form action="/rename_tag/{{ tag.name }}" method="post" style="display:inline;">
-            <input id="new_tag_name" name="new_tag_name" type="text" value="{{ tag.name }}">
+            <input id="new_tag_name_{{tag.name}}" name="new_tag_name" type="text" value="{{ tag.name }}">
             <span class="tag-name"> - used by {{count}} references</span>
             <button type="submit" class="button-green button-small">Apply edit</button>
         </form>
         
 
         <form action="/delete_tag/{{ tag.name }}" method="post" style="display:inline;">
-            <button type="submit" class="button-red button-small">Delete</button>
+            <button id="delete_tag_{{tag.name}}" type="submit" class="button-red button-small">Delete</button>
         </form>
     </div>
 {% else %}

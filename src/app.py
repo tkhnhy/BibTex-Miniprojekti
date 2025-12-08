@@ -35,7 +35,9 @@ def route_index():
         tags = []
 
     return render_template("index.html", references=references,
-                            reference_types=list(ReferenceType), tags=tags)
+                            reference_types=list(ReferenceType), tags=tags,
+                            selected_types=selected_types,
+                            selected_tags=selected_tags)
 
 @app.route("/new_reference")
 def route_new_reference():
@@ -159,11 +161,23 @@ def route_save_edited_reference(old_reference_key: str):
 def download_bib():
     selected_keys = request.form.getlist('selected_keys')
     try:
-        if not selected_keys:
-            # Default to all references if none selected
-            references = get_references()
-        else:
+        if selected_keys:
+            # Download specifically selected references
             references = get_references_by_keys(selected_keys)
+        else:
+            # No specific selection - check for filters
+            filters = []
+            selected_types = request.form.getlist("reference_type[]")
+            selected_tags = request.form.getlist("tag[]")
+            if selected_types:
+                filters.append(("type", selected_types))
+            if selected_tags:
+                filters.append(("tag", selected_tags))
+
+            if filters:
+                references = get_filtered_references(filters)
+            else:
+                references = get_references()
     except Exception as error:
         flash("Could not fetch references: " + str(error))
         return redirect("/")

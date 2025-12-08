@@ -23,7 +23,7 @@ document.querySelectorAll('.toggle-details').forEach(button => {
 
     const updateDownloadButton = () => {
         const anySelected = rowCheckboxes().some(cb => cb.checked);
-        downloadBtn.textContent = anySelected ? 'Download selected as BibTeX file' : 'Download all as BibTeX file';
+        downloadBtn.textContent = anySelected ? 'Download selected as BibTeX file' : 'Download as BibTeX file';
     };
 
     const updateDeleteSelectedButton = () => {
@@ -59,7 +59,8 @@ document.querySelectorAll('.toggle-details').forEach(button => {
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = '/download_bib';
-        // Add selected keys inputs
+        
+        // Add selected keys inputs if any are selected
         selectedKeys.forEach(k => {
             const input = document.createElement('input');
             input.type = 'hidden';
@@ -67,6 +68,25 @@ document.querySelectorAll('.toggle-details').forEach(button => {
             input.value = k;
             form.appendChild(input);
         });
+
+        // If no specific selection, pass current filter params from URL
+        if (selectedKeys.length === 0) {
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.getAll('reference_type[]').forEach(v => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'reference_type[]';
+                input.value = v;
+                form.appendChild(input);
+            });
+            urlParams.getAll('tag[]').forEach(v => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'tag[]';
+                input.value = v;
+                form.appendChild(input);
+            });
+        }
 
         document.body.appendChild(form);
         form.submit();

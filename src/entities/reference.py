@@ -134,8 +134,6 @@ class Reference:
         brace_open = s.find('{', at_pos)
         if brace_open == -1:
             raise ValueError("invalid bibtex: missing '{' after type")
-        if brace_open < at_pos:
-            raise ValueError("invalid bibtex: '{' found before '@'")
 
         # type string
         type_str = s[at_pos + 1:brace_open].strip().lower()
@@ -165,7 +163,10 @@ class Reference:
                 body_start = i + 1
                 break
         if key is None:
-            raise ValueError("invalid bibtex: no ',' found after key")
+            key = s[brace_open+1:brace_close].strip()
+            body_start = brace_close
+        if key == '':
+            raise ValueError("invalid bibtex: empty key")
 
         # Extract trailing comment: any text after closing brace
         comment = ''

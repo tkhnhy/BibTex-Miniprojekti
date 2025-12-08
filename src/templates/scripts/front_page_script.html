@@ -127,4 +127,13 @@ document.getElementById('fileInput').addEventListener('change', async function()
         alert('Upload failed: ' + error.message);
     }
 });
+// Empty searchword won't be submitted to have a nicer GET URL
+document.getElementById('filterForm').addEventListener('submit', function(e) {
+    const input = document.querySelector('input[name="keyword_value"]');
+    const select = document.querySelector('select[name="keyword_field"]');
+    if (!input.value.trim()) {
+        input.disabled = true;
+        select.disabled = true;
+    }
+});
 </script>

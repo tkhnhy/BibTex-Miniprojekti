@@ -194,4 +194,71 @@
         }
     });
 })();
+
+
+// DOI fetch and autofill
+
+(function() {
+    async function fetchDoiAndFill() {
+        const doiInput = document.getElementById('doi-input');
+        const btn = document.getElementById('fetch-doi-btn');
+        const status = document.getElementById('fetch-doi-status');
+        if (!doiInput || !btn) return;
+        const doi = doiInput.value.trim();
+        if (!doi) return;
+
+        btn.disabled = true;
+        status.textContent = 'Fetching…';
+
+        try {
+            const res = await fetch('/fetch_doi', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ doi })
+            });
+
+            const payload = await res.json();
+            
+            if (!res.ok) {
+                alert(payload?.error || 'Could not fetch metadata for DOI');
+                status.textContent = 'Failed';
+                return;
+            }
+
+            // set reference type
+            if (payload.type) {
+                const typeSelect = document.getElementById('reference_type');
+                if (typeSelect) {
+                    typeSelect.value = payload.type;
+                    // trigger event for dynamic field updates
+                    typeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+
+            // set reference key
+            if (payload.key) {
+                const keyEl = document.getElementById('reference_key');
+                if (keyEl) keyEl.value = payload.key;
+            }
+
+            // fill fields from the returned content dict
+            const content = payload.content || {};
+            Object.entries(content).forEach(([field, value]) => {
+                if (value == null) return;
+                const el = document.querySelector(`[name="${field}"]`);
+                if (el) el.value = value;
+            });
+            status.textContent = 'Filled';
+        } catch (e) {
+            console.error(e);
+            alert('Error fetching DOI');
+            if (status) status.textContent = 'Error';
+        } finally {
+            if (btn) btn.disabled = false;
+            setTimeout(() => { const s = document.getElementById('fetch-doi-status'); if (s) s.textContent = ''; }, 2000);
+        }
+    }
+
+    document.getElementById('fetch-doi-btn')?.addEventListener('click', fetchDoiAndFill);
+})();
 </script>

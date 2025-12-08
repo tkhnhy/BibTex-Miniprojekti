@@ -1,4 +1,6 @@
+from urllib.parse import quote
 import json
+import requests
 from repositories.reference_repository import get_reference_by_key
 from entities.reference import ReferenceType
 
@@ -59,3 +61,25 @@ def validate_reference(type_: str, key: str, content, old_key: str = None):
     if old_key is None or key != old_key:
         if get_reference_by_key(key):
             raise UserInputError(f"Reference citation key '{key}' already exists")
+
+
+def fetch_doi_bibtex(doi: str, *, timeout: int = 10) -> str | None:
+    """
+    Fetch a BibTeX string for the given DOI using content negotiation via doi.org.
+    Returns the BibTeX string on success, or None on failure.
+    """
+    if not doi or not str(doi).strip():
+        return None
+
+    url = f"https://doi.org/{quote(str(doi).strip())}"
+    headers = {
+        "Accept": "application/x-bibtex",
+        "User-Agent": "BibTex-Miniprojekti/1.0 (mailto:you@example.com)"
+    }
+    try:
+        resp = requests.get(url, headers=headers, timeout=timeout, allow_redirects=True)
+        if resp.status_code == 200 and resp.text:
+            return resp.text
+        return None
+    except requests.RequestException:
+        return None

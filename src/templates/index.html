@@ -9,14 +9,8 @@ My references
 <h2 class="page-title">My references</h2>
 
 <div class="sidebar">
-    <form action="/" method="get" style="display:inline;">
-        <button type="submit" class="button-green" id="btn-clear-filters">
-            Clear Filters
-        </button>
-    </form>
+    <h2>Filters:</h2>
     <form id="filterForm" action="/" method="get">
-        <button type="submit" class="button-green" id="btn-apply-filters">Apply Filters</button>
-        <h2>Filters:</h2>
         <label for="choose_field"><b>Search field:</b></label>
         <select name="keyword_field" id="choose_field">
             <option value="any">Any</option>
@@ -26,6 +20,11 @@ My references
             <option value="year">Year</option>
             <option value="key">Key</option>
         </select>
+        <span class="tooltip" onclick="this.classList.toggle('active')">i
+        <span class="tooltiptext">When searching for year, you can use "&lt;" ,"&gt;" and "-" operators!
+        <br> e.g., "&lt;2000", "&gt;1980", "2010-2020"
+        </span>
+        </span>
         <input type="text" name="keyword_value" placeholder="Enter search word"><br>
 
         <label><b>Select reference types:</b></label><br>
@@ -51,8 +50,14 @@ My references
             <option value="key">Key</option>
         </select>
         <br><br>
+    <button type="submit" class="button-green" id="btn-apply-filters">Apply Filters</button>
+
 </form>
-<br><br><br>
+<form action="/" method="get" style="display:inline;">
+    <button type="submit" class="button-green" id="btn-clear-filters">
+        Clear Filters
+    </button>
+</form>
 </div>
 
 {% with messages = get_flashed_messages() %}

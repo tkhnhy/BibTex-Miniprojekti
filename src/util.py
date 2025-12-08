@@ -74,7 +74,7 @@ def extract_doi(text: str) -> str | None:
     # common DOI regex: 10.<4-9 digits>/<suffix>
     m = re.search(r'10\.\d{4,9}/[-._;()/:A-Za-z0-9]+', s, flags=re.IGNORECASE)
     return m.group(0).lower() if m else None
-    
+
 def fetch_doi_bibtex(doi: str, *, timeout: int = 10) -> str | None:
     """
     Fetch a BibTeX string for the given DOI using content negotiation via doi.org.

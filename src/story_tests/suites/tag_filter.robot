@@ -6,7 +6,7 @@ Test Setup       Reset References
 
 *** Test Cases ***
 Filtering shows only the selected tag type
-    IF  '${GITHUB_ACTIONS}' == 'true'
+    IF  '${env:GITHUB_ACTIONS}' == 'true'
         SKIP  Skipping this test in CI
     END
     Go To  ${HOME_URL}
@@ -44,7 +44,7 @@ Filtering shows only the selected tag type
     Page Should Not Contain  ROB01
 
 Clearing filters restores all references
-    IF  '${GITHUB_ACTIONS}' == 'true'
+    IF  '${env:GITHUB_ACTIONS}' == 'true'
         SKIP  Skipping this test in CI
     END
     Go To  ${HOME_URL}

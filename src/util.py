@@ -1,4 +1,7 @@
+import re
+from urllib.parse import quote
 import json
+import requests
 from repositories.reference_repository import get_reference_by_key
 from entities.reference import ReferenceType
 
@@ -59,3 +62,36 @@ def validate_reference(type_: str, key: str, content, old_key: str = None):
     if old_key is None or key != old_key:
         if get_reference_by_key(key):
             raise UserInputError(f"Reference citation key '{key}' already exists")
+
+def extract_doi(text: str) -> str | None:
+    """
+    Extract a DOI from a string/URL. Returns the DOI (lowercase) or None.
+    Handles plain DOIs, doi:10..., doi.org/... and http(s) URLs that contain a DOI.
+    """
+    if not text:
+        return None
+    s = text.strip()
+    # common DOI regex: 10.<4-9 digits>/<suffix>
+    m = re.search(r'10\.\d{4,9}/[-._;()/:A-Za-z0-9]+', s, flags=re.IGNORECASE)
+    return m.group(0).lower() if m else None
+
+def fetch_doi_bibtex(doi: str, *, timeout: int = 10) -> str | None:
+    """
+    Fetch a BibTeX string for the given DOI using content negotiation via doi.org.
+    Returns the BibTeX string on success, or None on failure.
+    """
+    if not doi or not str(doi).strip():
+        return None
+
+    url = f"https://doi.org/{quote(str(doi).strip())}"
+    headers = {
+        "Accept": "application/x-bibtex",
+        "User-Agent": "BibTex-Miniprojekti/1.0 (mailto:you@example.com)"
+    }
+    try:
+        resp = requests.get(url, headers=headers, timeout=timeout, allow_redirects=True)
+        if resp.status_code == 200 and resp.text:
+            return resp.text
+        return None
+    except requests.RequestException:
+        return None

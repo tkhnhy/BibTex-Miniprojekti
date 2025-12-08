@@ -19,6 +19,13 @@ Create a new reference
         {% endif %}
     {% endwith %}
 
+    <div class="field-row">
+        <label for="doi-input">Fetch from DOI:</label>
+        <input id="doi-input" type="text" name="doi-input" placeholder="10.xxxx/xxxxx or URL with the DOI" style="width:20em;">
+        <button id="fetch-doi-btn" type="button" class="button-green">Fetch</button>
+        <span id="fetch-doi-status" style="margin-left:8px;"></span>
+    </div>
+    <br>
     <label for="reference_type">Entry Type:</label>
     <select name="reference_type" id="reference_type" required>
         <option value="" disabled selected>Select a type...</option>

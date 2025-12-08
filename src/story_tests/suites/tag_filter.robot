@@ -3,6 +3,7 @@ Resource         ../resources/resource.robot
 Suite Setup      Open And Configure Browser
 Suite Teardown   Close Browser
 Test Setup       Reset References
+Library    OperatingSystem
 
 *** Test Cases ***
 Filtering shows only the selected tag type

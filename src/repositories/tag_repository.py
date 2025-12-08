@@ -62,5 +62,16 @@ def delete_tags_from_reference(reference_id: int, *, commit: bool = True):
     if commit:
         db.session.commit()
 
+def delete_tag(tag_name: str):
+    sql = text("DELETE FROM tags WHERE name = :name")
+    db.session.execute(sql, {"name": tag_name.lower()})
+    db.session.commit()
+
+def rename_tag(old_name: str, new_name: str):
+    # Update tag name
+    sql_update = text("UPDATE tags SET name = :new_name WHERE name = :old_name")
+    db.session.execute(sql_update, {"new_name": new_name.lower(), "old_name": old_name.lower()})
+    db.session.commit()
+
 def update_tags():
     pass

@@ -7,7 +7,7 @@ from repositories.reference_repository import (
     add_ref_for_storytests, get_references_by_keys, get_filtered_references,
     delete_reference, delete_references, update_reference
 )
-from repositories.tag_repository import get_tags_with_counts
+from repositories.tag_repository import get_tags_with_counts, delete_tag, rename_tag
 from config import app, test_env
 from util import validate_reference, UserInputError
 
@@ -208,7 +208,6 @@ def upload_bib():
         return redirect("/")
 
     try:
-        reset_db()
         content = file.read().decode("utf-8")
         entries = content.split("\n@")
 
@@ -229,6 +228,32 @@ def upload_bib():
         flash(f"Error processing file: {error}")
 
     return redirect("/")
+
+@app.route("/tag_management")
+def route_tag_management():
+    tags = get_tags_with_counts()
+    return render_template("tag_management.html", tags=tags)
+
+@app.route("/delete_tag/<string:tag_name>", methods=["POST"])
+def route_delete_tag(tag_name: str):
+    try:
+        delete_tag(tag_name)
+    except Exception as error:
+        flash(f"Error deleting tag: {error}")
+    return redirect("/tag_management")
+
+@app.route("/rename_tag/<string:old_tag_name>", methods=["POST"])
+def route_rename_tag(old_tag_name: str):
+    new_tag_name = request.form.get("new_tag_name", "").strip()
+    if not new_tag_name:
+        flash("New tag name cannot be empty.")
+        return redirect("/tag_management")
+    try:
+        rename_tag(old_tag_name, new_tag_name)
+    except Exception as error:
+        flash(f"Error renaming tag: {error}")
+    return redirect("/tag_management")
+
 
 # Routes for testing
 if test_env:

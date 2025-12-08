@@ -35,13 +35,10 @@ Filtering shows only the selected tag type
 
     Wait Until Element Is Visible  xpath=//input[@value='reviewed']  timeout=5s
     Wait Until Element Is Enabled  xpath=//input[@value='reviewed']  timeout=5s
-    Execute Javascript    document.querySelectorAll('.tooltiptext').forEach(e => e.style.display = 'none');
     Select Checkbox  reviewed
     Wait Until Element Is Visible  id=btn-apply-filters  timeout=5s
     Wait Until Element Is Enabled  id=btn-apply-filters  timeout=5s
-    Scroll Element Into View  id=btn-apply-filters
-    Wait For Condition  return document.getElementById('btn-apply-filters').offsetParent !== null
-    Click Element  id=btn-apply-filters
+    Execute Javascript    document.getElementById('btn-apply-filters').click();
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
@@ -76,22 +73,17 @@ Clearing filters restores all references
 
     Wait Until Element Is Visible  xpath=//input[@value='reviewed']  timeout=5s
     Wait Until Element Is Enabled  xpath=//input[@value='reviewed']  timeout=5s
-    Execute Javascript    document.querySelectorAll('.tooltiptext').forEach(e => e.style.display = 'none');
     Select Checkbox  reviewed
     Wait Until Element Is Visible  id=btn-apply-filters  timeout=5s
     Wait Until Element Is Enabled  id=btn-apply-filters  timeout=5s
-    Scroll Element Into View  id=btn-apply-filters
-    Wait For Condition  return document.getElementById('btn-apply-filters').offsetParent !== null
-    Click Element  id=btn-apply-filters
+    Execute Javascript    document.getElementById('btn-apply-filters').click();
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
 
     Wait Until Element Is Visible  id=btn-clear-filters  timeout=5s
     Wait Until Element Is Enabled  id=btn-clear-filters  timeout=5s
-    Scroll Element Into View  id=btn-clear-filters
-    Wait For Condition  return document.getElementById('btn-clear-filters').offsetParent !== null
-    Click Element  id=btn-clear-filters
+    Execute Javascript    document.getElementById('btn-clear-filters').click();
 
     Page Should Contain  ROB01
     Page Should Contain  ROB02

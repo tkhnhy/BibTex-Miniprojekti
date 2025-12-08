@@ -115,30 +115,133 @@ class Reference:
         return bibtex_string
 
     @classmethod
-    def from_bibtex(cls, id_: int, bibtex_str: str):
-        """Create a Reference instance from a BibTeX formatted string."""
-        lines = bibtex_str.strip().splitlines()
+    def from_bibtex(cls, id_: int, bibtex_str: str): # pylint: disable=too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
+        """Create a Reference instance from a BibTeX formatted string.
 
-        # Parse header: @type{key,
-        header = lines[0].strip()
-        at_pos = header.find('@')
-        brace_pos = header.find('{')
-        comma_pos = header.find(',', brace_pos)
+        This parser is tolerant to entries formatted on a single line or with
+        irregular spacing. It handles brace-nested values and quoted values.
+        If a %-comment exists after the main entry it is parsed as the comment.
+        """
+        s = bibtex_str.strip()
+        if not s:
+            raise ValueError("empty bibtex string")
 
-        type_ = ReferenceType(header[at_pos + 1:brace_pos].strip())
-        key = header[brace_pos + 1:comma_pos].strip()
+        # Find start: @type{
+        at_pos = s.find('@')
+        if at_pos == -1:
+            raise ValueError("invalid bibtex: missing '@'")
 
-        # Parse content fields
-        content = {}
-        for line in lines[1:-1]:
-            line = line.strip().rstrip(',')
-            if '=' in line:
-                field, value = line.split('=', 1)
-                content[field.strip()] = value.strip().strip('{}')
+        brace_open = s.find('{', at_pos)
+        if brace_open == -1:
+            raise ValueError("invalid bibtex: missing '{' after type")
+        if brace_open < at_pos:
+            raise ValueError("invalid bibtex: '{' found before '@'")
 
-        # Extract comment if present
+        # type string
+        type_str = s[at_pos + 1:brace_open].strip().lower()
+
+        # Find closing brace for the entry
+        depth = 0
+        brace_close = None
+        for i in range(brace_open, len(s)):
+            ch = s[i]
+            if ch == '{':
+                depth += 1
+            elif ch == '}':
+                depth -= 1
+                if depth == 0:
+                    brace_close = i
+                    break
+        if brace_close is None:
+            raise ValueError("invalid bibtex: no closing '}' found")
+
+        # Extract key: text between opening brace comma
+        key = None
+        for i in range(brace_open + 1, brace_close):
+            if s[i] == '{' or s[i] == '}':
+                raise ValueError("invalid bibtex: unexpected brace in key")
+            if s[i] == ',':
+                key = s[brace_open + 1:i].strip()
+                body_start = i + 1
+                break
+        if key is None:
+            raise ValueError("invalid bibtex: no ',' found after key")
+
+        # Extract trailing comment: any text after closing brace
         comment = ''
-        if lines[-1].strip().startswith('%'):
-            comment = lines[-1].strip().removeprefix('%').strip()
+        trailing = s[brace_close + 1 :].strip()
+        if trailing:
+            pct = trailing.find('%')
+            if pct != -1:
+                comment = trailing[pct + 1 :].strip()
 
-        return cls(id_=id_, key=key, type_=type_, content=content, comment=comment)
+        # Extract entry body
+        body = s[body_start:brace_close].strip()
+
+        # Parse fields robustly
+        content = {}
+        i = 0
+        while i < len(body): # pylint: disable=too-many-nested-blocks
+            # skip whitespace and commas
+            while i < len(body) and (body[i].isspace() or body[i] == ','):
+                i += 1
+            if i >= len(body):
+                break
+
+            # read field name
+            start = i
+            while i < len(body) and (body[i].isalnum() or body[i] in ['_', '-']):
+                i += 1
+            field = body[start:i].strip().lower()
+            # skip whitespace
+            while i < len(body) and body[i].isspace():
+                i += 1
+            # expect '='
+            if i < len(body) and body[i] == '=':
+                i += 1
+            else:
+                raise ValueError(f"invalid bibtex: expected '=' after field '{field}'")
+            # skip whitespace after =
+            while i < len(body) and body[i].isspace():
+                i += 1
+            # parse value, handle nesting
+            if i < len(body) and body[i] == '{':
+                i += 1
+                val_start = i
+                depth = 1
+                while i < len(body) and depth > 0:
+                    if body[i] == '{':
+                        depth += 1
+                    elif body[i] == '}':
+                        depth -= 1
+                    i += 1
+                val = body[val_start:i - 1].strip()
+            elif i < len(body) and body[i] == '"':
+                # quoted string
+                i += 1
+                val_start = i
+                while i < len(body):
+                    if body[i] == '"' and body[i - 1] != '\\':
+                        break
+                    i += 1
+                val = body[val_start:i].strip()
+                i += 1 # skip closing quote
+            else:
+                # bare token
+                val_start = i
+                while i < len(body) and body[i] != ',':
+                    i += 1
+                val = body[val_start:i].strip()
+
+            if val is not None:
+                # replace multiple whitespace with a single space
+                normalized = ' '.join(val.split())
+                content[field] = normalized
+
+        # Construct ReferenceType
+        try:
+            ref_type = ReferenceType(type_str)
+        except Exception as ex:
+            raise ValueError(f"invalid bibtex: unknown type '{type_str}'") from ex
+
+        return cls(id_=id_, key=key, type_=ref_type, content=content, comment=comment)

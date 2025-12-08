@@ -35,7 +35,9 @@ Filtering shows only the selected tag type
 
     Execute Javascript    document.querySelectorAll('.tooltiptext').forEach(e => e.style.display = 'none');
 
+    Wait Until Element Is Visible  xpath=//input[@value='reviewed']  timeout=5s
     Select Checkbox  reviewed
+    Wait Until Element Is Visible  id=btn-apply-filters  timeout=5s
     Scroll Element Into View  id=btn-apply-filters
     Click Element  id=btn-apply-filters
 
@@ -72,13 +74,16 @@ Clearing filters restores all references
 
     Execute Javascript    document.querySelectorAll('.tooltiptext').forEach(e => e.style.display = 'none');
 
+    Wait Until Element Is Visible  xpath=//input[@value='reviewed']  timeout=5s
     Select Checkbox  reviewed
+    Wait Until Element Is Visible  id=btn-apply-filters  timeout=5s
     Scroll Element Into View  id=btn-apply-filters
     Click Element  id=btn-apply-filters
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
 
+    Wait Until Element Is Visible  id=btn-clear-filters  timeout=5s
     Scroll Element Into View  id=btn-clear-filters
     Click Element  id=btn-clear-filters
 

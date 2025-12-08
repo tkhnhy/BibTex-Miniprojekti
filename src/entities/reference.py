@@ -115,7 +115,7 @@ class Reference:
         return bibtex_string
 
     @classmethod
-    def from_bibtex(cls, id_: int, bibtex_str: str): # pylint: disable=too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
+    def from_bibtex(cls, id_: int, bibtex_str: str) -> 'Reference': # pylint: disable=too-many-locals, too-many-nested-blocks, too-many-branches, too-many-statements
         """Create a Reference instance from a BibTeX formatted string.
 
         This parser is tolerant to entries formatted on a single line or with
@@ -225,6 +225,8 @@ class Reference:
                     if body[i] == '"' and body[i - 1] != '\\':
                         break
                     i += 1
+                if i >= len(body) or body[i] != '"':
+                    raise ValueError(f"invalid bibtex: unclosed quoted string for field '{field}'")
                 val = body[val_start:i].strip()
                 i += 1 # skip closing quote
             else:

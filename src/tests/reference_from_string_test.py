@@ -97,7 +97,7 @@ class TestReferenceFromBibTeXParsing(unittest.TestCase):
         self.assertEqual(ref.type.value, "misc")
 
     def test_missing_field_value_parses(self):
-        bib = "@misc{m2, title = {Title Only}, author = , year = 2021 }"
+        bib = "@misc{m2, title = {Title Only}, author =, year = 2021 }"
         ref = Reference.from_bibtex(4, bib)
         self.assertEqual(ref.key, "m2")
         self.assertEqual(ref.type.value, "misc")
@@ -154,6 +154,10 @@ class TestReferenceFromBibTeXParsing(unittest.TestCase):
         with self.assertRaises(ValueError):
             Reference.from_bibtex(9, bib)
 
+    def test_missing_closing_quote_raises_value_error(self):
+        bib = '@misc{q1, title = "Unclosed title}'
+        with self.assertRaises(ValueError):
+            Reference.from_bibtex(10, bib)
 
 if __name__ == "__main__":
     unittest.main()

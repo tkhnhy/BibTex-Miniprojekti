@@ -9,7 +9,7 @@ from repositories.reference_repository import (
 )
 from repositories.tag_repository import get_tags_with_counts
 from config import app, test_env
-from util import validate_reference, fetch_doi_bibtex, UserInputError
+from util import validate_reference, fetch_doi_bibtex, extract_doi, UserInputError
 
 @app.route("/", methods=["GET", "POST"])
 def route_index():
@@ -57,20 +57,21 @@ def route_fetch_doi():
     Returns a JSON response with the BibTeX data or an error message.
     """
     payload = request.get_json(silent=True) or request.form
-    doi = (payload.get("doi") or "").strip()
+    raw = (payload.get("doi") or payload.get("DOI") or "").strip()
+    doi = extract_doi(raw)
+
     if not doi:
         return jsonify({"error": "Missing DOI"}), 400
 
     bibtex = fetch_doi_bibtex(doi)
     if bibtex is None:
         return jsonify({"error": "Could not fetch BibTeX for DOI"}), 502
-    print(bibtex)
 
-    reference = Reference.from_bibtex(0, bibtex)
-    if reference is None:
+    try:
+        reference = Reference.from_bibtex(0, bibtex)
+    except ValueError:
         return jsonify({"error": "Fetched BibTeX is invalid"}), 502
 
-    print(str(reference))
     return jsonify({"type": reference.type.value, "key": reference.key, "content": reference.content}), 200
 
 @app.route("/create_reference", methods=["POST"])

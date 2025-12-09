@@ -1,26 +1,31 @@
+{% extends "layout.html" %}
+
 {% block title %}
-My references
+Manage Tags
 {% endblock %}
 
 {% block body %}
 
+<h2 class="page-title">Manage Tags</h2>
+
 {% for tag, count in tags %}
     <div class="tag-item">
         <form action="/rename_tag/{{ tag.name }}" method="post" style="display:inline;">
-            <input id="new_tag_name_{{tag.name}}" name="new_tag_name" type="text" value="{{ tag.name }}">
+            <label for="new_tag_name_{{tag.name}}" class="sr-only">Rename tag {{ tag.name }}</label>
+            <input id="new_tag_name_{{tag.name}}" name="new_tag_name" type="text" value="{{ tag.name }}" aria-label="New name for tag {{ tag.name }}">
             <span class="tag-name"> - used by {{count}} references</span>
-            <button type="submit" class="button-green button-small">Apply edit</button>
+            <button type="submit" class="button-green">Apply edit</button>
         </form>
         
 
         <form action="/delete_tag/{{ tag.name }}" method="post" style="display:inline;">
-            <button id="delete_tag_{{tag.name}}" type="submit" class="button-red button-small">Delete</button>
+            <button id="delete_tag_{{tag.name}}" type="submit" class="button-red" aria-label="Delete tag {{ tag.name }}">Delete</button>
         </form>
     </div>
 {% else %}
     <p>No tags available.</p>
 {% endfor %}
-<button onclick="location.href='/'" style="margin-top: 15px;">
+<button onclick="location.href='/'" class="button-green" style="margin-top: 15px;">
     To main page
 </button>
 

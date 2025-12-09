@@ -3,6 +3,7 @@
 
 [**Product backlog + sprint backlogs**](https://helsinkifi-my.sharepoint.com/:x:/g/personal/hjhellen_ad_helsinki_fi/IQAvnQeKqT0uQYKpWgiyLJbaASYjHlJnmxERma5JgKgGz00)
 
+[**Report**](https://helsinkifi-my.sharepoint.com/:w:/g/personal/golubmik_ad_helsinki_fi/IQAYtcGj8I10TJxyOEljkIekAeN18vS4jfewXz7cG7ujWLs?e=5g1Mzw)
 # Installation on Linux
 
 1. Clone the repository and navigate to the root folder.

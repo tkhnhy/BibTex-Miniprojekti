@@ -39,7 +39,10 @@ body {
 }
 
 .table-title{
-    font-weight: bold;
+    font-weight: 600;
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    padding: 0.75rem 0.5rem;
 }
 
 .reference-item{
@@ -416,14 +419,6 @@ h2 {
 
 h3 {
   font-size: 1.25rem;
-}
-
-/* Improved table header */
-.table-title {
-  font-weight: 600;
-  background-color: #f8f9fa;
-  border-bottom: 2px solid #dee2e6;
-  padding: 0.75rem 0.5rem;
 }
 
 /* Better focus for all interactive elements */

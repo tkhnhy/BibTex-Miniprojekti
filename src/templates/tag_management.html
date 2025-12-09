@@ -12,7 +12,7 @@ Manage Tags
     <div class="tag-item">
         <form action="/rename_tag/{{ tag.name }}" method="post" style="display:inline;">
             <label for="new_tag_name_{{tag.name}}" class="sr-only">Rename tag {{ tag.name }}</label>
-            <input id="new_tag_name_{{tag.name}}" name="new_tag_name" type="text" value="{{ tag.name }}" aria-label="New name for tag {{ tag.name }}">
+            <input id="new_tag_name_{{tag.name}}" name="new_tag_name" type="text" value="{{ tag.name }}">
             <span class="tag-name"> - used by {{count}} references</span>
             <button type="submit" class="button-green">Apply edit</button>
         </form>

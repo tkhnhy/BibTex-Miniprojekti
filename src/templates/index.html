@@ -49,16 +49,10 @@ My references
             <option value="type" {{ 'selected' if request.args.get('sort_by') == 'type' else '' }}>Type</option>
             <option value="key" {{ 'selected' if request.args.get('sort_by') == 'key' else '' }}>Key</option>
         </select>
-        <br><br>
-    <button type="submit" class="button-green" id="btn-apply-filters">Apply Filters</button>
-
 </form>
-<form action="/" method="get" style="display:inline;">
-    <button type="submit" class="button-green" id="btn-clear-filters">
-        Clear Filters
-    </button>
-</form>
-<br><br><br>
+<form id="clearForm" action="/" method="get" style="display:inline;"></form><br>
+<button type="submit" form="filterForm" class="button-green" id="btn-apply-filters">Apply</button>
+<button type="submit" form="clearForm" class="button-green" id="btn-clear-filters">Clear</button>
 </div>
 
 {% with messages = get_flashed_messages() %}
@@ -79,9 +73,6 @@ My references
     <button onclick="location.href='/new_reference'" class="button-green" style="margin-top: 15px;">
         New reference
     </button>
-    <button id="delete-selected-btn" type="button" class="button-red delete-selected-btn" disabled style="margin-top: 15px;">
-        Delete selected
-    </button>
     <button id="download-btn" type="button" class="button-green" style="margin-top: 15px;">
         Download as BibTex-file
     </button>
@@ -89,7 +80,10 @@ My references
         Upload a BibTex-file
         <input type="file" id="fileInput" hidden>
     </label>
-    <button onclick="location.href='/tag_management'" id="tags-btn" type="button" class="button-green" style="margin-top: 15px; float: right;">
+    <button id="delete-selected-btn" type="button" class="button-red delete-selected-btn" disabled style="margin-top: 15px;">
+        Delete selected
+    </button>
+    <button onclick="location.href='/tag_management'" id="tags-btn" type="button" class="button-edit" style="margin-top: 15px; margin-bottom: 0px;">
         Manage tags
     </button>
 </div>
@@ -124,11 +118,13 @@ My references
         <div>{{ reference.content.get('title', '') }}</div>
         <div>{{ reference.content.get('year', '') }}</div>
         <div>
-            <button class="toggle-details">Details</button><br>
-            <button onclick="location.href='/edit_reference/{{ reference.key }}'" class="button-edit">
+            <button class="toggle-details action-button">
+                Details
+            </button><br>
+            <button onclick="location.href='/edit_reference/{{ reference.key }}'" class="button-edit action-button">
                 Edit
             </button><br>
-            <button onclick="location.href='/confirm_delete/{{ reference.key }}'" class="button-red">
+            <button onclick="location.href='/confirm_delete/{{ reference.key }}'" class="button-red action-button">
                 Delete
             </button>
         </div>

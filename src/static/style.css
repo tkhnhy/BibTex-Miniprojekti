@@ -182,7 +182,13 @@ body {
 }
 
 #upload-btn {
-  font-size: 0.95em;
+  font-family: Arial;
+  padding: 0.29em 1em;
+  margin-bottom: 0px;
+}
+
+.action-button {
+    min-width: 5.2em;
 }
 
 /** Reference create and edit forms **/

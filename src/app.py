@@ -17,7 +17,6 @@ def route_index():
     filters = []
     selected_types = request.args.getlist("reference_type[]")
     selected_tags = request.args.getlist("tag[]")
-    print(request.args)
     selected_field = request.args.get("keyword_field")
     allowed_search_fields = {"any", "author", "title", "publisher", "year", "key"}
     if selected_field and selected_field not in allowed_search_fields:

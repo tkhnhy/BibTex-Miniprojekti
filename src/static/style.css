@@ -444,30 +444,6 @@ button:focus {
   top: 0;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .page-content {
-    margin-left: 0;
-    padding: 10px;
-  }
-  
-  .sidebar {
-    position: relative;
-    width: 100%;
-    height: auto;
-  }
-  
-  .reference-item {
-    grid-template-columns: 1fr;
-    gap: 0.5em;
-  }
-  
-  .reference-item > div {
-    border-bottom: 1px solid #e9ecef;
-    padding: 0.25em 0;
-  }
-}
-
 /* Improved field rows */
 .field-row {
   margin-bottom: 1.5rem;

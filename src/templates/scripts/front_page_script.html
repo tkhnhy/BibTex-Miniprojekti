@@ -111,7 +111,7 @@ document.getElementById('fileInput').addEventListener('change', async function()
 
         if (response.ok) {
             // Reload the page to see the uploaded references
-            window.location.reload();
+            window.location.replace('/');
         } else {
             let errorMsg = 'Upload failed.';
             try {

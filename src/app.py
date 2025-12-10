@@ -84,7 +84,6 @@ def route_fetch_doi():
 @app.route("/create_reference", methods=["POST"])
 def route_reference_creation():
     reference_type = request.form.get("reference_type")
-    # print("reference_type:", reference_type)
     reference_key = request.form.get("reference_key")
     tags = request.form.getlist("tags")
     reference_data = {

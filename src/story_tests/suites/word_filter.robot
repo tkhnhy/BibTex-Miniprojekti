@@ -13,7 +13,7 @@ Filtering by word and any field shows only the references containing the word
 
     Input Text  keyword_value  Rob
     Scroll Element Into View  btn-apply-filters
-    Click Button  Apply Filters
+    Click Button  btn-apply-filters
 
     Page Should Contain  ROB01
     Page Should Not Contain  DR02
@@ -34,7 +34,7 @@ Filtering by author gives only the reference containing the searchword in author
     Select From List By Label  keyword_field  Author
     Input Text  keyword_value  Anne
     Scroll Element Into View  btn-apply-filters
-    Click Button  Apply Filters
+    Click Button  btn-apply-filters
 
     Page Should Contain  DR02
     Page Should Not Contain  ROB03
@@ -47,7 +47,7 @@ Filtering by year only returns only the approriate references
     Input Text  keyword_value  2150
     
     Scroll Element Into View  btn-apply-filters
-    Click Button  Apply Filters
+    Click Button  btn-apply-filters
 
     Page Should Contain  ROB01
     Page Should Not Contain  DR02
@@ -60,13 +60,13 @@ Filtering by year, different modifiers work
     Input Text  keyword_value  <2200
     
     Scroll Element Into View  btn-apply-filters
-    Click Button  Apply Filters
+    Click Button  btn-apply-filters
 
     Page Should Contain  ROB01
     Page Should Not Contain  DR02
     
     Scroll Element Into View  btn-clear-filters
-    Click Button  Clear Filters
+    Click Button  btn-clear-filters
     
     
     Wait Until Element Is Visible  name=keyword_field  timeout=5s
@@ -74,13 +74,13 @@ Filtering by year, different modifiers work
     Input Text  keyword_value  >2150
     
     Scroll Element Into View  btn-apply-filters
-    Click Button  Apply Filters
+    Click Button  btn-apply-filters
     
     Page Should Not Contain  ROB01
     Page Should Contain  DR02
     
     Scroll Element Into View  btn-clear-filters
-    Click Button  Clear Filters
+    Click Button  btn-clear-filters
     
     
     Wait Until Element Is Visible  name=keyword_field  timeout=5s
@@ -88,7 +88,7 @@ Filtering by year, different modifiers work
     Input Text  keyword_value  2000-2199
     
     Scroll Element Into View  btn-apply-filters
-    Click Button  Apply Filters
+    Click Button  btn-apply-filters
     
     Page Should Contain  ROB01
     Page Should Not Contain  DR02
@@ -100,7 +100,7 @@ Searching a specific title works
     Select From List By Label  keyword_field  Title
     Input Text  keyword_value  Robot
     Scroll Element Into View  btn-apply-filters
-    Click Button  Apply Filters
+    Click Button  btn-apply-filters
 
     Page Should Contain  ROB01
     Page Should Not Contain  DR02
@@ -112,7 +112,7 @@ Searching a specific a partial key works
     Select From List By Label  keyword_field  Key
     Input Text  keyword_value  ROB
     Scroll Element Into View  btn-apply-filters
-    Click Button  Apply Filters
+    Click Button  btn-apply-filters
 
     Page Should Contain  ROB01
     Page Should Not Contain  DR02

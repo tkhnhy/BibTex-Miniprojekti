@@ -10,7 +10,7 @@ def get_tags_with_counts() -> list[tuple[Tag, int]]:
         "LEFT JOIN reference_taggins rt ON rt.tag_id = t.id "
         "GROUP BY t.id "
         "HAVING COUNT(rt.reference_id) > 0 "
-        "ORDER BY cnt DESC, t.name ASC"
+        "ORDER BY cnt DESC, t.name ASC, t.id ASC"
     )
     rows = db.session.execute(sql).fetchall()
     return [(Tag(name=row[0]), int(row[1])) for row in rows]

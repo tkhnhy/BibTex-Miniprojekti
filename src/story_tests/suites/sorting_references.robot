@@ -35,7 +35,7 @@ Sorting by year sorts the references in right order
 
     Select From List By Label  sort_by  Year
     Scroll Element Into View    btn-apply-filters
-    Click Button  Apply Filters
+    Click Button  btn-apply-filters
 
     ${first}=    Get Text    xpath=(//div[@class="reference-item"]/div[3])[1]
     ${second}=   Get Text    xpath=(//div[@class="reference-item"]/div[3])[2]

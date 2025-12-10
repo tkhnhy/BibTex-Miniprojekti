@@ -125,6 +125,7 @@ body {
 }
 
 /* Colored buttons */
+.tag-item .button-red,
 .button-red {
   background-color: #c82333;
   border: 1px solid #bd2130;
@@ -147,6 +148,7 @@ body {
   outline-offset: 2px;
 }
 
+.tag-item .button-green,
 .button-green {
   background-color: #28a745;
   border: 1px solid #28a745;
@@ -322,6 +324,11 @@ body {
     font-variant-caps: all-petite-caps;
     background-color: #e9ecef;
     margin: 4px;
+}
+
+.tag-name {
+    font-variant-caps: normal;
+    padding: 0 1em;
 }
 
 .tag-item button {

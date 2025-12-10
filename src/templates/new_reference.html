@@ -21,10 +21,11 @@ Create a new reference
 
     <div class="field-row">
         <label for="doi-input">Fetch from DOI:</label>
-        <input id="doi-input" type="text" name="doi-input" placeholder="10.xxxx/xxxxx or URL with the DOI" style="width:20em;">
+        <input id="doi-input" type="text" name="doi-input" placeholder="10.xxxx/xxxxx or URL with the DOI">
         <button id="fetch-doi-btn" type="button" class="button-green">Fetch</button>
         <span id="fetch-doi-status" style="margin-left:8px;"></span>
     </div>
+
     <label for="reference_type">Entry Type:</label>
     <select name="reference_type" id="reference_type" required>
         <option value="" disabled selected>Select a type...</option>
@@ -33,17 +34,31 @@ Create a new reference
         {% endfor %}
     </select>
     <br><br>
+
     <div class="field-row">
         <label for="reference_key">Reference Key:</label>
         <input id="reference_key" type="text" name="reference_key" required>
     </div>
-    <div class="field-row" id="tag-row">
-        <div style="display:flex; gap:8px; align-items:center;">
+
+    <div class="field-row">
             <label for="tag-input">Tags:</label>
-            <input id="tag-input" type="text" placeholder="Enter tag" />
+            <input id="tag-input" type="text" placeholder="Enter tag">
             <button id="add-tag-btn" type="button" class="button-green">Add tag</button>
+        <div id="tags-list" class="tag-listing"></div>
+        {% block tags %}
+        <div class="tags-container">
+            <h3>My current tags with their reference counts</h3>
+            {% if tags and tags|length > 0 %}
+            <ul class="tag-listing">
+                {% for tag_tuple in tags %}
+                    <li class="tag-item">{{ tag_tuple[0].name }} <span class="tag-count">({{ tag_tuple[1] }})</span></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div>No tags yet.</div>
+        {% endif %}
         </div>
-        <div id="tags-list" style="margin-top: 8px;"></div>
+        {% endblock %}
     </div>
     <div id="hidden-tag-inputs"></div>
 

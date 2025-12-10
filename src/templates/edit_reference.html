@@ -31,22 +31,22 @@ Edit reference
         {% endfor %}
     </select>
     <br><br>
+
     <div class="field-row">
         <label for="reference_key">Reference Key:</label>
         <input id="reference_key" type="text" name="reference_key" value="{{ reference.key }}" required>
     </div>
-    <div class="field-row" id="tag-row">
-        <div style="display:flex; gap:8px; align-items:center;">
+
+    <div class="field-row">
             <label for="tag-input">Tags:</label>
-            <input id="tag-input" type="text" placeholder="Enter tag" />
+            <input id="tag-input" type="text" placeholder="Enter tag">
             <button id="add-tag-btn" type="button" class="button-green">Add tag</button>
-        </div>
-        <div id="tags-list" style="margin-top: 8px;"></div>
+        <div id="tags-list" class="tag-listing"></div>
         {% block tags %}
-        <div class="tags-container" style="margin-top: 25px;">
+        <div class="tags-container">
             <h3>My current tags with their reference counts</h3>
             {% if tags and tags|length > 0 %}
-            <ul class="tag-list">
+            <ul class="tag-listing">
                 {% for tag_tuple in tags %}
                     <li class="tag-item">{{ tag_tuple[0].name }} <span class="tag-count">({{ tag_tuple[1] }})</span></li>
                 {% endfor %}

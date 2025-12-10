@@ -50,12 +50,14 @@ def route_index():
 @app.route("/new_reference")
 def route_new_reference():
     field_requirements_map = {ref_type.value: ref_type.field_requirements() for ref_type in list(ReferenceType)}
+    tags = get_tags_with_counts()
 
     return render_template(
         "new_reference.html",
         reference_types=list(ReferenceType),
         reference_fields=COMMON_BIBTEX_FIELDS,
-        field_requirements_map=field_requirements_map
+        field_requirements_map=field_requirements_map,
+        tags=tags
     )
 
 @app.route("/fetch_doi", methods=["POST"])

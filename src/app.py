@@ -11,18 +11,18 @@ from repositories.tag_repository import get_tags_with_counts, delete_tag, rename
 from config import app, test_env
 from util import validate_reference, fetch_doi_bibtex, extract_doi, UserInputError
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET"])
 def route_index():
-
     # The filter is a list of tuples in format: (filter type, list of filter values).
     filters = []
     selected_types = request.args.getlist("reference_type[]")
     selected_tags = request.args.getlist("tag[]")
+    print(request.args)
     selected_field = request.args.get("keyword_field")
     allowed_search_fields = {"any", "author", "title", "publisher", "year", "key"}
     if selected_field and selected_field not in allowed_search_fields:
         selected_field = None
-    selected_keyword = request.args.get("keyword_value", "").strip()
+    selected_keyword = request.args.get("keyword_value", "").strip() or None
 
     sort_by = request.args.get("sort_by")
 

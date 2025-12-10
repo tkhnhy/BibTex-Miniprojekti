@@ -44,7 +44,7 @@ def route_index():
 
     return render_template("index.html", references=references,
                             reference_types=list(ReferenceType), tags=tags,
-                            sort_selected=sort_by)
+                            sort_selected=sort_by, show_sidebar=True)
 
 @app.route("/new_reference")
 def route_new_reference():

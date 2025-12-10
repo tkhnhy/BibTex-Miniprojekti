@@ -50,9 +50,9 @@ My references
             <option value="key" {{ 'selected' if request.args.get('sort_by') == 'key' else '' }}>Key</option>
         </select>
 </form>
-<form id="clearForm" action="/" method="get" style="display:inline;"></form><br>
-<button type="submit" form="filterForm" class="button-green" id="btn-apply-filters">Apply</button>
-<button type="submit" form="clearForm" class="button-green" id="btn-clear-filters">Clear</button>
+<form id="clearForm" action="/" method="get" style="display:inline"></form>
+<button type="submit" form="filterForm" class="button-green" id="btn-apply-filters" style="margin-top: 1em;">Apply</button>
+<button type="submit" form="clearForm" class="button-green" id="btn-clear-filters" style="margin-top: 1em;">Clear</button>
 </div>
 
 {% with messages = get_flashed_messages() %}

@@ -3,6 +3,10 @@
     box-sizing: border-box;
 }
 
+body.with-sidebar {
+  --sidebar-width: min(220px, 30%);
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     line-height: 1.6;
@@ -12,11 +16,17 @@ body {
 }
 
 /* Content block */
-.page-content {
-    max-width: 80em;
-    margin-left: 220px;
-    padding: 20px;
+.page-container {
+    margin-left: var(--sidebar-width, 0);
 }
+
+.page-content {
+    width: 100%;
+    padding: 0 5%;
+    margin: 0 auto;
+    max-width: 80em;
+}
+
 
 /* Page heading */
 .page-title {
@@ -247,7 +257,7 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 220px;
+  width: var(--sidebar-width, 0);
   height: 100%;
   background-color: #343a40;
   color: #ffffff;

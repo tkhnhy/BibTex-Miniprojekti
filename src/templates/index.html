@@ -9,9 +9,9 @@ My references
 <h2 class="page-title">My references</h2>
 
 <div class="sidebar">
-    <h2>Filters:</h2>
+    <h2 style="margin-top:0px; margin-bottom:0.3em;">Filters</h2>
     <form id="filterForm" action="/" method="get">
-        <label for="choose_field"><b>Search field:</b></label>
+        <label for="choose_field">Search field</label>
         <select name="keyword_field" id="choose_field">
             <option value="any" {{ 'selected' if request.args.get('keyword_field') == 'any' else '' }}>Any</option>
             <option value="author" {{ 'selected' if request.args.get('keyword_field') == 'author' else '' }}>Author</option>
@@ -27,12 +27,12 @@ My references
         </span>
         <input type="text" name="keyword_value" placeholder="Enter search word" value="{{ request.args.get('keyword_value', '') }}"><br>
 
-        <label><b>Select reference types:</b></label>
+        <label>Select reference types</label>
         {% for ref_type in reference_types %}
             <input type="checkbox" name="reference_type[]" value="{{ ref_type.value }}" {{ 'checked' if ref_type.value in request.args.getlist('reference_type[]') else '' }}>
             {{ ref_type.display_str() }}<br>
         {% endfor %}
-        <label><b>Select tags:</b></label>
+        <label>Select tags</label>
         {% if tags and tags|length > 0 %}
             {% for tag, count in tags %}
                 <input type="checkbox" name="tag[]" value="{{ tag.name }}" {{ 'checked' if tag.name in request.args.getlist('tag[]') else '' }}>
@@ -41,7 +41,7 @@ My references
         {% else %}
             <p>No tags available.</p>
         {% endif %}
-        <label><b>Sort by:</b></label>
+        <h2 style="margin-top:0.3em; margin-bottom:0.3em;">Sort By</h2>
         <select name="sort_by">
             <option value="" {{ 'selected' if not request.args.get('sort_by') else '' }}>-- No sorting --</option>
             <option value="author" {{ 'selected' if request.args.get('sort_by') == 'author' else '' }}>Author</option>
@@ -49,16 +49,10 @@ My references
             <option value="type" {{ 'selected' if request.args.get('sort_by') == 'type' else '' }}>Type</option>
             <option value="key" {{ 'selected' if request.args.get('sort_by') == 'key' else '' }}>Key</option>
         </select>
-        <br><br>
-    <button type="submit" class="button-green" id="btn-apply-filters">Apply Filters</button>
-
 </form>
-<form action="/" method="get" style="display:inline;">
-    <button type="submit" class="button-green" id="btn-clear-filters">
-        Clear Filters
-    </button>
-</form>
-<br><br><br>
+<form id="clearForm" action="/" method="get" style="display:inline"></form>
+<button type="submit" form="filterForm" class="button-green" id="btn-apply-filters" style="margin-top: 1em;">Apply</button>
+<button type="submit" form="clearForm" class="button-green" id="btn-clear-filters" style="margin-top: 1em;">Clear</button>
 </div>
 
 {% with messages = get_flashed_messages() %}
@@ -79,9 +73,6 @@ My references
     <button onclick="location.href='/new_reference'" class="button-green" style="margin-top: 15px;">
         New reference
     </button>
-    <button id="delete-selected-btn" type="button" class="button-red delete-selected-btn" disabled style="margin-top: 15px;">
-        Delete selected
-    </button>
     <button id="download-btn" type="button" class="button-green" style="margin-top: 15px;">
         Download as BibTex-file
     </button>
@@ -89,7 +80,10 @@ My references
         Upload a BibTex-file
         <input type="file" id="fileInput" hidden>
     </label>
-    <button onclick="location.href='/tag_management'" id="tags-btn" type="button" class="button-green" style="margin-top: 15px; float: right;">
+    <button id="delete-selected-btn" type="button" class="button-red delete-selected-btn" disabled style="margin-top: 15px;">
+        Delete selected
+    </button>
+    <button onclick="location.href='/tag_management'" id="tags-btn" type="button" class="button-edit" style="margin-top: 15px; margin-bottom: 0px;">
         Manage tags
     </button>
 </div>
@@ -124,11 +118,13 @@ My references
         <div>{{ reference.content.get('title', '') }}</div>
         <div>{{ reference.content.get('year', '') }}</div>
         <div>
-            <button class="toggle-details">Details</button><br>
-            <button onclick="location.href='/edit_reference/{{ reference.key }}'" class="button-edit">
+            <button class="toggle-details action-button">
+                Details
+            </button><br>
+            <button onclick="location.href='/edit_reference/{{ reference.key }}'" class="button-edit action-button">
                 Edit
             </button><br>
-            <button onclick="location.href='/confirm_delete/{{ reference.key }}'" class="button-red">
+            <button onclick="location.href='/confirm_delete/{{ reference.key }}'" class="button-red action-button">
                 Delete
             </button>
         </div>
@@ -145,13 +141,25 @@ My references
             {% endif %}
 
             {% if reference.comment.strip() != '' %}
-                <span><b>Comment:</b> {{ reference.comment }}</span>
-                <br>
+                <span class="comment"><b>Comment:</b> {{ reference.comment }}</span>
             {% endif %}
 
+            {# render normal datapoints first #}
             {% for datapoint, value in reference.content.items() %}
                 {% if datapoint not in ['author', 'title', 'year', 'comment'] %}
-                <span class="datapoint"><b>{{ datapoint | replace('_', ' ') | title }}:</b> {{ value }}</span>
+                    {% set is_wide = value and value|length > 80 %}
+                    {% if not is_wide %}
+                        <span class="datapoint"><b>{{ datapoint | replace('_', ' ') | title }}:</b> {{ value }}</span>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            {# then render wide datapoints last #}
+            {% for datapoint, value in reference.content.items() %}
+                {% if datapoint not in ['author', 'title', 'year', 'comment'] %}
+                    {% set is_wide = value and value|length > 80 %}
+                    {% if is_wide %}
+                        <span class="datapoint datapoint--wide"><b>{{ datapoint | replace('_', ' ') | title }}:</b> {{ value }}</span>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
         </div>

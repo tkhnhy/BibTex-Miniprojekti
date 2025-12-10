@@ -64,59 +64,27 @@ Deleting tags works correctly
     Click Button  Create
 
     Click Button  Manage tags
+
+    # intercept confirm: save message and RETURN FALSE so navigation is blocked
+    Execute JavaScript    window.__last_confirm = null; window._orig_confirm = window.confirm; window.confirm = function(msg){ window.__last_confirm = msg; return false; };
+
     Click Button  delete_tag_def
+
+    # read the captured confirm text
+    ${confirm_msg}=    Execute JavaScript    return window.__last_confirm;
+    Should Contain    ${confirm_msg}    Delete tag
+
+    # restore original confirm and submit the form
+    Execute JavaScript    if(window._orig_confirm){ window.confirm = window._orig_confirm; delete window._orig_confirm; }
+    Execute JavaScript    document.querySelector('.delete-tag-form[data-tag="def"]').submit();
+
     Click Button  To main page
-    
     Click Button  Details
     Page Should Contain  abc
     Page Should Not Contain  def
 
+*** Comments ***
+# Additional manual tag add/remove tests commented out...
 
-
-# Add Tags On New Reference Form
-#     Go To  ${HOME_URL}
-#     Click Button  New reference
-#     Input Book With Fields  ROB05  Rob Bot  Robot Book  RobotPublishing  2150
-#     Input Tag  abc
-#     Page Should Contain  abc
-#     Remove Tag
-#     Page Should Not Contain  abc
-#     Input Tag  abc
-#     Click Button  Create
-
-#     Page Should Contain  ROB05
-#     Click Button  Details
-#     Page Should Contain  abc
-
-# Add And Remove Tags On Edit Form
-#     Go To  ${HOME_URL}
-#     Click Button  New reference
-
-#     Input Book With Fields  ROB06  Rob Bot  Robot Book  RobotPublishing  2150
-#     Input Tag  initialtag
-#     Click Button  Create
-#     Page Should Contain  ROB06
-
-#     # Add a new tag
-#     Click Button  Edit
-#     Input Tag  newtag
-#     Click Button  Save changes
-
-#     Page Should Contain  ROB06
-#     Click Button  Details
-#     Page Should Contain  initialtag
-#     Page Should Contain  newtag
-
-#     # Remove the tags
-#     Click Button  Edit
-#     Remove Tag
-#     Remove Tag
-#     Click Button  Save changes
-
-#     Page Should Contain  ROB06
-#     Click Button  Details
-#     Page Should Not Contain  newtag
-#     Page Should Not Contain  initialtag
-    
 
 

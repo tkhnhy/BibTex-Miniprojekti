@@ -4,10 +4,10 @@ document.querySelectorAll('.toggle-details').forEach(button => {
         // Toggle details
         const parentItem = button.closest('.reference-item');
         const details = parentItem.querySelector('.reference-item-details');
-        if (details.style.display === 'block') {
+        if (details.style.display === 'grid') {
             details.style.display = 'none';
         } else {
-            details.style.display = 'block';
+            details.style.display = 'grid';
         }
     });
 });
@@ -111,7 +111,7 @@ document.getElementById('fileInput').addEventListener('change', async function()
 
         if (response.ok) {
             // Reload the page to see the uploaded references
-            window.location.reload();
+            window.location.replace('/');
         } else {
             let errorMsg = 'Upload failed.';
             try {

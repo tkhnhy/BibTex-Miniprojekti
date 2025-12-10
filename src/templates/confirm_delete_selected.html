@@ -42,10 +42,10 @@ Delete references
     {% for reference in references %}
     <input type="hidden" name="selected_keys" value="{{ reference.key }}">
     {% endfor %}
-    <button type="submit">
+    <button type="submit" class="button-red">
         Delete
     </button>
-    <button type="reset" onclick="location.href='/'">
+    <button type="reset" class="button-green" onclick="location.href='/'" style="margin-top: 15px;">
         Cancel
     </button>
 </form>

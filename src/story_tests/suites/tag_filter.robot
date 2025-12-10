@@ -38,7 +38,7 @@ Filtering shows only the selected tag type
 
     Select Checkbox  reviewed
     Scroll Element Into View  btn-apply-filters
-    Click Button  Apply Filters
+    Click Button  btn-apply-filters
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
@@ -75,13 +75,13 @@ Clearing filters restores all references
 
     Select Checkbox  reviewed
     Scroll Element Into View  btn-apply-filters
-    Click Button  Apply Filters
+    Click Button  btn-apply-filters
 
     Page Should Contain  ROB02
     Page Should Not Contain  ROB01
 
     Scroll Element Into View  btn-clear-filters
-    Click Button  Clear Filters
+    Click Button  btn-clear-filters
 
     Page Should Contain  ROB01
     Page Should Contain  ROB02

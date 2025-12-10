@@ -26,12 +26,12 @@ Delete reference
       <li><b>{{ datapoint | replace('_', ' ') | title }}:</b> {{ value }}</li>
     {% endfor %}
   </ul>
-  <button type="submit">
-    Delete
-  </button>
-  <button type="reset" onclick="location.href='/'">
-    Cancel
-  </button>
+  <button type="submit" class="button-red">
+        Delete
+    </button>
+    <button type="reset" class="button-green" onclick="location.href='/'" style="margin-top: 15px;">
+        Cancel
+    </button>
 </form>
 
 {% endblock %}

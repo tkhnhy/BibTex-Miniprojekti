@@ -17,7 +17,6 @@ def route_index():
     filters = []
     selected_types = request.args.getlist("reference_type[]")
     selected_tags = request.args.getlist("tag[]")
-    print(request.args)
     selected_field = request.args.get("keyword_field")
     allowed_search_fields = {"any", "author", "title", "publisher", "year", "key"}
     if selected_field and selected_field not in allowed_search_fields:
@@ -45,7 +44,7 @@ def route_index():
 
     return render_template("index.html", references=references,
                             reference_types=list(ReferenceType), tags=tags,
-                            sort_selected=sort_by)
+                            sort_selected=sort_by, show_sidebar=True)
 
 @app.route("/new_reference")
 def route_new_reference():
@@ -87,7 +86,6 @@ def route_fetch_doi():
 @app.route("/create_reference", methods=["POST"])
 def route_reference_creation():
     reference_type = request.form.get("reference_type")
-    # print("reference_type:", reference_type)
     reference_key = request.form.get("reference_key")
     tags = request.form.getlist("tags")
     reference_data = {

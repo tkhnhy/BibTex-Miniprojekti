@@ -9,9 +9,11 @@
     />
     <title>{% block title %}{% endblock %}</title>
   </head>
-  <body>
-    <div class="page-content">
-        {% block body %}{% endblock %}
+  <body class="{{ 'with-sidebar' if show_sidebar else '' }}">
+    <div class="page-container">
+        <div class="page-content">
+            {% block body %}{% endblock %}
+        </div>
     </div>
   </body>
   {% block scripts %}{% endblock %}

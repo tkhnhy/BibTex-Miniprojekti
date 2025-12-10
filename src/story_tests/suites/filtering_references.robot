@@ -31,7 +31,7 @@ Filtering shows only the selected reference type
 
     Select Checkbox  book
     Scroll Element Into View  btn-apply-filters
-    Click Button  Apply Filters
+    Click Button  btn-apply-filters
 
     Page Should Contain  ROB01
     Page Should Not Contain  ROB02
@@ -50,12 +50,11 @@ Clearing filters restores all references
 
     Select Checkbox  booklet
     Scroll Element Into View  btn-apply-filters
-    Click Button  Apply Filters
-
+    Click Button  btn-apply-filters
     Page Should Contain  Number of references: 0
     
     Scroll Element Into View  btn-clear-filters
-    Click Button  Clear Filters
+    Click Button  btn-clear-filters
 
     Page Should Contain  ROB01
 
